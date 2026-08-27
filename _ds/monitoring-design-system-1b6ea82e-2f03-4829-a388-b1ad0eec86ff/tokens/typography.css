@@ -1,0 +1,30 @@
+:root{
+--font-body:'Rubik',-apple-system,sans-serif;
+--font-accent:'Rubik',-apple-system,sans-serif;
+--font-title:'Epilogue','Rubik',-apple-system,sans-serif;
+
+--fw-light:300; /* @kind font */--fw-regular:400; /* @kind font */--fw-medium:500; /* @kind font */--fw-semibold:600; /* @kind font */--fw-bold:700; /* @kind font */
+
+/* type scale (px, from Figma "typography" collection) */
+--fs-h1:96px;--fs-h2:60px;--fs-h3:48px;--fs-h4:32px;--fs-h5:24px;--fs-h6:20px;
+--fs-subtitle1:16px;--fs-subtitle2:14px;
+--fs-body1:16px;--fs-body2:14px;
+--fs-caption:12px;--fs-overline:12px;
+--fs-button:14px;
+
+--lh-heading:1.2; /* @kind other */--lh-body:1.5; /* @kind other */--lh-button:1; /* @kind other */
+}
+/* Typography variants, MUI-shaped — apply as classes where semantic HTML tags aren't enough */
+.type-h1{font:var(--fw-light) var(--fs-h1)/1.167 var(--font-title);letter-spacing:-1.5px}
+.type-h2{font:var(--fw-light) var(--fs-h2)/1.2 var(--font-title);letter-spacing:-0.5px}
+.type-h3{font:var(--fw-regular) var(--fs-h3)/1.167 var(--font-title)}
+.type-h4{font:var(--fw-regular) var(--fs-h4)/1.235 var(--font-title);letter-spacing:0.25px}
+.type-h5{font:var(--fw-regular) var(--fs-h5)/1.334 var(--font-title)}
+.type-h6{font:var(--fw-medium) var(--fs-h6)/1.6 var(--font-title);letter-spacing:0.15px}
+.type-subtitle1{font:var(--fw-regular) var(--fs-subtitle1)/1.75 var(--font-body);letter-spacing:0.15px}
+.type-subtitle2{font:var(--fw-medium) var(--fs-subtitle2)/1.57 var(--font-body);letter-spacing:0.1px}
+.type-body1{font:var(--fw-regular) var(--fs-body1)/1.5 var(--font-body);letter-spacing:0.15px}
+.type-body2{font:var(--fw-regular) var(--fs-body2)/1.43 var(--font-body);letter-spacing:0.15px}
+.type-caption{font:var(--fw-regular) var(--fs-caption)/1.66 var(--font-body);letter-spacing:0.4px}
+.type-overline{font:var(--fw-regular) var(--fs-overline)/2.66 var(--font-body);letter-spacing:1px;text-transform:uppercase}
+.type-button{font:var(--fw-medium) var(--fs-button)/var(--lh-button) var(--font-accent);letter-spacing:0.4px;text-transform:uppercase}

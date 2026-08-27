@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="canvas">
+<template id="__bundler_thumbnail" data-bg-color="#1C00B7">
+  <svg viewBox="0 0 100 70" xmlns="http://www.w3.org/2000/svg">
+    <rect x="10" y="10" width="35" height="10" rx="5" fill="#fff" opacity="0.9"/>
+    <rect x="50" y="10" width="20" height="10" rx="5" fill="#fff" opacity="0.6"/>
+    <rect x="10" y="30" width="80" height="30" rx="4" fill="#fff" opacity="0.15"/>
+  </svg>
+</template>
+<link rel="stylesheet" href="_ds/monitoring-design-system-1b6ea82e-2f03-4829-a388-b1ad0eec86ff/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/monitoring-design-system-1b6ea82e-2f03-4829-a388-b1ad0eec86ff/tokens/colors.css">
+<link rel="stylesheet" href="_ds/monitoring-design-system-1b6ea82e-2f03-4829-a388-b1ad0eec86ff/tokens/typography.css">
+<link rel="stylesheet" href="_ds/monitoring-design-system-1b6ea82e-2f03-4829-a388-b1ad0eec86ff/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/monitoring-design-system-1b6ea82e-2f03-4829-a388-b1ad0eec86ff/styles.css">
+<script src="_ds/monitoring-design-system-1b6ea82e-2f03-4829-a388-b1ad0eec86ff/_ds_bundle.js"></script>
+<style>
+body{margin:0;background:#f0eee9;font-family:system-ui,sans-serif}
+.dv-turn{padding:40px 44px 32px;border-bottom:1px solid rgba(0,0,0,.08);scroll-margin-top:16px}
+.dv-thd{display:flex;align-items:baseline;gap:10px;margin:0 0 20px}
+.dv-tid{font:600 10px ui-monospace,Menlo,monospace;padding:3px 7px;background:#1a1a1a;color:#fff;border-radius:4px;text-decoration:none}
+.dv-tname{font:600 13px/1.2 system-ui,sans-serif;color:#1a1a1a}
+.dv-opts{display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start}
+.dv-opt{flex:none;display:flex;flex-direction:column;gap:9px;scroll-margin-top:16px}
+.dv-oid{font:600 10.5px ui-monospace,Menlo,monospace;padding:3px 7px;background:rgba(0,0,0,.08);color:#1a1a1a;border-radius:5px;text-decoration:none}
+.dv-olabel{display:flex;align-items:baseline;gap:8px;font:400 11px/1.3 system-ui,sans-serif;color:rgba(0,0,0,.55)}
+.dv-next{margin:22px 0 0;font:12px/1.5 system-ui,sans-serif;color:rgba(0,0,0,.5)}
+.lbl-row{padding:8px 12px;font-size:13px;color:var(--text-primary);cursor:pointer}
+.lbl-row:hover{background:var(--action-hover)}
+.lbl-create:hover{background:var(--color-primary-hover)}
+.lbl-savebar-btn button{white-space:nowrap}
+</style>
+</helmet>
+<section class="dv-turn" id="t5">
+<div class="dv-thd"><a class="dv-tid" href="#t5">5</a><span class="dv-tname">Riff on <a class="dv-oid" href="#1f">1f</a>: simplified removal, no confirmation or undo</span></div>
+<div class="dv-opts">
+<div class="dv-opt" id="1g">
+<div class="dv-olabel"><a class="dv-oid" href="#1g">1g</a>Remove is immediate — no dialog, no undo</div>
+<div style="width:480px;background:var(--background-paper);border-radius:var(--radius);box-shadow:var(--shadow-1);overflow:visible;font-family:var(--font-body)">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--divider)">
+    <span style="font-weight:600;font-size:14px;color:var(--text-primary)">Details</span>
+    <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ArrowDropDownFilled" size="20" hint-size="20px,20px" style="color:var(--action-active)"></x-import>
+  </div>
+  <div style="border-bottom:1px solid var(--divider);position:relative">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px">
+      <span style="font-weight:600;font-size:14px;color:var(--text-primary)">Labels</span>
+      <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ArrowDropUpFilled" size="20" hint-size="20px,20px" style="color:var(--action-active)"></x-import>
+    </div>
+    <div style="padding:0 16px 16px;display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <sc-for list="{{optG.chips}}" as="chip" hint-placeholder-count="2">
+          <span style="display:inline-flex;align-items:center;height:28px;padding:0 4px 0 10px;border-radius:14px;border-width:1px;border-style:{{chip.borderStyle}};border-color:{{chip.borderColor}};background:transparent">
+            <button onClick="{{chip.onNameClick}}" style="all:unset;cursor:pointer;font-size:13px;line-height:1;color:{{chip.textColor}};text-decoration:{{chip.textDecoration}};white-space:nowrap">{{chip.text}}</button>
+            <sc-if value="{{chip.showTag}}" hint-placeholder-val="{{false}}">
+              <span style="font-size:9.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:{{chip.tagColor}};margin-left:6px">{{chip.tagText}}</span>
+            </sc-if>
+            <sc-if value="{{chip.showRemove}}" hint-placeholder-val="{{true}}">
+              <button onClick="{{chip.onRemoveClick}}" aria-label="Remove {{chip.text}}" style="all:unset;cursor:pointer;display:flex;padding:4px;margin-left:2px;opacity:0.6">
+                <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="CloseFilled" size="13" hint-size="13px,13px"></x-import>
+              </button>
+            </sc-if>
+          </span>
+        </sc-for>
+        <sc-if value="{{optG.noChips}}" hint-placeholder-val="{{false}}">
+          <span style="font-size:13px;color:var(--text-secondary)">No labels yet</span>
+        </sc-if>
+      </div>
+      <div style="position:relative">
+        <sc-if value="{{optG.editing}}" hint-placeholder-val="{{false}}">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+            <span style="font-size:11px;color:var(--text-secondary)">Replacing a label — pick or create the new one</span>
+            <button onClick="{{optG.onCancelEdit}}" style="all:unset;cursor:pointer;font-size:11px;color:var(--color-primary-main)">Cancel</button>
+          </div>
+        </sc-if>
+        <div style="display:flex;align-items:center;gap:6px;border:1px solid {{optG.inputBorderColor}};border-radius:var(--radius);padding:6px 8px">
+          <input value="{{optG.input}}" onChange="{{optG.onInput}}" onKeyDown="{{optG.onKeyDown}}" onFocus="{{optG.onFocus}}" onBlur="{{optG.onBlur}}" placeholder="{{optG.placeholder}}" style="border:none;outline:none;flex:1;font-size:13px;font-family:var(--font-body);color:var(--text-primary);background:transparent" />
+          <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.IconButton" onClick="{{optG.toggleMenu}}" size="small" hint-size="28px,28px">
+            <sc-if value="{{optG.open}}" hint-placeholder-val="{{false}}"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ArrowDropUpFilled" size="18" hint-size="18px,18px"></x-import></sc-if>
+            <sc-if value="{{optG.closed}}" hint-placeholder-val="{{true}}"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ArrowDropDownFilled" size="18" hint-size="18px,18px"></x-import></sc-if>
+          </x-import>
+        </div>
+        <sc-if value="{{optG.open}}" hint-placeholder-val="{{false}}">
+          <div style="position:absolute;top:100%;left:0;right:0;margin-top:4px;background:var(--background-paper);box-shadow:var(--shadow-8);border-radius:var(--radius);max-height:240px;overflow-y:auto;z-index:5">
+            <sc-for list="{{optG.rows}}" as="row" hint-placeholder-count="4">
+              <sc-if value="{{row.isItem}}" hint-placeholder-val="{{false}}">
+                <div onMouseDown="{{row.onClick}}" class="lbl-row">{{row.text}}</div>
+              </sc-if>
+              <sc-if value="{{row.isCreate}}" hint-placeholder-val="{{false}}">
+                <div onMouseDown="{{row.onClick}}" class="lbl-row lbl-create" style="color:var(--color-primary-main);border-top:1px solid var(--divider)">+ {{row.text}}</div>
+              </sc-if>
+              <sc-if value="{{row.isEmpty}}" hint-placeholder-val="{{false}}">
+                <div style="padding:8px 12px;font-size:13px;color:var(--text-secondary)">{{row.text}}</div>
+              </sc-if>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+      <sc-if value="{{optG.hasPending}}" hint-placeholder-val="{{false}}">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:10px;border-top:1px solid var(--divider)">
+          <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-secondary)">
+            <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="AccessTimeFilled" size="14" hint-size="14px,14px" style="color:var(--color-warning-main)"></x-import>
+            {{optG.pendingCount}} pending change(s) — not yet saved
+          </span>
+          <div style="display:flex;gap:8px;flex-shrink:0">
+            <span class="lbl-savebar-btn" style="flex-shrink:0;display:inline-flex"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="text" size="small" onClick="{{optG.onDiscard}}" disabled="{{optG.saving}}" hint-size="auto,32px">Discard</x-import></span>
+            <span class="lbl-savebar-btn" style="flex-shrink:0;display:inline-flex"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="contained" size="small" color="primary" onClick="{{optG.onSave}}" disabled="{{optG.saving}}" hint-size="auto,32px">{{optG.saveLabel}}</x-import></span>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{optG.justSaved}}" hint-placeholder-val="{{false}}">
+        <div style="display:flex;align-items:center;gap:6px;padding-top:10px;border-top:1px solid var(--divider);font-size:12px;color:var(--color-success-main)">
+          <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="CheckCircleFilled" size="14" hint-size="14px,14px"></x-import>Changes saved
+        </div>
+      </sc-if>
+    </div>
+    <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Popover" open="{{optG.popoverOpen}}" onClose="{{optG.onPopoverClose}}" anchor-style="{{optG.popoverAnchorStyle}}" hint-size="0,0">
+      <div style="padding:12px 14px;min-width:210px;font-size:13px;color:var(--text-primary)">
+        <sc-if value="{{optG.popoverIsSaved}}" hint-placeholder-val="{{false}}">
+          <div style="color:var(--text-secondary);font-size:12px;margin-bottom:8px;line-height:1.5">Added by {{optG.popoverBy}}<br></br>{{optG.popoverAt}}</div>
+        </sc-if>
+        <sc-if value="{{optG.popoverIsPending}}" hint-placeholder-val="{{false}}">
+          <div style="display:flex;align-items:center;gap:6px;color:var(--color-warning-main);font-size:12px;margin-bottom:8px">
+            <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="AccessTimeFilled" size="14" hint-size="14px,14px"></x-import>Pending — not yet saved
+          </div>
+        </sc-if>
+        <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="text" size="small" color="primary" onClick="{{optG.onPopoverEdit}}" hint-size="auto,28px">Edit</x-import>
+      </div>
+    </x-import>
+  </div>
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--divider)">
+    <span style="font-weight:600;font-size:14px;color:var(--text-primary)">Visuals</span>
+    <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ArrowDropDownFilled" size="20" hint-size="20px,20px" style="color:var(--action-active)"></x-import>
+  </div>
+  <div style="padding:14px 16px">
+    <span style="font-weight:600;font-size:14px;color:var(--text-primary)">Rating</span>
+  </div>
+</div>
+</div>
+</div>
+<p class="dv-next">Try next: "add a badge on the section header showing pending count" · "confirm this trade-off is acceptable for accidental removals"</p>
+</section>
+<section class="dv-turn" id="t4">
+<div class="dv-thd"><a class="dv-tid" href="#t4">4</a><span class="dv-tname">Full post-page labels flow, per ticket spec — pending state, edit-replaces, remove confirmation, save/discard</span></div>
+<div class="dv-opts">
+<div class="dv-opt" id="1f">
+<div class="dv-olabel"><a class="dv-oid" href="#1f">1f</a>Add, edit, remove — all pending until saved</div>
+<div style="width:480px;background:var(--background-paper);border-radius:var(--radius);box-shadow:var(--shadow-1);overflow:visible;font-family:var(--font-body)">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--divider)">
+    <span style="font-weight:600;font-size:14px;color:var(--text-primary)">Details</span>
+    <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ArrowDropDownFilled" size="20" hint-size="20px,20px" style="color:var(--action-active)"></x-import>
+  </div>
+  <div style="border-bottom:1px solid var(--divider);position:relative">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px">
+      <span style="font-weight:600;font-size:14px;color:var(--text-primary)">Labels</span>
+      <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ArrowDropUpFilled" size="20" hint-size="20px,20px" style="color:var(--action-active)"></x-import>
+    </div>
+    <div style="padding:0 16px 16px;display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <sc-for list="{{optF.chips}}" as="chip" hint-placeholder-count="2">
+          <span style="display:inline-flex;align-items:center;height:28px;padding:0 4px 0 10px;border-radius:14px;border-width:1px;border-style:{{chip.borderStyle}};border-color:{{chip.borderColor}};background:transparent">
+            <button onClick="{{chip.onNameClick}}" style="all:unset;cursor:pointer;font-size:13px;line-height:1;color:{{chip.textColor}};text-decoration:{{chip.textDecoration}};white-space:nowrap">{{chip.text}}</button>
+            <sc-if value="{{chip.showTag}}" hint-placeholder-val="{{false}}">
+              <span style="font-size:9.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:{{chip.tagColor}};margin-left:6px">{{chip.tagText}}</span>
+            </sc-if>
+            <sc-if value="{{chip.showUndo}}" hint-placeholder-val="{{false}}">
+              <button onClick="{{chip.onUndoClick}}" aria-label="Undo removing {{chip.text}}" style="all:unset;cursor:pointer;display:flex;align-items:center;gap:2px;padding:4px;margin-left:2px;font-size:11px;font-weight:600;color:var(--color-primary-main)">
+                <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="RestoreFilled" size="13" hint-size="13px,13px"></x-import>Undo
+              </button>
+            </sc-if>
+            <sc-if value="{{chip.showRemove}}" hint-placeholder-val="{{true}}">
+              <button onClick="{{chip.onRemoveClick}}" aria-label="Remove {{chip.text}}" style="all:unset;cursor:pointer;display:flex;padding:4px;margin-left:2px;opacity:0.6">
+                <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="CloseFilled" size="13" hint-size="13px,13px"></x-import>
+              </button>
+            </sc-if>
+          </span>
+        </sc-for>
+        <sc-if value="{{optF.noChips}}" hint-placeholder-val="{{false}}">
+          <span style="font-size:13px;color:var(--text-secondary)">No labels yet</span>
+        </sc-if>
+      </div>
+      <div style="position:relative">
+        <sc-if value="{{optF.editing}}" hint-placeholder-val="{{false}}">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+            <span style="font-size:11px;color:var(--text-secondary)">Replacing a label — pick or create the new one</span>
+            <button onClick="{{optF.onCancelEdit}}" style="all:unset;cursor:pointer;font-size:11px;color:var(--color-primary-main)">Cancel</button>
+          </div>
+        </sc-if>
+        <div style="display:flex;align-items:center;gap:6px;border:1px solid {{optF.inputBorderColor}};border-radius:var(--radius);padding:6px 8px">
+          <input value="{{optF.input}}" onChange="{{optF.onInput}}" onKeyDown="{{optF.onKeyDown}}" onFocus="{{optF.onFocus}}" onBlur="{{optF.onBlur}}" placeholder="{{optF.placeholder}}" style="border:none;outline:none;flex:1;font-size:13px;font-family:var(--font-body);color:var(--text-primary);background:transparent" />
+          <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.IconButton" onClick="{{optF.toggleMenu}}" size="small" hint-size="28px,28px">
+            <sc-if value="{{optF.open}}" hint-placeholder-val="{{false}}"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ArrowDropUpFilled" size="18" hint-size="18px,18px"></x-import></sc-if>
+            <sc-if value="{{optF.closed}}" hint-placeholder-val="{{true}}"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ArrowDropDownFilled" size="18" hint-size="18px,18px"></x-import></sc-if>
+          </x-import>
+        </div>
+        <sc-if value="{{optF.open}}" hint-placeholder-val="{{false}}">
+          <div style="position:absolute;top:100%;left:0;right:0;margin-top:4px;background:var(--background-paper);box-shadow:var(--shadow-8);border-radius:var(--radius);max-height:240px;overflow-y:auto;z-index:5">
+            <sc-for list="{{optF.rows}}" as="row" hint-placeholder-count="4">
+              <sc-if value="{{row.isItem}}" hint-placeholder-val="{{false}}">
+                <div onMouseDown="{{row.onClick}}" class="lbl-row">{{row.text}}</div>
+              </sc-if>
+              <sc-if value="{{row.isCreate}}" hint-placeholder-val="{{false}}">
+                <div onMouseDown="{{row.onClick}}" class="lbl-row lbl-create" style="color:var(--color-primary-main);border-top:1px solid var(--divider)">+ {{row.text}}</div>
+              </sc-if>
+              <sc-if value="{{row.isEmpty}}" hint-placeholder-val="{{false}}">
+                <div style="padding:8px 12px;font-size:13px;color:var(--text-secondary)">{{row.text}}</div>
+              </sc-if>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+      <sc-if value="{{optF.hasPending}}" hint-placeholder-val="{{false}}">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:10px;border-top:1px solid var(--divider)">
+          <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-secondary)">
+            <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="AccessTimeFilled" size="14" hint-size="14px,14px" style="color:var(--color-warning-main)"></x-import>
+            {{optF.pendingCount}} pending change(s) — not yet saved
+          </span>
+          <div style="display:flex;gap:8px;flex-shrink:0">
+            <span class="lbl-savebar-btn" style="flex-shrink:0;display:inline-flex"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="text" size="small" onClick="{{optF.onDiscard}}" disabled="{{optF.saving}}" hint-size="auto,32px">Discard</x-import></span>
+            <span class="lbl-savebar-btn" style="flex-shrink:0;display:inline-flex"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="contained" size="small" color="primary" onClick="{{optF.onSave}}" disabled="{{optF.saving}}" hint-size="auto,32px">{{optF.saveLabel}}</x-import></span>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{optF.justSaved}}" hint-placeholder-val="{{false}}">
+        <div style="display:flex;align-items:center;gap:6px;padding-top:10px;border-top:1px solid var(--divider);font-size:12px;color:var(--color-success-main)">
+          <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="CheckCircleFilled" size="14" hint-size="14px,14px"></x-import>Changes saved
+        </div>
+      </sc-if>
+    </div>
+    <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Popover" open="{{optF.popoverOpen}}" onClose="{{optF.onPopoverClose}}" anchor-style="{{optF.popoverAnchorStyle}}" hint-size="0,0">
+      <div style="padding:12px 14px;min-width:210px;font-size:13px;color:var(--text-primary)">
+        <sc-if value="{{optF.popoverIsSaved}}" hint-placeholder-val="{{false}}">
+          <div style="color:var(--text-secondary);font-size:12px;margin-bottom:8px;line-height:1.5">Added by {{optF.popoverBy}}<br></br>{{optF.popoverAt}}</div>
+        </sc-if>
+        <sc-if value="{{optF.popoverIsPending}}" hint-placeholder-val="{{false}}">
+          <div style="display:flex;align-items:center;gap:6px;color:var(--color-warning-main);font-size:12px;margin-bottom:8px">
+            <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="AccessTimeFilled" size="14" hint-size="14px,14px"></x-import>Pending — not yet saved
+          </div>
+        </sc-if>
+        <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="text" size="small" color="primary" onClick="{{optF.onPopoverEdit}}" hint-size="auto,28px">Edit</x-import>
+      </div>
+    </x-import>
+    <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Dialog" open="{{optF.removeDialogOpen}}" onClose="{{optF.onCancelRemove}}" max-width="xs" hint-size="0,0">
+      <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.DialogTitle" hint-size="auto,auto">Remove "{{optF.removeDialogText}}"?</x-import>
+      <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.DialogContent" hint-size="auto,auto">
+        <p style="margin:0 0 8px">This removes the label from this post only.</p>
+        <p style="margin:0">Other posts keep this label, and it is not deleted from the workspace.</p>
+      </x-import>
+      <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.DialogActions" hint-size="auto,auto">
+        <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="text" size="small" onClick="{{optF.onCancelRemove}}" style="margin-right:8px" hint-size="auto,32px">Cancel</x-import>
+        <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="contained" size="small" color="error" onClick="{{optF.onConfirmRemove}}" hint-size="auto,32px">Remove</x-import>
+      </x-import>
+    </x-import>
+  </div>
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--divider)">
+    <span style="font-weight:600;font-size:14px;color:var(--text-primary)">Visuals</span>
+    <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ArrowDropDownFilled" size="20" hint-size="20px,20px" style="color:var(--action-active)"></x-import>
+  </div>
+  <div style="padding:14px 16px">
+    <span style="font-weight:600;font-size:14px;color:var(--text-primary)">Rating</span>
+  </div>
+</div>
+<div style="display:flex;gap:14px;margin-top:4px">
+  <div style="display:flex;flex-direction:column;gap:6px">
+    <span style="font-size:10.5px;color:rgba(0,0,0,.5)">Loading</span>
+    <div style="width:150px;padding:12px;background:var(--background-paper);border-radius:var(--radius);box-shadow:var(--shadow-1);display:flex;gap:6px;flex-wrap:wrap">
+      <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Skeleton" variant="rounded" width="70" height="24" hint-size="70px,24px"></x-import>
+      <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Skeleton" variant="rounded" width="46" height="24" hint-size="46px,24px"></x-import>
+      <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Skeleton" variant="rounded" width="90" height="24" hint-size="90px,24px"></x-import>
+    </div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:6px">
+    <span style="font-size:10.5px;color:rgba(0,0,0,.5)">No labels yet</span>
+    <div style="width:150px;padding:12px;background:var(--background-paper);border-radius:var(--radius);box-shadow:var(--shadow-1);display:flex;flex-direction:column;gap:8px">
+      <span style="font-size:12px;color:var(--text-secondary)">No labels on this post</span>
+      <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="outlined" size="small" color="primary" style="align-self:flex-start" hint-size="auto,30px">+ Add label</x-import>
+    </div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:6px">
+    <span style="font-size:10.5px;color:rgba(0,0,0,.5)">No permission</span>
+    <div style="width:150px;padding:12px;background:var(--background-paper);border-radius:var(--radius);box-shadow:var(--shadow-1);display:flex;flex-direction:column;gap:8px">
+      <div style="display:flex;flex-wrap:wrap;gap:6px">
+        <span style="display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:12px;border:1px solid var(--divider);font-size:12px;color:var(--text-primary)">Brand / Coca-Cola</span>
+      </div>
+      <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-secondary)">
+        <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="LockFilled" size="13" hint-size="13px,13px"></x-import>No permission to manage labels
+      </span>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+<p class="dv-next">Try next: "add a per-post activity log for label changes" · "show the failed-save error state" · "make the pending count also show in the section's collapsed header"</p>
+</section>
+<section class="dv-turn" id="t3">
+<div class="dv-thd"><a class="dv-tid" href="#t3">3</a><span class="dv-tname">Riff on <a class="dv-oid" href="#1d">1d</a>: chips live inside the input, flat alphabetical list</span></div>
+<div class="dv-opts">
+<div class="dv-opt" id="1e">
+<div class="dv-olabel"><a class="dv-oid" href="#1e">1e</a>Chips inside the input, no category pills, alphabetical incl. prefix</div>
+<div style="width:420px;background:var(--background-paper);border-radius:var(--radius);box-shadow:var(--shadow-1);overflow:visible;font-family:var(--font-body)">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--divider)">
+    <span style="font-weight:600;font-size:14px;color:var(--text-primary)">Details</span>
+    <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ArrowDropDownFilled" size="20" hint-size="20px,20px" style="color:var(--action-active)"></x-import>
+  </div>
+  <div style="border-bottom:1px solid var(--divider)">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px">
+      <span style="font-weight:600;font-size:14px;color:var(--text-primary)">Labels</span>
+      <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ArrowDropUpFilled" size="20" hint-size="20px,20px" style="color:var(--action-active)"></x-import>
+    </div>
+    <div style="padding:0 16px 16px">
+      <div style="position:relative">
+        <div onClick="{{opt1e.focusInput}}" style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;border:1px solid {{opt1e.borderColor}};border-radius:var(--radius);padding:6px 8px;cursor:text">
+          <sc-for list="{{opt1e.chips}}" as="chip" hint-placeholder-count="2">
+            <span title="{{chip.title}}">
+              <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Chip" label="{{chip.text}}" onDelete="{{chip.onDelete}}" variant="outlined" size="small" hint-size="auto,24px"></x-import>
+            </span>
+          </sc-for>
+          <input value="{{opt1e.input}}" onChange="{{opt1e.onInput}}" onKeyDown="{{opt1e.onKeyDown}}" onFocus="{{opt1e.openMenu}}" onBlur="{{opt1e.onBlur}}" placeholder="{{opt1e.placeholder}}" style="border:none;outline:none;flex:1;min-width:70px;font-size:13px;font-family:var(--font-body);color:var(--text-primary);background:transparent" />
+        </div>
+        <sc-if value="{{opt1e.open}}" hint-placeholder-val="{{false}}">
+          <div style="position:absolute;top:100%;left:0;right:0;margin-top:4px;background:var(--background-paper);box-shadow:var(--shadow-8);border-radius:var(--radius);max-height:260px;overflow-y:auto;z-index:5">
+            <sc-for list="{{opt1e.rows}}" as="row" hint-placeholder-count="4">
+              <sc-if value="{{row.isItem}}" hint-placeholder-val="{{false}}">
+                <div onMouseDown="{{row.onClick}}" class="lbl-row">{{row.text}}</div>
+              </sc-if>
+              <sc-if value="{{row.isCreate}}" hint-placeholder-val="{{false}}">
+                <div onMouseDown="{{row.onClick}}" class="lbl-row lbl-create" style="color:var(--color-primary-main);border-top:1px solid var(--divider)">+ {{row.text}}</div>
+              </sc-if>
+              <sc-if value="{{row.isEmpty}}" hint-placeholder-val="{{false}}">
+                <div style="padding:8px 12px;font-size:13px;color:var(--text-secondary)">{{row.text}}</div>
+              </sc-if>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--divider)">
+    <span style="font-weight:600;font-size:14px;color:var(--text-primary)">Visuals</span>
+    <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ArrowDropDownFilled" size="20" hint-size="20px,20px" style="color:var(--action-active)"></x-import>
+  </div>
+  <div style="padding:14px 16px">
+    <span style="font-weight:600;font-size:14px;color:var(--text-primary)">Rating</span>
+  </div>
+</div>
+</div>
+</div>
+<p class="dv-next">Try next: "sort within the flat list by recency instead of alphabetically" · "wrap the chips-in-input row onto its own line above a plain search field once it gets crowded"</p>
+</section>
+<section class="dv-turn" id="t2">
+<div class="dv-thd"><a class="dv-tid" href="#t2">2</a><span class="dv-tname">Riff on <a class="dv-oid" href="#1c">1c</a>: chips above the bar, category quick-filters for scale</span></div>
+<div class="dv-opts">
+<div class="dv-opt" id="1d">
+<div class="dv-olabel"><a class="dv-oid" href="#1d">1d</a>Chips above bar + category filter pills</div>
+<div style="width:420px;background:var(--background-paper);border-radius:var(--radius);box-shadow:var(--shadow-1);overflow:visible;font-family:var(--font-body)">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--divider)">
+    <span style="font-weight:600;font-size:14px;color:var(--text-primary)">Details</span>
+    <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ArrowDropDownFilled" size="20" hint-size="20px,20px" style="color:var(--action-active)"></x-import>
+  </div>
+  <div style="border-bottom:1px solid var(--divider)">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px">
+      <span style="font-weight:600;font-size:14px;color:var(--text-primary)">Labels</span>
+      <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ArrowDropUpFilled" size="20" hint-size="20px,20px" style="color:var(--action-active)"></x-import>
+    </div>
+    <div style="padding:0 16px 16px;display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <sc-for list="{{opt1d.chips}}" as="chip" hint-placeholder-count="2">
+          <span title="{{chip.title}}">
+            <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Chip" label="{{chip.text}}" onDelete="{{chip.onDelete}}" variant="outlined" size="small" hint-size="auto,24px"></x-import>
+          </span>
+        </sc-for>
+      </div>
+      <div style="position:relative">
+        <div style="display:flex;align-items:center;gap:6px;border:1px solid var(--divider);border-radius:var(--radius);padding:6px 8px">
+          <input value="{{opt1d.input}}" onChange="{{opt1d.onInput}}" onKeyDown="{{opt1d.onKeyDown}}" onFocus="{{opt1d.openMenu}}" onBlur="{{opt1d.onBlur}}" placeholder="Add a label — try “Product / …”" style="border:none;outline:none;flex:1;font-size:13px;font-family:var(--font-body);color:var(--text-primary);background:transparent" />
+          <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.IconButton" onClick="{{opt1d.toggleMenu}}" size="small" hint-size="28px,28px">
+            <sc-if value="{{opt1d.open}}" hint-placeholder-val="{{false}}"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ArrowDropUpFilled" size="18" hint-size="18px,18px"></x-import></sc-if>
+            <sc-if value="{{opt1d.closed}}" hint-placeholder-val="{{true}}"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ArrowDropDownFilled" size="18" hint-size="18px,18px"></x-import></sc-if>
+          </x-import>
+        </div>
+        <sc-if value="{{opt1d.open}}" hint-placeholder-val="{{false}}">
+          <div style="position:absolute;top:100%;left:0;right:0;margin-top:4px;background:var(--background-paper);box-shadow:var(--shadow-8);border-radius:var(--radius);max-height:260px;overflow:hidden;z-index:5;display:flex;flex-direction:column">
+            <div style="display:flex;gap:6px;overflow-x:auto;padding:8px 12px;border-bottom:1px solid var(--divider);flex:none">
+              <sc-for list="{{opt1d.categoryPills}}" as="pill" hint-placeholder-count="4">
+                <div onMouseDown="{{pill.onClick}}" style="flex:none;display:flex;align-items:center;gap:4px;padding:4px 10px;border-radius:999px;border:1px solid {{pill.border}};background:{{pill.bg}};color:{{pill.color}};font-size:12px;cursor:pointer;white-space:nowrap">
+                  <span>{{pill.name}}</span>
+                  <span style="opacity:0.7">{{pill.count}}</span>
+                </div>
+              </sc-for>
+            </div>
+            <div style="overflow-y:auto">
+              <sc-for list="{{opt1d.rows}}" as="row" hint-placeholder-count="3">
+                <sc-if value="{{row.isHeader}}" hint-placeholder-val="{{false}}">
+                  <div style="padding:6px 12px 2px;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-secondary)">{{row.text}}</div>
+                </sc-if>
+                <sc-if value="{{row.isItem}}" hint-placeholder-val="{{false}}">
+                  <div onMouseDown="{{row.onClick}}" class="lbl-row">{{row.text}}</div>
+                </sc-if>
+                <sc-if value="{{row.isCreate}}" hint-placeholder-val="{{false}}">
+                  <div onMouseDown="{{row.onClick}}" class="lbl-row lbl-create" style="color:var(--color-primary-main);border-top:1px solid var(--divider)">+ {{row.text}}</div>
+                </sc-if>
+                <sc-if value="{{row.isEmpty}}" hint-placeholder-val="{{false}}">
+                  <div style="padding:8px 12px;font-size:13px;color:var(--text-secondary)">{{row.text}}</div>
+                </sc-if>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--divider)">
+    <span style="font-weight:600;font-size:14px;color:var(--text-primary)">Visuals</span>
+    <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ArrowDropDownFilled" size="20" hint-size="20px,20px" style="color:var(--action-active)"></x-import>
+  </div>
+  <div style="padding:14px 16px">
+    <span style="font-weight:600;font-size:14px;color:var(--text-primary)">Rating</span>
+  </div>
+</div>
+</div>
+</div>
+<p class="dv-next">Try next: "add a recents/most-used row before the category pills" · "let pills multi-select instead of one at a time" · "show this with 100+ tags loaded to stress-test scroll"</p>
+</section>
+<section class="dv-turn" id="t1">
+<div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">Labels section — 3 ways to add a label</span></div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="1a">
+<div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a>Inline expanding input</div>
+<div style="width:420px;background:var(--background-paper);border-radius:var(--radius);box-shadow:var(--shadow-1);overflow:visible;font-family:var(--font-body)">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--divider)">
+    <span style="font-weight:600;font-size:14px;color:var(--text-primary)">Details</span>
+    <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ArrowDropDownFilled" size="20" hint-size="20px,20px" style="color:var(--action-active)"></x-import>
+  </div>
+  <div style="border-bottom:1px solid var(--divider)">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px">
+      <span style="font-weight:600;font-size:14px;color:var(--text-primary)">Labels</span>
+      <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ArrowDropUpFilled" size="20" hint-size="20px,20px" style="color:var(--action-active)"></x-import>
+    </div>
+    <div style="padding:0 16px 16px;display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <sc-for list="{{opt1a.chips}}" as="chip" hint-placeholder-count="2">
+          <span title="{{chip.title}}">
+            <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Chip" label="{{chip.text}}" onDelete="{{chip.onDelete}}" variant="outlined" size="small" hint-size="auto,24px"></x-import>
+          </span>
+        </sc-for>
+      </div>
+      <sc-if value="{{opt1a.closed}}" hint-placeholder-val="{{true}}">
+        <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="outlined" size="small" color="primary" onClick="{{opt1a.openMenu}}" style="align-self:flex-start" hint-size="auto,32px">+ Add label</x-import>
+      </sc-if>
+      <sc-if value="{{opt1a.open}}" hint-placeholder-val="{{false}}">
+        <div style="position:relative">
+          <div style="display:flex;align-items:center;gap:6px;border:1px solid var(--color-primary-main);border-radius:var(--radius);padding:6px 8px">
+            <input value="{{opt1a.input}}" onChange="{{opt1a.onInput}}" onKeyDown="{{opt1a.onKeyDown}}" onBlur="{{opt1a.onBlur}}" placeholder="Category / label, or just a label…" autoFocus="{{true}}" style="border:none;outline:none;flex:1;font-size:13px;font-family:var(--font-body);color:var(--text-primary);background:transparent" />
+            <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.IconButton" onClick="{{opt1a.closeMenu}}" size="small" hint-size="28px,28px">
+              <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="CloseFilled" size="16" hint-size="16px,16px"></x-import>
+            </x-import>
+          </div>
+          <div style="position:absolute;top:100%;left:0;right:0;margin-top:4px;background:var(--background-paper);box-shadow:var(--shadow-8);border-radius:var(--radius);max-height:220px;overflow-y:auto;z-index:5">
+            <sc-for list="{{opt1a.rows}}" as="row" hint-placeholder-count="3">
+              <sc-if value="{{row.isHeader}}" hint-placeholder-val="{{false}}">
+                <div style="padding:6px 12px 2px;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-secondary)">{{row.text}}</div>
+              </sc-if>
+              <sc-if value="{{row.isItem}}" hint-placeholder-val="{{false}}">
+                <div onMouseDown="{{row.onClick}}" class="lbl-row">{{row.text}}</div>
+              </sc-if>
+              <sc-if value="{{row.isCreate}}" hint-placeholder-val="{{false}}">
+                <div onMouseDown="{{row.onClick}}" class="lbl-row lbl-create" style="color:var(--color-primary-main);border-top:1px solid var(--divider)">+ {{row.text}}</div>
+              </sc-if>
+              <sc-if value="{{row.isEmpty}}" hint-placeholder-val="{{false}}">
+                <div style="padding:8px 12px;font-size:13px;color:var(--text-secondary)">{{row.text}}</div>
+              </sc-if>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--divider)">
+    <span style="font-weight:600;font-size:14px;color:var(--text-primary)">Visuals</span>
+    <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ArrowDropDownFilled" size="20" hint-size="20px,20px" style="color:var(--action-active)"></x-import>
+  </div>
+  <div style="padding:14px 16px">
+    <span style="font-weight:600;font-size:14px;color:var(--text-primary)">Rating</span>
+  </div>
+</div>
+</div>
+
+<div class="dv-opt" id="1b">
+<div class="dv-olabel"><a class="dv-oid" href="#1b">1b</a>Popover launcher, multi-add</div>
+<div style="width:420px;background:var(--background-paper);border-radius:var(--radius);box-shadow:var(--shadow-1);overflow:visible;font-family:var(--font-body)">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--divider)">
+    <span style="font-weight:600;font-size:14px;color:var(--text-primary)">Details</span>
+    <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ArrowDropDownFilled" size="20" hint-size="20px,20px" style="color:var(--action-active)"></x-import>
+  </div>
+  <div style="border-bottom:1px solid var(--divider)">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px">
+      <span style="font-weight:600;font-size:14px;color:var(--text-primary)">Labels</span>
+      <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ArrowDropUpFilled" size="20" hint-size="20px,20px" style="color:var(--action-active)"></x-import>
+    </div>
+    <div style="padding:0 16px 16px;display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <sc-for list="{{opt1b.chips}}" as="chip" hint-placeholder-count="2">
+          <span title="{{chip.title}}">
+            <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Chip" label="{{chip.text}}" onDelete="{{chip.onDelete}}" variant="outlined" size="small" hint-size="auto,24px"></x-import>
+          </span>
+        </sc-for>
+      </div>
+      <div style="position:relative">
+        <sc-if value="{{opt1b.closed}}" hint-placeholder-val="{{true}}">
+          <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="outlined" size="small" color="primary" onClick="{{opt1b.openMenu}}" style="align-self:flex-start" hint-size="auto,32px">+ Add label</x-import>
+        </sc-if>
+        <sc-if value="{{opt1b.open}}" hint-placeholder-val="{{false}}">
+          <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="contained" size="small" color="primary" onClick="{{opt1b.closeMenu}}" style="align-self:flex-start" hint-size="auto,32px">+ Add label</x-import>
+          <div style="position:absolute;top:100%;left:0;margin-top:8px;width:280px;background:var(--background-paper);box-shadow:var(--shadow-8);border-radius:var(--radius);z-index:5;overflow:hidden">
+            <div style="padding:8px 12px;border-bottom:1px solid var(--divider)">
+              <input value="{{opt1b.input}}" onChange="{{opt1b.onInput}}" onKeyDown="{{opt1b.onKeyDown}}" onBlur="{{opt1b.onBlur}}" placeholder="Search or Category / label…" autoFocus="{{true}}" style="width:100%;box-sizing:border-box;border:none;outline:none;font-size:13px;font-family:var(--font-body);color:var(--text-primary);background:transparent" />
+            </div>
+            <div style="max-height:200px;overflow-y:auto">
+              <sc-for list="{{opt1b.rows}}" as="row" hint-placeholder-count="3">
+                <sc-if value="{{row.isHeader}}" hint-placeholder-val="{{false}}">
+                  <div style="padding:6px 12px 2px;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-secondary)">{{row.text}}</div>
+                </sc-if>
+                <sc-if value="{{row.isItem}}" hint-placeholder-val="{{false}}">
+                  <div onMouseDown="{{row.onClick}}" class="lbl-row">{{row.text}}</div>
+                </sc-if>
+                <sc-if value="{{row.isCreate}}" hint-placeholder-val="{{false}}">
+                  <div onMouseDown="{{row.onClick}}" class="lbl-row lbl-create" style="color:var(--color-primary-main);border-top:1px solid var(--divider)">+ {{row.text}}</div>
+                </sc-if>
+                <sc-if value="{{row.isEmpty}}" hint-placeholder-val="{{false}}">
+                  <div style="padding:8px 12px;font-size:13px;color:var(--text-secondary)">{{row.text}}</div>
+                </sc-if>
+              </sc-for>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 12px;border-top:1px solid var(--divider);background:var(--background-default)">
+              <span style="font-size:11px;color:var(--text-secondary)">Type Category / Label to file it</span>
+              <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="text" size="small" color="primary" onClick="{{opt1b.closeMenu}}" hint-size="auto,28px">Done</x-import>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--divider)">
+    <span style="font-weight:600;font-size:14px;color:var(--text-primary)">Visuals</span>
+    <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ArrowDropDownFilled" size="20" hint-size="20px,20px" style="color:var(--action-active)"></x-import>
+  </div>
+  <div style="padding:14px 16px">
+    <span style="font-weight:600;font-size:14px;color:var(--text-primary)">Rating</span>
+  </div>
+</div>
+</div>
+
+<div class="dv-opt" id="1c">
+<div class="dv-olabel"><a class="dv-oid" href="#1c">1c</a>Persistent search bar</div>
+<div style="width:420px;background:var(--background-paper);border-radius:var(--radius);box-shadow:var(--shadow-1);overflow:visible;font-family:var(--font-body)">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--divider)">
+    <span style="font-weight:600;font-size:14px;color:var(--text-primary)">Details</span>
+    <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ArrowDropDownFilled" size="20" hint-size="20px,20px" style="color:var(--action-active)"></x-import>
+  </div>
+  <div style="border-bottom:1px solid var(--divider)">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px">
+      <span style="font-weight:600;font-size:14px;color:var(--text-primary)">Labels</span>
+      <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ArrowDropUpFilled" size="20" hint-size="20px,20px" style="color:var(--action-active)"></x-import>
+    </div>
+    <div style="padding:0 16px 16px;display:flex;flex-direction:column;gap:10px">
+      <div style="position:relative">
+        <div style="display:flex;align-items:center;gap:6px;border:1px solid var(--divider);border-radius:var(--radius);padding:6px 8px">
+          <input value="{{opt1c.input}}" onChange="{{opt1c.onInput}}" onKeyDown="{{opt1c.onKeyDown}}" onFocus="{{opt1c.openMenu}}" onBlur="{{opt1c.onBlur}}" placeholder="Add a label — try “Product / …”" style="border:none;outline:none;flex:1;font-size:13px;font-family:var(--font-body);color:var(--text-primary);background:transparent" />
+          <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.IconButton" onClick="{{opt1c.toggleMenu}}" size="small" hint-size="28px,28px">
+            <sc-if value="{{opt1c.open}}" hint-placeholder-val="{{false}}"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ArrowDropUpFilled" size="18" hint-size="18px,18px"></x-import></sc-if>
+            <sc-if value="{{opt1c.closed}}" hint-placeholder-val="{{true}}"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ArrowDropDownFilled" size="18" hint-size="18px,18px"></x-import></sc-if>
+          </x-import>
+        </div>
+        <sc-if value="{{opt1c.open}}" hint-placeholder-val="{{false}}">
+          <div style="position:absolute;top:100%;left:0;right:0;margin-top:4px;background:var(--background-paper);box-shadow:var(--shadow-8);border-radius:var(--radius);max-height:220px;overflow-y:auto;z-index:5">
+            <sc-for list="{{opt1c.rows}}" as="row" hint-placeholder-count="3">
+              <sc-if value="{{row.isHeader}}" hint-placeholder-val="{{false}}">
+                <div style="padding:6px 12px 2px;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-secondary)">{{row.text}}</div>
+              </sc-if>
+              <sc-if value="{{row.isItem}}" hint-placeholder-val="{{false}}">
+                <div onMouseDown="{{row.onClick}}" class="lbl-row">{{row.text}}</div>
+              </sc-if>
+              <sc-if value="{{row.isCreate}}" hint-placeholder-val="{{false}}">
+                <div onMouseDown="{{row.onClick}}" class="lbl-row lbl-create" style="color:var(--color-primary-main);border-top:1px solid var(--divider)">+ {{row.text}}</div>
+              </sc-if>
+              <sc-if value="{{row.isEmpty}}" hint-placeholder-val="{{false}}">
+                <div style="padding:8px 12px;font-size:13px;color:var(--text-secondary)">{{row.text}}</div>
+              </sc-if>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <sc-for list="{{opt1c.chips}}" as="chip" hint-placeholder-count="2">
+          <span title="{{chip.title}}">
+            <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Chip" label="{{chip.text}}" onDelete="{{chip.onDelete}}" variant="outlined" size="small" hint-size="auto,24px"></x-import>
+          </span>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--divider)">
+    <span style="font-weight:600;font-size:14px;color:var(--text-primary)">Visuals</span>
+    <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ArrowDropDownFilled" size="20" hint-size="20px,20px" style="color:var(--action-active)"></x-import>
+  </div>
+  <div style="padding:14px 16px">
+    <span style="font-weight:600;font-size:14px;color:var(--text-primary)">Rating</span>
+  </div>
+</div>
+</div>
+
+</div>
+<p class="dv-next">Try next: "combine <a class="dv-oid" href="#1a">1a</a>'s compact chrome with <a class="dv-oid" href="#1b">1b</a>'s multi-add" · "make <a class="dv-oid" href="#1c">1c</a> the default, drop the others" · "show how this looks on the Violations page too"</p>
+</section>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  nextTempId = -1;
+  nextSavedIdCounter = 100;
+  state = {
+    f: {
+      catalog: [
+        { id: 1, category: 'Brand', label: 'Coca-Cola' },
+        { id: 2, category: null, label: 'Plastic' },
+        { id: 3, category: 'Brand', label: 'Adidas' },
+        { id: 4, category: 'Brand', label: 'Real Madrid' },
+        { id: 5, category: 'Product', label: 'Stapler' },
+        { id: 6, category: 'Product', label: 'Football boots' },
+        { id: 7, category: 'Ad rules', label: 'Disclosure missing' },
+        { id: 8, category: 'Ad rules', label: 'Misleading claim' },
+        { id: 9, category: null, label: 'Giveaway' },
+      ],
+      saved: [
+        { id: 1, category: 'Brand', label: 'Coca-Cola', meta: { by: 'Maria Silva', at: 'Jul 28 · 14:02' } },
+        { id: 2, category: null, label: 'Plastic', meta: { by: 'Tomás Ferreira', at: 'Jul 30 · 09:47' } },
+      ],
+      pendingChanges: {},
+      pendingAdds: [],
+      input: '',
+      open: false,
+      editingKey: null,
+      popover: null,
+      removeDialogId: null,
+      saving: false,
+      justSaved: false,
+    },
+    g: {
+      catalog: [
+        { id: 1, category: 'Brand', label: 'Coca-Cola' },
+        { id: 2, category: null, label: 'Plastic' },
+        { id: 3, category: 'Brand', label: 'Adidas' },
+        { id: 4, category: 'Brand', label: 'Real Madrid' },
+        { id: 5, category: 'Product', label: 'Stapler' },
+        { id: 6, category: 'Product', label: 'Football boots' },
+        { id: 7, category: 'Ad rules', label: 'Disclosure missing' },
+        { id: 8, category: 'Ad rules', label: 'Misleading claim' },
+        { id: 9, category: null, label: 'Giveaway' },
+      ],
+      saved: [
+        { id: 1, category: 'Brand', label: 'Coca-Cola', meta: { by: 'Maria Silva', at: 'Jul 28 · 14:02' } },
+        { id: 2, category: null, label: 'Plastic', meta: { by: 'Tomás Ferreira', at: 'Jul 30 · 09:47' } },
+      ],
+      pendingChanges: {},
+      pendingAdds: [],
+      input: '',
+      open: false,
+      editingKey: null,
+      popover: null,
+      saving: false,
+      justSaved: false,
+    },
+    catalogs: { a: this.seedCatalog(), b: this.seedCatalog(), c: this.seedCatalog(), d: this.seedCatalogD(), e: this.seedCatalogE() },
+    assigned: { a: [3, 8], b: [3, 8], c: [3, 8], d: [3, 8], e: [4, 7] },
+    input: { a: '', b: '', c: '', d: '', e: '' },
+    open: { a: false, b: false, c: false, d: false, e: false },
+    categoryFilter: { a: null, b: null, c: null, d: null, e: null },
+  };
+
+  seedCatalogD() {
+    const extra = [
+      { id: 10, category: 'Brand', label: 'Nike' },
+      { id: 11, category: 'Brand', label: 'Emirates' },
+      { id: 12, category: 'Brand', label: 'Puma' },
+      { id: 13, category: 'Product', label: 'Jersey' },
+      { id: 14, category: 'Product', label: 'Energy drink' },
+      { id: 15, category: 'Ad rules', label: 'Undisclosed partnership' },
+      { id: 16, category: 'Ad rules', label: 'Unsubstantiated claim' },
+      { id: 17, category: 'Compliance', label: 'GDPR' },
+      { id: 18, category: 'Compliance', label: 'Minors' },
+      { id: 19, category: 'Campaign', label: 'Summer 2026' },
+      { id: 20, category: 'Campaign', label: 'Champions League' },
+      { id: 21, category: null, label: 'Giveaway rules' },
+      { id: 22, category: null, label: 'Watch later' },
+    ];
+    return this.seedCatalog().concat(extra);
+  }
+
+  seedCatalogE() {
+    return [
+      { id: 1, category: 'Ad rule', label: 'Rule number 1' },
+      { id: 2, category: 'Ad rule', label: 'Rule number 2' },
+      { id: 3, category: 'Ad rule', label: 'Rule number 3' },
+      { id: 4, category: 'Brand', label: 'Coca-Cola' },
+      { id: 5, category: 'Brand', label: 'Fanta' },
+      { id: 6, category: 'Brand', label: 'Sprite' },
+      { id: 7, category: 'Product', label: 'Football boots' },
+      { id: 8, category: 'Product', label: 'Stapler' },
+      { id: 9, category: null, label: 'Giveaway' },
+      { id: 10, category: null, label: 'Plastic' },
+    ];
+  }
+
+  seedCatalog() {
+    return [
+      { id: 1, category: 'Brand', label: 'Coca-Cola' },
+      { id: 2, category: 'Brand', label: 'Adidas' },
+      { id: 3, category: 'Brand', label: 'Real Madrid' },
+      { id: 4, category: 'Product', label: 'Stapler' },
+      { id: 5, category: 'Product', label: 'Football boots' },
+      { id: 6, category: 'Ad rules', label: 'Disclosure missing' },
+      { id: 7, category: 'Ad rules', label: 'Misleading claim' },
+      { id: 8, category: null, label: 'Plastic' },
+      { id: 9, category: null, label: 'Giveaway' },
+    ];
+  }
+
+  buildRows(key, query, categoryFilter) {
+    const catalog = this.state.catalogs[key];
+    const assignedIds = this.state.assigned[key];
+    const q = (query || '').trim();
+    const norm = (s) => (s || '').toLowerCase();
+    let available = catalog.filter((c) => !assignedIds.includes(c.id));
+    if (categoryFilter) available = available.filter((c) => (c.category || 'Unassigned') === categoryFilter);
+    const hasSlash = q.includes('/');
+    let catQuery = '', labelQuery = q;
+    if (hasSlash) {
+      const parts = q.split('/');
+      catQuery = parts[0].trim();
+      labelQuery = parts.slice(1).join('/').trim();
+    }
+    let matches;
+    if (!q) matches = available;
+    else if (hasSlash) matches = available.filter((c) => norm(c.category).includes(norm(catQuery)) && norm(c.label).includes(norm(labelQuery)));
+    else matches = available.filter((c) => norm(c.label).includes(norm(q)) || norm(c.category).includes(norm(q)));
+
+    const groups = {}, order = [];
+    matches.forEach((m) => {
+      const k = m.category || 'Unassigned';
+      if (!groups[k]) { groups[k] = []; order.push(k); }
+      groups[k].push(m);
+    });
+    order.sort((x, y) => (x === 'Unassigned' ? 1 : y === 'Unassigned' ? -1 : x.localeCompare(y)));
+
+    const rows = [];
+    order.forEach((k) => {
+      rows.push({ key: 'h-' + k, isHeader: true, isItem: false, isCreate: false, isEmpty: false, text: k });
+      groups[k].forEach((item) => rows.push({
+        key: 'i-' + item.id, isHeader: false, isItem: true, isCreate: false, isEmpty: false,
+        text: item.category ? item.category + ' / ' + item.label : item.label,
+        onClick: (e) => { e.preventDefault(); this.selectItem(key, item.id); },
+      }));
+    });
+    if (q) {
+      if (hasSlash && labelQuery) {
+        const catExact = catalog.find((c) => c.category && norm(c.category) === norm(catQuery));
+        const exact = matches.some((m) => norm(m.label) === norm(labelQuery) && norm(m.category || '') === norm(catExact ? catExact.category : catQuery));
+        if (!exact) {
+          if (catExact) rows.push({ key: 'c1', isHeader: false, isItem: false, isCreate: true, isEmpty: false, text: 'Create "' + labelQuery + '" in ' + catExact.category, onClick: (e) => { e.preventDefault(); this.createLabel(key, catExact.category, labelQuery); } });
+          else if (catQuery) rows.push({ key: 'c2', isHeader: false, isItem: false, isCreate: true, isEmpty: false, text: 'Create category "' + catQuery + '" with "' + labelQuery + '"', onClick: (e) => { e.preventDefault(); this.createLabel(key, catQuery, labelQuery); } });
+        }
+      } else if (!hasSlash) {
+        const exact = matches.some((m) => norm(m.label) === norm(q));
+        if (!exact) {
+          if (categoryFilter) {
+            const catForCreate = categoryFilter === 'Unassigned' ? null : categoryFilter;
+            rows.push({ key: 'c3', isHeader: false, isItem: false, isCreate: true, isEmpty: false, text: 'Create "' + q + '" in ' + categoryFilter, onClick: (e) => { e.preventDefault(); this.createLabel(key, catForCreate, q); } });
+          } else {
+            rows.push({ key: 'c3', isHeader: false, isItem: false, isCreate: true, isEmpty: false, text: 'Create "' + q + '" (unassigned)', onClick: (e) => { e.preventDefault(); this.createLabel(key, null, q); } });
+          }
+        }
+      }
+    }
+    if (!rows.length) rows.push({ key: 'empty', isHeader: false, isItem: false, isCreate: false, isEmpty: true, text: 'No matches' });
+    return rows;
+  }
+
+  buildFlatRows(key, query) {
+    const catalog = this.state.catalogs[key];
+    const assignedIds = this.state.assigned[key];
+    const q = (query || '').trim();
+    const norm = (s) => (s || '').toLowerCase();
+    const available = catalog.filter((c) => !assignedIds.includes(c.id));
+    const hasSlash = q.includes('/');
+    let catQuery = '', labelQuery = q;
+    if (hasSlash) {
+      const parts = q.split('/');
+      catQuery = parts[0].trim();
+      labelQuery = parts.slice(1).join('/').trim();
+    }
+    let matches;
+    if (!q) matches = available;
+    else if (hasSlash) matches = available.filter((c) => norm(c.category).includes(norm(catQuery)) && norm(c.label).includes(norm(labelQuery)));
+    else matches = available.filter((c) => norm(c.label).includes(norm(q)) || norm(c.category).includes(norm(q)));
+
+    const displayText = (c) => (c.category ? c.category + ' / ' + c.label : c.label);
+    const sorted = [...matches].sort((x, y) => displayText(x).localeCompare(displayText(y)));
+
+    const rows = sorted.map((item) => ({
+      key: 'i-' + item.id, isHeader: false, isItem: true, isCreate: false, isEmpty: false,
+      text: displayText(item),
+      onClick: (e) => { e.preventDefault(); this.selectItem(key, item.id); },
+    }));
+
+    if (q) {
+      if (hasSlash && labelQuery) {
+        const catExact = catalog.find((c) => c.category && norm(c.category) === norm(catQuery));
+        const exact = matches.some((m) => norm(m.label) === norm(labelQuery) && norm(m.category || '') === norm(catExact ? catExact.category : catQuery));
+        if (!exact) {
+          if (catExact) rows.push({ key: 'c1', isHeader: false, isItem: false, isCreate: true, isEmpty: false, text: 'Create "' + labelQuery + '" in ' + catExact.category, onClick: (e) => { e.preventDefault(); this.createLabel(key, catExact.category, labelQuery); } });
+          else if (catQuery) rows.push({ key: 'c2', isHeader: false, isItem: false, isCreate: true, isEmpty: false, text: 'Create category "' + catQuery + '" with "' + labelQuery + '"', onClick: (e) => { e.preventDefault(); this.createLabel(key, catQuery, labelQuery); } });
+        }
+      } else if (!hasSlash) {
+        const exact = matches.some((m) => norm(m.label) === norm(q));
+        if (!exact) rows.push({ key: 'c3', isHeader: false, isItem: false, isCreate: true, isEmpty: false, text: 'Create "' + q + '" (unassigned)', onClick: (e) => { e.preventDefault(); this.createLabel(key, null, q); } });
+      }
+    }
+    if (!rows.length) rows.push({ key: 'empty', isHeader: false, isItem: false, isCreate: false, isEmpty: true, text: 'No matches' });
+    return rows;
+  }
+
+  selectItem(key, id) {
+    this.setState((s) => ({ assigned: { ...s.assigned, [key]: [...s.assigned[key], id] }, input: { ...s.input, [key]: '' } }));
+  }
+
+  createLabel(key, category, label) {
+    this.setState((s) => {
+      const id = Math.max(0, ...s.catalogs[key].map((c) => c.id)) + 1;
+      const catalog = [...s.catalogs[key], { id, category, label }];
+      return {
+        catalogs: { ...s.catalogs, [key]: catalog },
+        assigned: { ...s.assigned, [key]: [...s.assigned[key], id] },
+        input: { ...s.input, [key]: '' },
+      };
+    });
+  }
+
+  fDisplay(entry) { return entry.category ? entry.category + ' / ' + entry.label : entry.label; }
+
+  fDisplayList(key) {
+    const f = this.state[key];
+    const list = [];
+    f.saved.forEach((s) => {
+      const chg = f.pendingChanges[s.id];
+      if (chg && chg.type === 'remove') list.push({ id: s.id, category: s.category, label: s.label, status: 'pendingRemove', meta: s.meta });
+      else if (chg && chg.type === 'edit') list.push({ id: s.id, category: chg.category, label: chg.label, status: 'pendingEdit', meta: s.meta });
+      else list.push({ id: s.id, category: s.category, label: s.label, status: 'saved', meta: s.meta });
+    });
+    f.pendingAdds.forEach((a) => list.push({ id: a.tempId, category: a.category, label: a.label, status: 'pendingAdd', meta: null }));
+    return list;
+  }
+
+  fAvailableRows(key, query) {
+    const f = this.state[key];
+    // ponytail: build occupiedIds from source ids directly (saved ids + the catalog id a pending
+    // add came from) instead of fDisplayList, which loses the catalogId of a pendingAdd — that
+    // loss let the same catalog entry be picked (and duplicated) over and over.
+    const occupiedIds = [];
+    f.saved.forEach((s) => { const chg = f.pendingChanges[s.id]; if (!(chg && chg.type === 'remove')) occupiedIds.push(s.id); });
+    f.pendingAdds.forEach((a) => { if (a.catalogId != null) occupiedIds.push(a.catalogId); });
+    const available = f.catalog.filter((c) => !occupiedIds.includes(c.id));
+    const q = (query || '').trim();
+    const norm = (s) => (s || '').toLowerCase();
+    const hasSlash = q.includes('/');
+    let catQuery = '', labelQuery = q;
+    if (hasSlash) {
+      const parts = q.split('/');
+      catQuery = parts[0].trim();
+      labelQuery = parts.slice(1).join('/').trim();
+    }
+    let matches;
+    if (!q) matches = available;
+    else if (hasSlash) matches = available.filter((c) => norm(c.category).includes(norm(catQuery)) && norm(c.label).includes(norm(labelQuery)));
+    else matches = available.filter((c) => norm(c.label).includes(norm(q)) || norm(c.category).includes(norm(q)));
+
+    const sorted = [...matches].sort((a, b) => this.fDisplay(a).localeCompare(this.fDisplay(b)));
+    const rows = sorted.map((item) => ({ key: 'i-' + item.id, isItem: true, isCreate: false, isEmpty: false, text: this.fDisplay(item), onClick: (e) => { e.preventDefault(); this.fChoose(key, item); } }));
+
+    if (q) {
+      if (hasSlash && labelQuery) {
+        const catExact = f.catalog.find((c) => c.category && norm(c.category) === norm(catQuery));
+        const exact = matches.some((m) => norm(m.label) === norm(labelQuery) && norm(m.category || '') === norm(catExact ? catExact.category : catQuery));
+        if (!exact) {
+          if (catExact) rows.push({ key: 'c1', isItem: false, isCreate: true, isEmpty: false, text: 'Create "' + labelQuery + '" in ' + catExact.category, onClick: (e) => { e.preventDefault(); this.fChoose(key, { category: catExact.category, label: labelQuery, isNew: true }); } });
+          else if (catQuery) rows.push({ key: 'c2', isItem: false, isCreate: true, isEmpty: false, text: 'Create category "' + catQuery + '" with "' + labelQuery + '"', onClick: (e) => { e.preventDefault(); this.fChoose(key, { category: catQuery, label: labelQuery, isNew: true }); } });
+        }
+      } else if (!hasSlash) {
+        const exact = matches.some((m) => norm(m.label) === norm(q));
+        if (!exact) rows.push({ key: 'c3', isItem: false, isCreate: true, isEmpty: false, text: 'Create "' + q + '" (unassigned)', onClick: (e) => { e.preventDefault(); this.fChoose(key, { category: null, label: q, isNew: true }); } });
+      }
+    }
+    if (!rows.length) rows.push({ key: 'empty', isItem: false, isCreate: false, isEmpty: true, text: 'No matches' });
+    return rows;
+  }
+
+  fChoose(key, item) {
+    this.setState((s) => {
+      const f = s[key];
+      const ek = f.editingKey;
+      if (ek && ek.type === 'saved') {
+        const pendingChanges = { ...f.pendingChanges, [ek.id]: { type: 'edit', category: item.category, label: item.label } };
+        return { [key]: { ...f, pendingChanges, input: '', open: false, editingKey: null } };
+      }
+      if (ek && ek.type === 'add') {
+        const pendingAdds = f.pendingAdds.map((a) => (a.tempId === ek.tempId ? { ...a, category: item.category, label: item.label } : a));
+        return { [key]: { ...f, pendingAdds, input: '', open: false, editingKey: null } };
+      }
+      // Re-picking a label that's pending removal just undoes the removal — it's already on
+      // the post — instead of stacking a contradictory "REMOVING" + "NEW" pair for the same label.
+      if (item.id != null && f.pendingChanges[item.id] && f.pendingChanges[item.id].type === 'remove') {
+        const pendingChanges = { ...f.pendingChanges };
+        delete pendingChanges[item.id];
+        return { [key]: { ...f, pendingChanges, input: '', open: false, editingKey: null } };
+      }
+      const tempId = this.nextTempId--;
+      const pendingAdds = [...f.pendingAdds, { tempId, category: item.category, label: item.label, catalogId: item.id ?? null }];
+      return { [key]: { ...f, pendingAdds, input: '', open: false, editingKey: null } };
+    });
+  }
+
+  fRemoveClick(key, entry, skipConfirm) {
+    if (entry.status === 'pendingAdd') { this.setState((s) => ({ [key]: { ...s[key], pendingAdds: s[key].pendingAdds.filter((a) => a.tempId !== entry.id) } })); return; }
+    if (skipConfirm) { this.setState((s) => ({ [key]: { ...s[key], pendingChanges: { ...s[key].pendingChanges, [entry.id]: { type: 'remove' } } } })); return; }
+    this.setState((s) => ({ [key]: { ...s[key], removeDialogId: entry.id } }));
+  }
+
+  fConfirmRemove(key) {
+    this.setState((s) => ({ [key]: { ...s[key], pendingChanges: { ...s[key].pendingChanges, [s[key].removeDialogId]: { type: 'remove' } }, removeDialogId: null } }));
+  }
+
+  fCancelRemoveDialog(key) { this.setState((s) => ({ [key]: { ...s[key], removeDialogId: null } })); }
+
+  fUndoRemove(key, entry) {
+    this.setState((s) => { const pc = { ...s[key].pendingChanges }; delete pc[entry.id]; return { [key]: { ...s[key], pendingChanges: pc } }; });
+  }
+
+  fOpenPopover(key, entry, e) {
+    const rect = e.currentTarget.getBoundingClientRect();
+    this.setState((s) => ({ [key]: { ...s[key], popover: { id: entry.id, top: rect.bottom + 6, left: rect.left } } }));
+  }
+
+  fClosePopover(key) { this.setState((s) => ({ [key]: { ...s[key], popover: null } })); }
+
+  fStartEdit(key, entry) {
+    const editingKey = entry.status === 'pendingAdd' ? { type: 'add', tempId: entry.id } : { type: 'saved', id: entry.id };
+    // ponytail: input starts blank (not prefilled with the current label) so the picker shows
+    // real alternatives instead of filtering itself down to "recreate the same label"
+    this.setState((s) => ({ [key]: { ...s[key], editingKey, input: '', open: true, popover: null } }));
+  }
+
+  fCancelEdit(key) { this.setState((s) => ({ [key]: { ...s[key], editingKey: null, input: '', open: false } })); }
+
+  fSetInput(key, v) { this.setState((s) => ({ [key]: { ...s[key], input: v, open: true } })); }
+  fSetOpen(key, v) { this.setState((s) => ({ [key]: { ...s[key], open: v } })); }
+  fOnBlur(key) { setTimeout(() => this.setState((s) => ({ [key]: { ...s[key], open: false } })), 150); }
+
+  fOnKeyDown(key, e) {
+    if (e.key === 'Escape') { if (this.state[key].editingKey != null) this.fCancelEdit(key); else this.fSetOpen(key, false); }
+    if (e.key === 'Enter') {
+      const rows = this.fAvailableRows(key, this.state[key].input);
+      const first = rows.find((r) => r.isItem || r.isCreate);
+      if (first) first.onClick({ preventDefault() {} });
+    }
+  }
+
+  fPendingCount(key) { const f = this.state[key]; return Object.keys(f.pendingChanges).length + f.pendingAdds.length; }
+
+  fSave(key) {
+    this.setState((s) => ({ [key]: { ...s[key], saving: true } }));
+    setTimeout(() => {
+      this.setState((s) => {
+        const f = s[key];
+        let saved = f.saved
+          .filter((x) => !(f.pendingChanges[x.id] && f.pendingChanges[x.id].type === 'remove'))
+          .map((x) => (f.pendingChanges[x.id] ? { ...x, category: f.pendingChanges[x.id].category, label: f.pendingChanges[x.id].label, meta: { by: 'You', at: 'Just now' } } : x));
+        f.pendingAdds.forEach((a) => { saved.push({ id: this.nextSavedIdCounter++, category: a.category, label: a.label, meta: { by: 'You', at: 'Just now' } }); });
+        return { [key]: { ...f, saved, pendingChanges: {}, pendingAdds: [], saving: false, justSaved: true } };
+      });
+      setTimeout(() => this.setState((s) => ({ [key]: { ...s[key], justSaved: false } })), 2200);
+    }, 700);
+  }
+
+  fDiscard(key) {
+    this.setState((s) => ({ [key]: { ...s[key], pendingChanges: {}, pendingAdds: [], editingKey: null, input: '', open: false, popover: null } }));
+  }
+
+  buildLabelsOption(key, opts) {
+    const simpleRemove = !!(opts && opts.simpleRemove);
+    const f = this.state[key];
+    const list = this.fDisplayList(key);
+    const styleFor = (status) => {
+      if (status === 'pendingAdd') return { borderStyle: 'dashed', borderColor: 'var(--color-primary-main)', textColor: 'var(--text-primary)', textDecoration: 'none', showTag: true, tagText: 'New', tagColor: 'var(--color-primary-main)', showRemove: true, showUndo: false };
+      if (status === 'pendingEdit') return { borderStyle: 'dashed', borderColor: 'var(--color-warning-main)', textColor: 'var(--text-primary)', textDecoration: 'none', showTag: true, tagText: 'Replacing', tagColor: 'var(--color-warning-main)', showRemove: true, showUndo: false };
+      if (status === 'pendingRemove') return { borderStyle: 'dashed', borderColor: 'var(--color-error-main)', textColor: 'var(--text-secondary)', textDecoration: 'line-through', showTag: true, tagText: 'Removing', tagColor: 'var(--color-error-main)', showRemove: false, showUndo: !simpleRemove };
+      return { borderStyle: 'solid', borderColor: 'var(--divider)', textColor: 'var(--text-primary)', textDecoration: 'none', showTag: false, tagText: '', tagColor: 'var(--text-secondary)', showRemove: true, showUndo: false };
+    };
+    const chips = list.map((entry) => ({
+      id: entry.id,
+      text: this.fDisplay(entry),
+      ...styleFor(entry.status),
+      onNameClick: (e) => this.fOpenPopover(key, entry, e),
+      onRemoveClick: () => this.fRemoveClick(key, entry, simpleRemove),
+      onUndoClick: () => this.fUndoRemove(key, entry),
+    }));
+    const popoverEntry = f.popover ? list.find((e) => e.id === f.popover.id) : null;
+    const pendingCount = this.fPendingCount(key);
+    return {
+      chips,
+      noChips: chips.length === 0,
+      rows: this.fAvailableRows(key, f.input),
+      input: f.input,
+      open: f.open,
+      closed: !f.open,
+      editing: f.editingKey != null,
+      inputBorderColor: f.open ? 'var(--color-primary-main)' : 'var(--divider)',
+      placeholder: f.editingKey != null ? 'Replace with …' : 'Add a label — try “Category / …”',
+      onInput: (e) => this.fSetInput(key, e.target.value),
+      onFocus: () => this.fSetOpen(key, true),
+      toggleMenu: () => this.fSetOpen(key, !f.open),
+      onBlur: () => this.fOnBlur(key),
+      onKeyDown: (e) => this.fOnKeyDown(key, e),
+      onCancelEdit: () => this.fCancelEdit(key),
+      hasPending: pendingCount > 0 && !f.justSaved,
+      pendingCount,
+      saving: f.saving,
+      saveLabel: f.saving ? 'Saving…' : 'Save changes',
+      onSave: () => this.fSave(key),
+      onDiscard: () => this.fDiscard(key),
+      justSaved: f.justSaved,
+      popoverOpen: !!f.popover,
+      popoverAnchorStyle: f.popover ? { top: f.popover.top, left: f.popover.left } : { top: 0, left: 0 },
+      popoverIsSaved: !!popoverEntry && popoverEntry.status === 'saved',
+      popoverIsPending: !!popoverEntry && popoverEntry.status !== 'saved',
+      popoverBy: popoverEntry && popoverEntry.meta ? popoverEntry.meta.by : '',
+      popoverAt: popoverEntry && popoverEntry.meta ? popoverEntry.meta.at : '',
+      onPopoverEdit: () => { if (popoverEntry) this.fStartEdit(key, popoverEntry); },
+      onPopoverClose: () => this.fClosePopover(key),
+      removeDialogOpen: !simpleRemove && f.removeDialogId != null,
+      removeDialogText: f.removeDialogId != null ? this.fDisplay(list.find((e) => e.id === f.removeDialogId) || { label: '' }) : '',
+      onConfirmRemove: () => this.fConfirmRemove(key),
+      onCancelRemove: () => this.fCancelRemoveDialog(key),
+    };
+  }
+
+  removeChip(key, id) {
+    this.setState((s) => ({ assigned: { ...s.assigned, [key]: s.assigned[key].filter((x) => x !== id) } }));
+  }
+
+  setInput(key, val) {
+    this.setState((s) => ({ input: { ...s.input, [key]: val }, open: { ...s.open, [key]: true } }));
+  }
+
+  setOpen(key, val) {
+    this.setState((s) => ({ open: { ...s.open, [key]: val } }));
+  }
+
+  buildChips(key) {
+    const catalog = this.state.catalogs[key];
+    return this.state.assigned[key].map((id) => {
+      const item = catalog.find((c) => c.id === id);
+      return {
+        id,
+        text: item.category ? item.category + ' / ' + item.label : item.label,
+        title: item.category || 'Unassigned',
+        onDelete: () => this.removeChip(key, id),
+      };
+    });
+  }
+
+  buildCategoryPills(key) {
+    const catalog = this.state.catalogs[key];
+    const assignedIds = this.state.assigned[key];
+    const available = catalog.filter((c) => !assignedIds.includes(c.id));
+    const counts = {};
+    available.forEach((c) => { const k = c.category || 'Unassigned'; counts[k] = (counts[k] || 0) + 1; });
+    const names = Object.keys(counts).sort((a, b) => (a === 'Unassigned' ? 1 : b === 'Unassigned' ? -1 : a.localeCompare(b)));
+    const active = this.state.categoryFilter[key];
+    const pillStyle = (isActive) => ({
+      bg: isActive ? 'var(--color-primary-main)' : 'transparent',
+      color: isActive ? '#fff' : 'var(--text-primary)',
+      border: isActive ? 'var(--color-primary-main)' : 'var(--divider)',
+    });
+    const pills = [{ name: 'All', count: available.length, onClick: (e) => { e.preventDefault(); this.setCategoryFilter(key, null); }, ...pillStyle(!active) }];
+    names.forEach((n) => pills.push({ name: n, count: counts[n], onClick: (e) => { e.preventDefault(); this.setCategoryFilter(key, n); }, ...pillStyle(active === n) }));
+    return pills;
+  }
+
+  setCategoryFilter(key, name) {
+    this.setState((s) => ({ categoryFilter: { ...s.categoryFilter, [key]: name } }));
+  }
+
+  buildOption(key, flat) {
+    const open = this.state.open[key];
+    const getRows = () => (flat ? this.buildFlatRows(key, this.state.input[key]) : this.buildRows(key, this.state.input[key], this.state.categoryFilter[key]));
+    return {
+      chips: this.buildChips(key),
+      rows: getRows(),
+      categoryPills: flat ? [] : this.buildCategoryPills(key),
+      input: this.state.input[key],
+      placeholder: this.state.assigned[key].length ? '' : 'Add a label — try “Category / …”',
+      borderColor: open ? 'var(--color-primary-main)' : 'var(--divider)',
+      open,
+      closed: !open,
+      focusInput: (e) => { if (e.target === e.currentTarget) { const input = e.currentTarget.querySelector('input'); if (input) input.focus(); } },
+      onInput: (e) => this.setInput(key, e.target.value),
+      openMenu: () => this.setOpen(key, true),
+      closeMenu: () => this.setOpen(key, false),
+      toggleMenu: () => this.setOpen(key, !this.state.open[key]),
+      onBlur: () => setTimeout(() => this.setOpen(key, false), 150),
+      onKeyDown: (e) => {
+        if (e.key === 'Escape') this.setOpen(key, false);
+        if (e.key === 'Enter') {
+          const rows = getRows();
+          const first = rows.find((r) => r.isItem || r.isCreate);
+          if (first) first.onClick();
+        }
+      },
+    };
+  }
+
+  renderVals() {
+    return { opt1a: this.buildOption('a'), opt1b: this.buildOption('b'), opt1c: this.buildOption('c'), opt1d: this.buildOption('d'), opt1e: this.buildOption('e', true), optF: this.buildLabelsOption('f'), optG: this.buildLabelsOption('g', { simpleRemove: true }) };
+  }
+}
+</script>
+</body>
+</html>

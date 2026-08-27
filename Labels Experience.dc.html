@@ -1,0 +1,1782 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<template id="__bundler_thumbnail" data-bg-color="#1C00B7">
+  <svg viewBox="0 0 100 70" xmlns="http://www.w3.org/2000/svg">
+    <rect x="6" y="8" width="58" height="54" rx="3" fill="#fff" opacity="0.15"/>
+    <rect x="68" y="8" width="26" height="54" rx="3" fill="#fff" opacity="0.9"/>
+    <rect x="71" y="22" width="12" height="5" rx="2.5" fill="#1C00B7"/>
+    <rect x="85" y="22" width="7" height="5" rx="2.5" fill="#1C00B7" opacity="0.5"/>
+  </svg>
+</template>
+<link rel="stylesheet" href="_ds/monitoring-design-system-1b6ea82e-2f03-4829-a388-b1ad0eec86ff/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/monitoring-design-system-1b6ea82e-2f03-4829-a388-b1ad0eec86ff/tokens/colors.css">
+<link rel="stylesheet" href="_ds/monitoring-design-system-1b6ea82e-2f03-4829-a388-b1ad0eec86ff/tokens/typography.css">
+<link rel="stylesheet" href="_ds/monitoring-design-system-1b6ea82e-2f03-4829-a388-b1ad0eec86ff/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/monitoring-design-system-1b6ea82e-2f03-4829-a388-b1ad0eec86ff/styles.css">
+<script src="_ds/monitoring-design-system-1b6ea82e-2f03-4829-a388-b1ad0eec86ff/_ds_bundle.js"></script>
+<style>
+html,body{margin:0}
+body{background:var(--background-default);font-family:var(--font-body);padding-top:96px}
+
+/* ---- global nav (prototype chrome, not part of the product UI) ---- */
+.gnav{position:fixed;top:0;left:0;right:0;height:48px;z-index:100;display:flex;align-items:center;gap:10px;
+  padding:0 16px;background:#15171b;color:#fff;box-sizing:border-box;overflow-x:auto}
+.gnav-title{font-size:12px;font-weight:600;letter-spacing:.02em;color:#fff;white-space:nowrap}
+.gnav-opts{display:flex;gap:6px}
+.gnav-opt{all:unset;cursor:pointer;padding:6px 11px;border-radius:999px;font-size:11.5px;font-weight:600;
+  color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.16);white-space:nowrap}
+.gnav-opt:hover{background:rgba(255,255,255,.08);color:#fff}
+.gnav-opt[data-active="true"]{background:#fff;color:#15171b;border-color:#fff}
+.gnav-sub{font-size:11px;color:rgba(255,255,255,.45);white-space:nowrap}
+.gnav-spacer{flex:1}
+.gnav-user{display:flex;align-items:center;gap:8px;font-size:11px;color:rgba(255,255,255,.55);white-space:nowrap}
+.gnav-userbtn{all:unset;cursor:pointer;padding:5px 10px;border-radius:999px;font-size:11px;
+  color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.16)}
+.gnav-userbtn:hover{background:rgba(255,255,255,.08);color:#fff}
+.gnav-userbtn[data-active="true"]{background:var(--im-blue-500);color:#fff;border-color:var(--im-blue-500);font-weight:600}
+
+/* ---- static top bar mimicking the real product chrome, DS tokens only ---- */
+.topbar{position:fixed;top:48px;left:0;right:0;height:48px;z-index:90;display:flex;align-items:center;gap:10px;
+  padding:0 24px;background:var(--background-paper);border-bottom:1px solid var(--divider);box-sizing:border-box}
+.crumb{font-size:12px;color:var(--text-secondary)}
+.crumb b{color:var(--text-primary);font-weight:700}
+.topbar-spacer{flex:1}
+.ov-changes{border:0;border-radius:2px;display:flex;align-items:center;justify-content:center;gap:6px;
+  padding:0 14px;height:32px;font-family:var(--font-body);font-size:11px;font-weight:700;letter-spacing:.03em}
+
+/* ---- page layout ---- */
+.page{max-width:1180px;margin:24px auto 60px;padding:0 24px;display:flex;gap:24px;align-items:flex-start}
+.postcol{flex:1 1 auto;min-width:0}
+.panelcol{flex:0 0 460px}
+.postplaceholder{aspect-ratio:4/3;background:var(--background-default);border:1px dashed var(--divider);
+  border-radius:var(--radius);display:flex;align-items:center;justify-content:center}
+
+.card{border:1px solid var(--divider);border-radius:2px;background:var(--background-paper);margin-bottom:16px}
+.card:last-child{margin-bottom:0}
+.card-head{display:flex;align-items:center;justify-content:space-between;padding:16px 16px 10px}
+.card-title{font-size:16px;font-weight:700;color:var(--text-primary)}
+.card-body{padding:0 16px 16px}
+.sub{font-size:13px;font-weight:700;color:var(--text-primary);margin:6px 0 4px}
+.muted{font-size:13px;color:var(--text-secondary);line-height:1.5;margin:0 0 12px}
+.hl{background:var(--color-success-light)}
+
+.lblbody{display:flex;flex-direction:column;gap:10px}
+.lbl-chips{display:flex;flex-wrap:wrap;gap:8px;min-height:30px}
+.lbl-chip{display:inline-flex;align-items:center;height:28px;padding:0 4px 0 10px;border-radius:14px;border-width:1px;background:transparent}
+.lbl-chipname{all:unset;cursor:pointer;font-size:13px;line-height:1;white-space:nowrap}
+.lbl-tag{font-size:9.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;margin-left:6px}
+.lbl-hoverpop{position:absolute;top:100%;left:0;margin-top:6px;min-width:200px;max-width:280px;
+  padding:10px 14px;background:var(--background-paper);border-radius:var(--radius);
+  box-shadow:var(--shadow-8);font-size:12px;line-height:1.5;color:var(--text-primary);
+  z-index:10;pointer-events:none}
+.lbl-x{all:unset;cursor:pointer;display:flex;padding:4px;margin-left:2px;opacity:.6}
+.lbl-x:hover{opacity:1}
+.lbl-undo{all:unset;cursor:pointer;display:flex;align-items:center;gap:2px;padding:4px;margin-left:2px;
+  font-size:11px;font-weight:600;color:var(--color-primary-main)}
+.lbl-row{padding:8px 12px;font-size:13px;color:var(--text-primary);cursor:pointer}
+.lbl-row:hover{background:var(--action-hover)}
+.lbl-create:hover{background:var(--color-primary-hover)}
+.lbl-savebar-btn button{white-space:nowrap}
+.help{margin:10px 0 0;color:var(--text-secondary);font-size:11px;line-height:1.4}
+
+.mtabs{display:flex;border-bottom:1px solid var(--divider)}
+.mtab{all:unset;cursor:pointer;padding:12px 14px 10px;font-size:12px;font-weight:700;
+  color:var(--text-secondary);border-bottom:3px solid transparent}
+.mtab:hover{color:var(--text-primary)}
+.mtab[data-active="true"]{color:var(--text-primary);border-bottom-color:var(--color-primary-main)}
+
+/* all:unset strips the browser's default focus ring from every custom button in the app (chips,
+   pills, tabs, nav) — restore a clear one for keyboard nav. :focus-visible so it only shows for
+   keyboard/tab, not mouse clicks. */
+button:focus-visible{outline:2px solid var(--color-primary-main);outline-offset:2px;border-radius:2px}
+
+.pillrow{display:flex;gap:6px;flex-wrap:wrap}
+.pill{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:999px;
+  border:1px solid var(--divider);font-size:12px;color:var(--text-primary);white-space:nowrap}
+.pill:hover{background:var(--action-hover)}
+.pill[data-active="true"]{background:var(--color-primary-main);border-color:var(--color-primary-main);color:#fff}
+.pill:focus-visible{outline-offset:1px}
+
+.optrow{display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:2px;font-size:13px;cursor:pointer}
+.optrow:hover{background:var(--action-hover)}
+.optrow[data-disabled="true"]{color:var(--text-disabled);cursor:default}
+.optrow[data-disabled="true"]:hover{background:transparent}
+.optnote{margin-left:auto;font-size:11px;color:var(--text-secondary)}
+.grouphdr{padding:10px 8px 3px;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--text-secondary)}
+.preview{margin-top:14px;padding:11px;border:1px solid var(--divider);border-radius:2px;background:var(--background-default);
+  font-size:13px;font-weight:600;min-height:20px;color:var(--text-primary)}
+.hint{color:var(--text-secondary);font-size:11px;line-height:1.4;margin:8px 0 0}
+.chg-item{display:flex;justify-content:space-between;gap:12px;border:1px solid var(--divider);border-radius:2px;
+  padding:10px;margin-bottom:6px;font-size:12px;color:var(--text-primary)}
+.chg-kind{color:var(--text-secondary);white-space:nowrap}
+.chg-h{margin:0 0 7px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text-secondary)}
+.seg{display:flex}
+.seg span{flex:1;border:1px solid var(--divider);padding:8px;font-size:11px;text-align:center;color:var(--text-secondary)}
+.seg span + span{border-left:0}
+</style>
+</helmet>
+
+<div class="gnav">
+  <span class="gnav-title">Labels &mdash; full experience</span>
+  <div class="gnav-opts">
+    <sc-for list="{{options}}" as="opt" hint-placeholder-count="1">
+      <button class="gnav-opt" data-active="{{opt.active}}" onClick="{{opt.onClick}}">{{opt.name}}</button>
+    </sc-for>
+  </div>
+  <span class="gnav-sub">{{optionNote}}</span>
+  <div class="gnav-spacer"></div>
+  <div class="gnav-user">
+    <span>Viewing as</span>
+    <sc-for list="{{users}}" as="u" hint-placeholder-count="2">
+      <button class="gnav-userbtn" data-active="{{u.active}}" onClick="{{u.onClick}}">{{u.name}}</button>
+    </sc-for>
+  </div>
+</div>
+
+<div class="topbar">
+  <span class="crumb">Evaluations &rsaquo; Demo &rsaquo; <b>3 of 174</b></span>
+  <span class="topbar-spacer"></span>
+  <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="contained" color="error" size="small" disabled="{{true}}" hint-size="auto,32px">Delete</x-import>
+  <button class="ov-changes" style="background:{{changesBg}};color:{{changesFg}};cursor:{{changesCursor}}" onClick="{{onOpenReview}}">
+    CHANGES
+    <sc-if value="{{hasTopPending}}" hint-placeholder-val="{{false}}">
+      <span style="display:inline-grid;place-items:center;min-width:17px;height:17px;padding:0 4px;border-radius:9px;background:#fff;color:#111;font-size:9px">{{topPendingCount}}</span>
+    </sc-if>
+  </button>
+  <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="contained" size="small" disabled="{{true}}" hint-size="auto,32px">Previous</x-import>
+  <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="contained" size="small" disabled="{{true}}" hint-size="auto,32px">Next</x-import>
+</div>
+
+<div class="page">
+  <div class="postcol">
+    <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Card" hint-size="auto,auto">
+      <div style="padding:16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--divider)">
+        <span style="width:36px;height:36px;border-radius:50%;background:var(--im-green-600);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0">R</span>
+        <span>
+          <div style="font-weight:700;font-size:14px;color:var(--text-primary)">realmadrid</div>
+          <div style="font-size:12px;color:var(--text-secondary)">01 Feb 2026, 13:20 &middot; Instagram Post</div>
+        </span>
+      </div>
+      <div style="padding:16px">
+        <div class="postplaceholder">
+          <span style="display:inline-flex;flex-direction:column;align-items:center;gap:8px;color:var(--text-disabled)">
+            <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="PhotoFilled" size="40" hint-size="40px,40px"></x-import>
+            <span style="font-size:12px">Post media</span>
+          </span>
+        </div>
+        <p class="muted" style="margin-top:16px;margin-bottom:0"><span class="hl">hala madrid</span><br />#realmadridrayo</p>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="panelcol">
+    <section class="card">
+      <div class="card-head"><span class="card-title">Details</span>
+        <span style="color:var(--action-active);display:inline-flex"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ArrowDropUpFilled" size="20" hint-size="20px,20px"></x-import></span>
+      </div>
+      <div class="card-body">
+        <div class="sub">Description</div>
+        <p class="muted"><span class="hl">hala madrid</span><br />#realmadridrayo</p>
+        <div class="sub">Hashtags</div>
+        <p class="muted" style="margin-bottom:0">#realmadridrayo</p>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-head"><span class="card-title">Labels</span>
+        <span style="color:var(--action-active);display:inline-flex"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ArrowDropUpFilled" size="20" hint-size="20px,20px"></x-import></span>
+      </div>
+      <div class="card-body">
+        <div class="lblbody">
+          <sc-if value="{{is1a}}" hint-placeholder-val="{{false}}">
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <sc-for list="{{opt1a.chips}}" as="chip" hint-placeholder-count="2">
+          <span title="{{chip.title}}">
+            <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Chip" label="{{chip.text}}" onDelete="{{chip.onDelete}}" variant="outlined" size="small" hint-size="auto,24px"></x-import>
+          </span>
+        </sc-for>
+      </div>
+      <sc-if value="{{opt1a.closed}}" hint-placeholder-val="{{true}}">
+        <span style="align-self:flex-start;display:inline-flex"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="outlined" size="small" color="primary" onClick="{{opt1a.openMenu}}" hint-size="auto,32px">+ Add label</x-import></span>
+      </sc-if>
+      <sc-if value="{{opt1a.open}}" hint-placeholder-val="{{false}}">
+        <div style="position:relative">
+          <div style="display:flex;align-items:center;gap:6px;border:1px solid var(--color-primary-main);border-radius:var(--radius);padding:6px 8px">
+            <input value="{{opt1a.input}}" onChange="{{opt1a.onInput}}" onKeyDown="{{opt1a.onKeyDown}}" onBlur="{{opt1a.onBlur}}" placeholder="Category / label, or just a label…" autoFocus="{{true}}" style="border:none;outline:none;flex:1;font-size:13px;font-family:var(--font-body);color:var(--text-primary);background:transparent" />
+            <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.IconButton" onClick="{{opt1a.closeMenu}}" size="small" hint-size="28px,28px">
+              <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="CloseFilled" size="16" hint-size="16px,16px"></x-import>
+            </x-import>
+          </div>
+          <div style="position:absolute;top:100%;left:0;right:0;margin-top:4px;background:var(--background-paper);box-shadow:var(--shadow-8);border-radius:var(--radius);max-height:220px;overflow-y:auto;z-index:5">
+            <sc-for list="{{opt1a.rows}}" as="row" hint-placeholder-count="3">
+              <sc-if value="{{row.isHeader}}" hint-placeholder-val="{{false}}">
+                <div style="padding:6px 12px 2px;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-secondary)">{{row.text}}</div>
+              </sc-if>
+              <sc-if value="{{row.isItem}}" hint-placeholder-val="{{false}}">
+                <div onMouseDown="{{row.onClick}}" class="lbl-row">{{row.text}}</div>
+              </sc-if>
+              <sc-if value="{{row.isCreate}}" hint-placeholder-val="{{false}}">
+                <div onMouseDown="{{row.onClick}}" class="lbl-row lbl-create" style="color:var(--color-primary-main);border-top:1px solid var(--divider)">+ {{row.text}}</div>
+              </sc-if>
+              <sc-if value="{{row.isEmpty}}" hint-placeholder-val="{{false}}">
+                <div style="padding:8px 12px;font-size:13px;color:var(--text-secondary)">{{row.text}}</div>
+              </sc-if>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+          </sc-if>
+          <sc-if value="{{is1b}}" hint-placeholder-val="{{false}}">
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <sc-for list="{{opt1b.chips}}" as="chip" hint-placeholder-count="2">
+          <span title="{{chip.title}}">
+            <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Chip" label="{{chip.text}}" onDelete="{{chip.onDelete}}" variant="outlined" size="small" hint-size="auto,24px"></x-import>
+          </span>
+        </sc-for>
+      </div>
+      <div style="position:relative">
+        <sc-if value="{{opt1b.closed}}" hint-placeholder-val="{{true}}">
+          <span style="align-self:flex-start;display:inline-flex"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="outlined" size="small" color="primary" onClick="{{opt1b.openMenu}}" hint-size="auto,32px">+ Add label</x-import></span>
+        </sc-if>
+        <sc-if value="{{opt1b.open}}" hint-placeholder-val="{{false}}">
+          <span style="align-self:flex-start;display:inline-flex"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="contained" size="small" color="primary" onClick="{{opt1b.closeMenu}}" hint-size="auto,32px">+ Add label</x-import></span>
+          <div style="position:absolute;top:100%;left:0;margin-top:8px;width:280px;background:var(--background-paper);box-shadow:var(--shadow-8);border-radius:var(--radius);z-index:5;overflow:hidden">
+            <div style="padding:8px 12px;border-bottom:1px solid var(--divider)">
+              <input value="{{opt1b.input}}" onChange="{{opt1b.onInput}}" onKeyDown="{{opt1b.onKeyDown}}" onBlur="{{opt1b.onBlur}}" placeholder="Search or Category / label…" autoFocus="{{true}}" style="width:100%;box-sizing:border-box;border:none;outline:none;font-size:13px;font-family:var(--font-body);color:var(--text-primary);background:transparent" />
+            </div>
+            <div style="max-height:200px;overflow-y:auto">
+              <sc-for list="{{opt1b.rows}}" as="row" hint-placeholder-count="3">
+                <sc-if value="{{row.isHeader}}" hint-placeholder-val="{{false}}">
+                  <div style="padding:6px 12px 2px;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-secondary)">{{row.text}}</div>
+                </sc-if>
+                <sc-if value="{{row.isItem}}" hint-placeholder-val="{{false}}">
+                  <div onMouseDown="{{row.onClick}}" class="lbl-row">{{row.text}}</div>
+                </sc-if>
+                <sc-if value="{{row.isCreate}}" hint-placeholder-val="{{false}}">
+                  <div onMouseDown="{{row.onClick}}" class="lbl-row lbl-create" style="color:var(--color-primary-main);border-top:1px solid var(--divider)">+ {{row.text}}</div>
+                </sc-if>
+                <sc-if value="{{row.isEmpty}}" hint-placeholder-val="{{false}}">
+                  <div style="padding:8px 12px;font-size:13px;color:var(--text-secondary)">{{row.text}}</div>
+                </sc-if>
+              </sc-for>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 12px;border-top:1px solid var(--divider);background:var(--background-default)">
+              <span style="font-size:11px;color:var(--text-secondary)">Type Category / Label to file it</span>
+              <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="text" size="small" color="primary" onClick="{{opt1b.closeMenu}}" hint-size="auto,28px">Done</x-import>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+
+          </sc-if>
+          <sc-if value="{{is1c}}" hint-placeholder-val="{{false}}">
+      <div style="position:relative">
+        <div style="display:flex;align-items:center;gap:6px;border:1px solid var(--divider);border-radius:var(--radius);padding:6px 8px">
+          <input value="{{opt1c.input}}" onChange="{{opt1c.onInput}}" onKeyDown="{{opt1c.onKeyDown}}" onFocus="{{opt1c.openMenu}}" onBlur="{{opt1c.onBlur}}" placeholder="Add a label — try “Product / …”" style="border:none;outline:none;flex:1;font-size:13px;font-family:var(--font-body);color:var(--text-primary);background:transparent" />
+          <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.IconButton" onClick="{{opt1c.toggleMenu}}" size="small" hint-size="28px,28px">
+            <sc-if value="{{opt1c.open}}" hint-placeholder-val="{{false}}"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ArrowDropUpFilled" size="18" hint-size="18px,18px"></x-import></sc-if>
+            <sc-if value="{{opt1c.closed}}" hint-placeholder-val="{{true}}"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ArrowDropDownFilled" size="18" hint-size="18px,18px"></x-import></sc-if>
+          </x-import>
+        </div>
+        <sc-if value="{{opt1c.open}}" hint-placeholder-val="{{false}}">
+          <div style="position:absolute;top:100%;left:0;right:0;margin-top:4px;background:var(--background-paper);box-shadow:var(--shadow-8);border-radius:var(--radius);max-height:220px;overflow-y:auto;z-index:5">
+            <sc-for list="{{opt1c.rows}}" as="row" hint-placeholder-count="3">
+              <sc-if value="{{row.isHeader}}" hint-placeholder-val="{{false}}">
+                <div style="padding:6px 12px 2px;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-secondary)">{{row.text}}</div>
+              </sc-if>
+              <sc-if value="{{row.isItem}}" hint-placeholder-val="{{false}}">
+                <div onMouseDown="{{row.onClick}}" class="lbl-row">{{row.text}}</div>
+              </sc-if>
+              <sc-if value="{{row.isCreate}}" hint-placeholder-val="{{false}}">
+                <div onMouseDown="{{row.onClick}}" class="lbl-row lbl-create" style="color:var(--color-primary-main);border-top:1px solid var(--divider)">+ {{row.text}}</div>
+              </sc-if>
+              <sc-if value="{{row.isEmpty}}" hint-placeholder-val="{{false}}">
+                <div style="padding:8px 12px;font-size:13px;color:var(--text-secondary)">{{row.text}}</div>
+              </sc-if>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <sc-for list="{{opt1c.chips}}" as="chip" hint-placeholder-count="2">
+          <span title="{{chip.title}}">
+            <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Chip" label="{{chip.text}}" onDelete="{{chip.onDelete}}" variant="outlined" size="small" hint-size="auto,24px"></x-import>
+          </span>
+        </sc-for>
+      </div>
+
+          </sc-if>
+          <sc-if value="{{is1d}}" hint-placeholder-val="{{false}}">
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <sc-for list="{{opt1d.chips}}" as="chip" hint-placeholder-count="2">
+          <span title="{{chip.title}}">
+            <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Chip" label="{{chip.text}}" onDelete="{{chip.onDelete}}" variant="outlined" size="small" hint-size="auto,24px"></x-import>
+          </span>
+        </sc-for>
+      </div>
+      <div style="position:relative">
+        <div style="display:flex;align-items:center;gap:6px;border:1px solid var(--divider);border-radius:var(--radius);padding:6px 8px">
+          <input value="{{opt1d.input}}" onChange="{{opt1d.onInput}}" onKeyDown="{{opt1d.onKeyDown}}" onFocus="{{opt1d.openMenu}}" onBlur="{{opt1d.onBlur}}" placeholder="Add a label — try “Product / …”" style="border:none;outline:none;flex:1;font-size:13px;font-family:var(--font-body);color:var(--text-primary);background:transparent" />
+          <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.IconButton" onClick="{{opt1d.toggleMenu}}" size="small" hint-size="28px,28px">
+            <sc-if value="{{opt1d.open}}" hint-placeholder-val="{{false}}"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ArrowDropUpFilled" size="18" hint-size="18px,18px"></x-import></sc-if>
+            <sc-if value="{{opt1d.closed}}" hint-placeholder-val="{{true}}"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ArrowDropDownFilled" size="18" hint-size="18px,18px"></x-import></sc-if>
+          </x-import>
+        </div>
+        <sc-if value="{{opt1d.open}}" hint-placeholder-val="{{false}}">
+          <div style="position:absolute;top:100%;left:0;right:0;margin-top:4px;background:var(--background-paper);box-shadow:var(--shadow-8);border-radius:var(--radius);max-height:260px;overflow:hidden;z-index:5;display:flex;flex-direction:column">
+            <div style="display:flex;gap:6px;overflow-x:auto;padding:8px 12px;border-bottom:1px solid var(--divider);flex:none">
+              <sc-for list="{{opt1d.categoryPills}}" as="pill" hint-placeholder-count="4">
+                <div onMouseDown="{{pill.onClick}}" style="flex:none;display:flex;align-items:center;gap:4px;padding:4px 10px;border-radius:999px;border:1px solid {{pill.border}};background:{{pill.bg}};color:{{pill.color}};font-size:12px;cursor:pointer;white-space:nowrap">
+                  <span>{{pill.name}}</span>
+                  <span style="opacity:0.7">{{pill.count}}</span>
+                </div>
+              </sc-for>
+            </div>
+            <div style="overflow-y:auto">
+              <sc-for list="{{opt1d.rows}}" as="row" hint-placeholder-count="3">
+                <sc-if value="{{row.isHeader}}" hint-placeholder-val="{{false}}">
+                  <div style="padding:6px 12px 2px;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-secondary)">{{row.text}}</div>
+                </sc-if>
+                <sc-if value="{{row.isItem}}" hint-placeholder-val="{{false}}">
+                  <div onMouseDown="{{row.onClick}}" class="lbl-row">{{row.text}}</div>
+                </sc-if>
+                <sc-if value="{{row.isCreate}}" hint-placeholder-val="{{false}}">
+                  <div onMouseDown="{{row.onClick}}" class="lbl-row lbl-create" style="color:var(--color-primary-main);border-top:1px solid var(--divider)">+ {{row.text}}</div>
+                </sc-if>
+                <sc-if value="{{row.isEmpty}}" hint-placeholder-val="{{false}}">
+                  <div style="padding:8px 12px;font-size:13px;color:var(--text-secondary)">{{row.text}}</div>
+                </sc-if>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+
+          </sc-if>
+          <sc-if value="{{is1e}}" hint-placeholder-val="{{false}}">
+      <div style="position:relative">
+        <div onClick="{{opt1e.focusInput}}" style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;border:1px solid {{opt1e.borderColor}};border-radius:var(--radius);padding:6px 8px;cursor:text">
+          <sc-for list="{{opt1e.chips}}" as="chip" hint-placeholder-count="2">
+            <span title="{{chip.title}}">
+              <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Chip" label="{{chip.text}}" onDelete="{{chip.onDelete}}" variant="outlined" size="small" hint-size="auto,24px"></x-import>
+            </span>
+          </sc-for>
+          <input value="{{opt1e.input}}" onChange="{{opt1e.onInput}}" onKeyDown="{{opt1e.onKeyDown}}" onFocus="{{opt1e.openMenu}}" onBlur="{{opt1e.onBlur}}" placeholder="{{opt1e.placeholder}}" style="border:none;outline:none;flex:1;min-width:70px;font-size:13px;font-family:var(--font-body);color:var(--text-primary);background:transparent" />
+        </div>
+        <sc-if value="{{opt1e.open}}" hint-placeholder-val="{{false}}">
+          <div style="position:absolute;top:100%;left:0;right:0;margin-top:4px;background:var(--background-paper);box-shadow:var(--shadow-8);border-radius:var(--radius);max-height:260px;overflow-y:auto;z-index:5">
+            <sc-for list="{{opt1e.rows}}" as="row" hint-placeholder-count="4">
+              <sc-if value="{{row.isItem}}" hint-placeholder-val="{{false}}">
+                <div onMouseDown="{{row.onClick}}" class="lbl-row">{{row.text}}</div>
+              </sc-if>
+              <sc-if value="{{row.isCreate}}" hint-placeholder-val="{{false}}">
+                <div onMouseDown="{{row.onClick}}" class="lbl-row lbl-create" style="color:var(--color-primary-main);border-top:1px solid var(--divider)">+ {{row.text}}</div>
+              </sc-if>
+              <sc-if value="{{row.isEmpty}}" hint-placeholder-val="{{false}}">
+                <div style="padding:8px 12px;font-size:13px;color:var(--text-secondary)">{{row.text}}</div>
+              </sc-if>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+
+          </sc-if>
+          <sc-if value="{{is1f}}" hint-placeholder-val="{{false}}">
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <sc-for list="{{optF.chips}}" as="chip" hint-placeholder-count="2">
+          <span style="display:inline-flex;align-items:center;height:28px;padding:0 4px 0 10px;border-radius:14px;border-width:1px;border-style:{{chip.borderStyle}};border-color:{{chip.borderColor}};background:transparent">
+            <button onClick="{{chip.onNameClick}}" style="all:unset;cursor:pointer;font-size:13px;line-height:1;color:{{chip.textColor}};text-decoration:{{chip.textDecoration}};white-space:nowrap">{{chip.text}}</button>
+            <sc-if value="{{chip.showTag}}" hint-placeholder-val="{{false}}">
+              <span style="font-size:9.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:{{chip.tagColor}};margin-left:6px">{{chip.tagText}}</span>
+            </sc-if>
+            <sc-if value="{{chip.showUndo}}" hint-placeholder-val="{{false}}">
+              <button onClick="{{chip.onUndoClick}}" aria-label="Undo removing {{chip.text}}" style="all:unset;cursor:pointer;display:flex;align-items:center;gap:2px;padding:4px;margin-left:2px;font-size:11px;font-weight:600;color:var(--color-primary-main)">
+                <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="RestoreFilled" size="13" hint-size="13px,13px"></x-import>Undo
+              </button>
+            </sc-if>
+            <sc-if value="{{chip.showRemove}}" hint-placeholder-val="{{true}}">
+              <button onClick="{{chip.onRemoveClick}}" aria-label="Remove {{chip.text}}" style="all:unset;cursor:pointer;display:flex;padding:4px;margin-left:2px;opacity:0.6">
+                <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="CloseFilled" size="13" hint-size="13px,13px"></x-import>
+              </button>
+            </sc-if>
+          </span>
+        </sc-for>
+        <sc-if value="{{optF.noChips}}" hint-placeholder-val="{{false}}">
+          <span style="font-size:13px;color:var(--text-secondary)">No labels yet</span>
+        </sc-if>
+      </div>
+      <div style="position:relative">
+        <sc-if value="{{optF.editing}}" hint-placeholder-val="{{false}}">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+            <span style="font-size:11px;color:var(--text-secondary)">Replacing a label — pick or create the new one</span>
+            <button onClick="{{optF.onCancelEdit}}" style="all:unset;cursor:pointer;font-size:11px;color:var(--color-primary-main)">Cancel</button>
+          </div>
+        </sc-if>
+        <div style="display:flex;align-items:center;gap:6px;border:1px solid {{optF.inputBorderColor}};border-radius:var(--radius);padding:6px 8px">
+          <input value="{{optF.input}}" onChange="{{optF.onInput}}" onKeyDown="{{optF.onKeyDown}}" onFocus="{{optF.onFocus}}" onBlur="{{optF.onBlur}}" placeholder="{{optF.placeholder}}" style="border:none;outline:none;flex:1;font-size:13px;font-family:var(--font-body);color:var(--text-primary);background:transparent" />
+          <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.IconButton" onClick="{{optF.toggleMenu}}" size="small" hint-size="28px,28px">
+            <sc-if value="{{optF.open}}" hint-placeholder-val="{{false}}"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ArrowDropUpFilled" size="18" hint-size="18px,18px"></x-import></sc-if>
+            <sc-if value="{{optF.closed}}" hint-placeholder-val="{{true}}"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ArrowDropDownFilled" size="18" hint-size="18px,18px"></x-import></sc-if>
+          </x-import>
+        </div>
+        <sc-if value="{{optF.open}}" hint-placeholder-val="{{false}}">
+          <div style="position:absolute;top:100%;left:0;right:0;margin-top:4px;background:var(--background-paper);box-shadow:var(--shadow-8);border-radius:var(--radius);max-height:240px;overflow-y:auto;z-index:5">
+            <sc-for list="{{optF.rows}}" as="row" hint-placeholder-count="4">
+              <sc-if value="{{row.isItem}}" hint-placeholder-val="{{false}}">
+                <div onMouseDown="{{row.onClick}}" class="lbl-row">{{row.text}}</div>
+              </sc-if>
+              <sc-if value="{{row.isCreate}}" hint-placeholder-val="{{false}}">
+                <div onMouseDown="{{row.onClick}}" class="lbl-row lbl-create" style="color:var(--color-primary-main);border-top:1px solid var(--divider)">+ {{row.text}}</div>
+              </sc-if>
+              <sc-if value="{{row.isEmpty}}" hint-placeholder-val="{{false}}">
+                <div style="padding:8px 12px;font-size:13px;color:var(--text-secondary)">{{row.text}}</div>
+              </sc-if>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+      <sc-if value="{{optF.hasPending}}" hint-placeholder-val="{{false}}">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:10px;border-top:1px solid var(--divider)">
+          <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-secondary)">
+            <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="AccessTimeFilled" size="14" hint-size="14px,14px" style="color:var(--color-warning-main)"></x-import>
+            {{optF.pendingCount}} pending change(s) — not yet saved
+          </span>
+          <div style="display:flex;gap:8px;flex-shrink:0">
+            <span class="lbl-savebar-btn" style="flex-shrink:0;display:inline-flex"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="text" size="small" onClick="{{optF.onDiscard}}" disabled="{{optF.saving}}" hint-size="auto,32px">Discard</x-import></span>
+            <span class="lbl-savebar-btn" style="flex-shrink:0;display:inline-flex"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="contained" size="small" color="primary" onClick="{{optF.onSave}}" disabled="{{optF.saving}}" hint-size="auto,32px">{{optF.saveLabel}}</x-import></span>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{optF.justSaved}}" hint-placeholder-val="{{false}}">
+        <div style="display:flex;align-items:center;gap:6px;padding-top:10px;border-top:1px solid var(--divider);font-size:12px;color:var(--color-success-main)">
+          <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="CheckCircleFilled" size="14" hint-size="14px,14px"></x-import>Changes saved
+        </div>
+      </sc-if>
+    
+          </sc-if>
+          <sc-if value="{{is1g}}" hint-placeholder-val="{{false}}">
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <sc-for list="{{optG.chips}}" as="chip" hint-placeholder-count="2">
+          <span style="display:inline-flex;align-items:center;height:28px;padding:0 4px 0 10px;border-radius:14px;border-width:1px;border-style:{{chip.borderStyle}};border-color:{{chip.borderColor}};background:transparent">
+            <button onClick="{{chip.onNameClick}}" style="all:unset;cursor:pointer;font-size:13px;line-height:1;color:{{chip.textColor}};text-decoration:{{chip.textDecoration}};white-space:nowrap">{{chip.text}}</button>
+            <sc-if value="{{chip.showTag}}" hint-placeholder-val="{{false}}">
+              <span style="font-size:9.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:{{chip.tagColor}};margin-left:6px">{{chip.tagText}}</span>
+            </sc-if>
+            <sc-if value="{{chip.showRemove}}" hint-placeholder-val="{{true}}">
+              <button onClick="{{chip.onRemoveClick}}" aria-label="Remove {{chip.text}}" style="all:unset;cursor:pointer;display:flex;padding:4px;margin-left:2px;opacity:0.6">
+                <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="CloseFilled" size="13" hint-size="13px,13px"></x-import>
+              </button>
+            </sc-if>
+          </span>
+        </sc-for>
+        <sc-if value="{{optG.noChips}}" hint-placeholder-val="{{false}}">
+          <span style="font-size:13px;color:var(--text-secondary)">No labels yet</span>
+        </sc-if>
+      </div>
+      <div style="position:relative">
+        <sc-if value="{{optG.editing}}" hint-placeholder-val="{{false}}">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+            <span style="font-size:11px;color:var(--text-secondary)">Replacing a label — pick or create the new one</span>
+            <button onClick="{{optG.onCancelEdit}}" style="all:unset;cursor:pointer;font-size:11px;color:var(--color-primary-main)">Cancel</button>
+          </div>
+        </sc-if>
+        <div style="display:flex;align-items:center;gap:6px;border:1px solid {{optG.inputBorderColor}};border-radius:var(--radius);padding:6px 8px">
+          <input value="{{optG.input}}" onChange="{{optG.onInput}}" onKeyDown="{{optG.onKeyDown}}" onFocus="{{optG.onFocus}}" onBlur="{{optG.onBlur}}" placeholder="{{optG.placeholder}}" style="border:none;outline:none;flex:1;font-size:13px;font-family:var(--font-body);color:var(--text-primary);background:transparent" />
+          <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.IconButton" onClick="{{optG.toggleMenu}}" size="small" hint-size="28px,28px">
+            <sc-if value="{{optG.open}}" hint-placeholder-val="{{false}}"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ArrowDropUpFilled" size="18" hint-size="18px,18px"></x-import></sc-if>
+            <sc-if value="{{optG.closed}}" hint-placeholder-val="{{true}}"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ArrowDropDownFilled" size="18" hint-size="18px,18px"></x-import></sc-if>
+          </x-import>
+        </div>
+        <sc-if value="{{optG.open}}" hint-placeholder-val="{{false}}">
+          <div style="position:absolute;top:100%;left:0;right:0;margin-top:4px;background:var(--background-paper);box-shadow:var(--shadow-8);border-radius:var(--radius);max-height:240px;overflow-y:auto;z-index:5">
+            <sc-for list="{{optG.rows}}" as="row" hint-placeholder-count="4">
+              <sc-if value="{{row.isItem}}" hint-placeholder-val="{{false}}">
+                <div onMouseDown="{{row.onClick}}" class="lbl-row">{{row.text}}</div>
+              </sc-if>
+              <sc-if value="{{row.isCreate}}" hint-placeholder-val="{{false}}">
+                <div onMouseDown="{{row.onClick}}" class="lbl-row lbl-create" style="color:var(--color-primary-main);border-top:1px solid var(--divider)">+ {{row.text}}</div>
+              </sc-if>
+              <sc-if value="{{row.isEmpty}}" hint-placeholder-val="{{false}}">
+                <div style="padding:8px 12px;font-size:13px;color:var(--text-secondary)">{{row.text}}</div>
+              </sc-if>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+      <sc-if value="{{optG.hasPending}}" hint-placeholder-val="{{false}}">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:10px;border-top:1px solid var(--divider)">
+          <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-secondary)">
+            <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="AccessTimeFilled" size="14" hint-size="14px,14px" style="color:var(--color-warning-main)"></x-import>
+            {{optG.pendingCount}} pending change(s) — not yet saved
+          </span>
+          <div style="display:flex;gap:8px;flex-shrink:0">
+            <span class="lbl-savebar-btn" style="flex-shrink:0;display:inline-flex"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="text" size="small" onClick="{{optG.onDiscard}}" disabled="{{optG.saving}}" hint-size="auto,32px">Discard</x-import></span>
+            <span class="lbl-savebar-btn" style="flex-shrink:0;display:inline-flex"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="contained" size="small" color="primary" onClick="{{optG.onSave}}" disabled="{{optG.saving}}" hint-size="auto,32px">{{optG.saveLabel}}</x-import></span>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{optG.justSaved}}" hint-placeholder-val="{{false}}">
+        <div style="display:flex;align-items:center;gap:6px;padding-top:10px;border-top:1px solid var(--divider);font-size:12px;color:var(--color-success-main)">
+          <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="CheckCircleFilled" size="14" hint-size="14px,14px"></x-import>Changes saved
+        </div>
+      </sc-if>
+    
+          </sc-if>
+          <sc-if value="{{is1h}}" hint-placeholder-val="{{false}}">
+        <div class="lbl-chips">
+          <sc-for list="{{chips}}" as="chip" hint-placeholder-count="3">
+            <span style="position:relative;display:inline-flex" onMouseEnter="{{chip.onHoverEnter}}" onMouseLeave="{{chip.onHoverLeave}}">
+              <span class="lbl-chip" style="border-style:{{chip.borderStyle}};border-color:{{chip.borderColor}}">
+                <button class="lbl-chipname" onClick="{{chip.onEdit}}" style="color:{{chip.textColor}};text-decoration:{{chip.textDecoration}}">{{chip.text}}</button>
+                <sc-if value="{{chip.showTag}}" hint-placeholder-val="{{false}}">
+                  <span class="lbl-tag" style="color:{{chip.tagColor}}">{{chip.tagText}}</span>
+                </sc-if>
+                <sc-if value="{{chip.showUndo}}" hint-placeholder-val="{{false}}">
+                  <button class="lbl-undo" onClick="{{chip.onUndo}}" aria-label="Undo removing {{chip.text}}" title="{{chip.undoTitle}}">
+                    <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="RestoreFilled" size="13" hint-size="13px,13px"></x-import><sc-if value="{{chip.showUndoText}}" hint-placeholder-val="{{true}}">Undo</sc-if>
+                  </button>
+                </sc-if>
+                <sc-if value="{{chip.showRemove}}" hint-placeholder-val="{{true}}">
+                  <button class="lbl-x" onClick="{{chip.onRemove}}" aria-label="Remove {{chip.text}}">
+                    <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="CloseFilled" size="13" hint-size="13px,13px"></x-import>
+                  </button>
+                </sc-if>
+              </span>
+              <sc-if value="{{chip.popoverOpen}}" hint-placeholder-val="{{false}}">
+                <div class="lbl-hoverpop">{{chip.popoverText}}</div>
+              </sc-if>
+            </span>
+          </sc-for>
+          <sc-if value="{{noChips}}" hint-placeholder-val="{{false}}">
+            <span style="font-size:13px;color:var(--text-secondary)">No labels have been added to this post.</span>
+          </sc-if>
+        </div>
+
+        <span style="align-self:flex-start;display:inline-flex"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="outlined" size="small" color="primary" onClick="{{onOpenAdd}}" hint-size="auto,32px">+ Add label</x-import></span>
+
+        <sc-if value="{{hasPending}}" hint-placeholder-val="{{false}}">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;padding-top:10px;border-top:1px solid var(--divider)">
+            <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-secondary)">
+              <span style="color:var(--color-warning-main);display:inline-flex"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="AccessTimeFilled" size="14" hint-size="14px,14px"></x-import></span>
+              {{pendingLabel}}
+            </span>
+            <span style="display:flex;gap:8px;flex-shrink:0">
+              <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="text" size="small" onClick="{{onOpenReview}}" hint-size="auto,32px">Review</x-import>
+              <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="contained" size="small" color="primary" onClick="{{onSave}}" disabled="{{saving}}" hint-size="auto,32px">{{saveLabel}}</x-import>
+            </span>
+          </div>
+        </sc-if>
+          </sc-if>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-head"><span class="card-title">Visuals</span>
+        <span style="color:var(--action-active);display:inline-flex"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ArrowDropUpFilled" size="20" hint-size="20px,20px"></x-import></span>
+      </div>
+      <div class="card-body">
+        <div style="border-bottom:1px solid var(--divider);margin-bottom:12px">
+          <span style="display:inline-block;border-bottom:3px solid var(--text-primary);padding:10px 12px 8px;font-size:12px;font-weight:700;color:var(--text-primary)">Text on screen</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--text-primary)"><strong style="text-decoration:underline">Item 1</strong><span>&#8963;</span></div>
+        <p style="font-size:12px;line-height:1.45;margin:6px 0 12px;color:var(--text-secondary)">&oslash;ETTER<br />Emirates<br />Emirafes_<br />FIY<br />FIY<br />FIY<br />Join for Real. &Uacute;nete a la comunidad<br />madridistas.com<br />Emirare<br />BETTER<br />BETTER<br />BETTER</p>
+        <div style="display:flex;justify-content:space-between;font-size:13px;padding-top:2px;color:var(--text-primary)"><span>Item 2</span><span>&#8964;</span></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-head"><span class="card-title">Rating</span>
+        <span style="color:var(--action-active);display:inline-flex"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ArrowDropUpFilled" size="20" hint-size="20px,20px"></x-import></span>
+      </div>
+      <div class="card-body">
+        <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.FormControlLabel" label="Not relevant" hint-size="auto,auto">
+          <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Checkbox" checked="{{false}}" size="small" hint-size="20px,20px"></x-import>
+        </x-import>
+        <hr style="border:0;border-top:1px solid var(--divider);margin:14px 0" />
+        <p style="margin:0 0 8px;font-size:13px;color:var(--text-primary)">What type of content is displayed in the post?</p>
+        <div class="seg"><span>Advertisement</span><span>Questionable</span><span>Organic</span></div>
+        <p style="margin:12px 0 8px;font-size:13px;color:var(--text-primary)">Why?</p>
+        <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.TextField" placeholder="Optional" size="small" full-width="{{true}}" hint-size="auto,40px"></x-import>
+        <div style="text-align:right;margin-top:12px">
+          <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="contained" size="small" disabled="{{true}}" hint-size="auto,32px">Rate post</x-import>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Popover" open="{{optF.popoverOpen}}" onClose="{{optF.onPopoverClose}}" anchor-style="{{optF.popoverAnchorStyle}}" hint-size="0,0">
+      <div style="padding:12px 14px;min-width:210px;font-size:13px;color:var(--text-primary)">
+        <sc-if value="{{optF.popoverIsSaved}}" hint-placeholder-val="{{false}}">
+          <div style="color:var(--text-secondary);font-size:12px;margin-bottom:8px;line-height:1.5">Added by {{optF.popoverBy}}<br></br>{{optF.popoverAt}}</div>
+        </sc-if>
+        <sc-if value="{{optF.popoverIsPending}}" hint-placeholder-val="{{false}}">
+          <div style="display:flex;align-items:center;gap:6px;color:var(--color-warning-main);font-size:12px;margin-bottom:8px">
+            <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="AccessTimeFilled" size="14" hint-size="14px,14px"></x-import>Pending — not yet saved
+          </div>
+        </sc-if>
+        <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="text" size="small" color="primary" onClick="{{optF.onPopoverEdit}}" hint-size="auto,28px">Edit</x-import>
+      </div>
+    </x-import>
+    <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Dialog" open="{{optF.removeDialogOpen}}" onClose="{{optF.onCancelRemove}}" max-width="xs" hint-size="0,0">
+      <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.DialogTitle" hint-size="auto,auto">Remove "{{optF.removeDialogText}}"?</x-import>
+      <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.DialogContent" hint-size="auto,auto">
+        <p style="margin:0 0 8px">This removes the label from this post only.</p>
+        <p style="margin:0">Other posts keep this label, and it is not deleted from the workspace.</p>
+      </x-import>
+      <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.DialogActions" hint-size="auto,auto">
+        <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="text" size="small" onClick="{{optF.onCancelRemove}}" style="margin-right:8px" hint-size="auto,32px">Cancel</x-import>
+        <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="contained" size="small" color="error" onClick="{{optF.onConfirmRemove}}" hint-size="auto,32px">Remove</x-import>
+      </x-import>
+    </x-import>
+  
+
+<x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Popover" open="{{optG.popoverOpen}}" onClose="{{optG.onPopoverClose}}" anchor-style="{{optG.popoverAnchorStyle}}" hint-size="0,0">
+      <div style="padding:12px 14px;min-width:210px;font-size:13px;color:var(--text-primary)">
+        <sc-if value="{{optG.popoverIsSaved}}" hint-placeholder-val="{{false}}">
+          <div style="color:var(--text-secondary);font-size:12px;margin-bottom:8px;line-height:1.5">Added by {{optG.popoverBy}}<br></br>{{optG.popoverAt}}</div>
+        </sc-if>
+        <sc-if value="{{optG.popoverIsPending}}" hint-placeholder-val="{{false}}">
+          <div style="display:flex;align-items:center;gap:6px;color:var(--color-warning-main);font-size:12px;margin-bottom:8px">
+            <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="AccessTimeFilled" size="14" hint-size="14px,14px"></x-import>Pending — not yet saved
+          </div>
+        </sc-if>
+        <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="text" size="small" color="primary" onClick="{{optG.onPopoverEdit}}" hint-size="auto,28px">Edit</x-import>
+      </div>
+    </x-import>
+  
+
+  <!-- ============ Add labels modal ============ -->
+  <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Dialog" open="{{add.open}}" onClose="{{add.onClose}}" max-width="md" hint-size="0,0">
+    <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.DialogTitle" hint-size="auto,auto">Add labels</x-import>
+    <div style="padding:0 24px 4px;font-size:12px;color:var(--text-secondary);margin-top:-8px">Add existing workspace labels, or create a new one.</div>
+    <div style="padding:12px 24px 0">
+      <!-- Plain buttons, not the DS Tabs: Tabs introspects child.props.value, but every x-import is
+           wrapped in an sc-host-x host div by the runtime, so Tabs would only ever see the wrappers. -->
+      <div class="mtabs">
+        <button class="mtab" data-active="{{add.isExisting}}" onClick="{{add.onTabExisting}}">Existing labels</button>
+        <button class="mtab" data-active="{{add.isNew}}" onClick="{{add.onTabNew}}">Create new</button>
+      </div>
+    </div>
+
+    <sc-if value="{{add.isExisting}}" hint-placeholder-val="{{true}}">
+      <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.DialogContent" hint-size="auto,auto">
+        <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.TextField" value="{{add.search}}" onChange="{{add.onSearch}}" placeholder="Search labels" size="small" full-width="{{true}}" hint-size="auto,40px"></x-import>
+        <div class="pillrow" style="margin-top:12px">
+          <sc-for list="{{add.pills}}" as="pill" hint-placeholder-count="4">
+            <button class="pill" data-active="{{pill.active}}" onClick="{{pill.onClick}}"><span>{{pill.name}}</span><span style="opacity:.7">{{pill.count}}</span></button>
+          </sc-for>
+        </div>
+        <div style="margin-top:12px;max-height:300px;overflow-y:auto;border-top:1px solid var(--divider)">
+          <sc-for list="{{add.rows}}" as="row" hint-placeholder-count="5">
+            <sc-if value="{{row.isHeader}}" hint-placeholder-val="{{false}}">
+              <div class="grouphdr">{{row.text}}</div>
+            </sc-if>
+            <sc-if value="{{row.isRow}}" hint-placeholder-val="{{true}}">
+              <label class="optrow" data-disabled="{{row.disabled}}">
+                <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Checkbox" checked="{{row.checked}}" onChange="{{row.onToggle}}" disabled="{{row.disabled}}" size="small" hint-size="20px,20px"></x-import>
+                <span>{{row.text}}</span>
+                <sc-if value="{{row.hasNote}}" hint-placeholder-val="{{false}}"><span class="optnote">{{row.note}}</span></sc-if>
+              </label>
+            </sc-if>
+            <sc-if value="{{row.isEmpty}}" hint-placeholder-val="{{false}}">
+              <div style="padding:14px 8px;font-size:13px;color:var(--text-secondary)">{{row.text}}</div>
+            </sc-if>
+          </sc-for>
+        </div>
+      </x-import>
+      <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.DialogActions" hint-size="auto,auto">
+        <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="text" size="small" onClick="{{add.onClose}}" hint-size="auto,32px">Cancel</x-import>
+        <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="contained" size="small" color="primary" onClick="{{add.onConfirm}}" disabled="{{add.confirmDisabled}}" hint-size="auto,32px">{{add.confirmLabel}}</x-import>
+      </x-import>
+    </sc-if>
+
+    <sc-if value="{{add.isNew}}" hint-placeholder-val="{{false}}">
+      <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.DialogContent" hint-size="auto,auto">
+        <div style="font-size:11px;font-weight:700;margin-bottom:6px">Category <span style="font-weight:400;color:var(--text-secondary)">Optional</span></div>
+        <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.TextField" value="{{add.newCat}}" onChange="{{add.onNewCat}}" placeholder="Type a new category or pick one below" size="small" full-width="{{true}}" hint-size="auto,40px"></x-import>
+        <div class="pillrow" style="margin-top:8px">
+          <sc-for list="{{add.catPicks}}" as="c" hint-placeholder-count="4">
+            <button class="pill" data-active="{{c.active}}" onClick="{{c.onClick}}">{{c.name}}</button>
+          </sc-for>
+        </div>
+        <div style="font-size:11px;font-weight:700;margin:16px 0 6px">Label name</div>
+        <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.TextField" value="{{add.newLabel}}" onChange="{{add.onNewLabel}}" placeholder="Enter a label name" size="small" full-width="{{true}}" hint-size="auto,40px"></x-import>
+        <p class="hint">{{add.newHint}}</p>
+      </x-import>
+      <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.DialogActions" hint-size="auto,auto">
+        <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="text" size="small" onClick="{{add.onClose}}" hint-size="auto,32px">Cancel</x-import>
+        <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="contained" size="small" color="primary" onClick="{{add.onCreate}}" disabled="{{add.createDisabled}}" hint-size="auto,32px">Create label</x-import>
+      </x-import>
+    </sc-if>
+  </x-import>
+
+  <!-- ============ Edit modal ============ -->
+  <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Dialog" open="{{edit.open}}" onClose="{{edit.onClose}}" max-width="sm" hint-size="0,0">
+    <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.DialogTitle" hint-size="auto,auto">Edit label on this post</x-import>
+    <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.DialogContent" hint-size="auto,auto">
+      <p style="margin:0 0 14px;font-size:12px;color:var(--text-secondary)">The original workspace label is left unchanged &mdash; this only affects this post.</p>
+      <div style="font-size:11px;font-weight:700;margin-bottom:6px">Category <span style="font-weight:400;color:var(--text-secondary)">Optional</span></div>
+      <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.TextField" value="{{edit.category}}" onChange="{{edit.onCategory}}" placeholder="No category" size="small" full-width="{{true}}" hint-size="auto,40px"></x-import>
+      <div class="pillrow" style="margin-top:8px">
+        <sc-for list="{{edit.catPicks}}" as="c" hint-placeholder-count="4">
+          <button class="pill" data-active="{{c.active}}" onClick="{{c.onClick}}">{{c.name}}</button>
+        </sc-for>
+      </div>
+      <div style="font-size:11px;font-weight:700;margin:16px 0 6px">Label name</div>
+      <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.TextField" value="{{edit.label}}" onChange="{{edit.onLabel}}" size="small" full-width="{{true}}" hint-size="auto,40px"></x-import>
+      <div class="preview">{{edit.preview}}</div>
+      <p class="hint">{{edit.hint}}</p>
+    </x-import>
+    <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.DialogActions" hint-size="auto,auto">
+      <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="text" size="small" onClick="{{edit.onClose}}" hint-size="auto,32px">Cancel</x-import>
+      <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="contained" size="small" color="primary" onClick="{{edit.onApply}}" disabled="{{edit.applyDisabled}}" hint-size="auto,32px">Apply change</x-import>
+    </x-import>
+  </x-import>
+
+  <!-- ============ Remove confirmation (only for other people's labels) ============ -->
+  <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Dialog" open="{{remove.open}}" onClose="{{remove.onCancel}}" max-width="xs" hint-size="0,0">
+    <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.DialogTitle" hint-size="auto,auto">Remove &ldquo;{{remove.text}}&rdquo;?</x-import>
+    <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.DialogContent" hint-size="auto,auto">
+      <p style="margin:0 0 10px;display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-primary)">
+        <span style="color:var(--text-secondary);display:inline-flex"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="PersonFilled" size="16" hint-size="16px,16px"></x-import></span>
+        {{remove.by}}
+      </p>
+      <p style="margin:0;font-size:13px;color:var(--text-secondary);line-height:1.5">This removes the label from this post only. Other posts keep it, and it is not deleted from the workspace.</p>
+    </x-import>
+    <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.DialogActions" hint-size="auto,auto">
+      <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="text" size="small" onClick="{{remove.onCancel}}" hint-size="auto,32px">Cancel</x-import>
+      <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="contained" size="small" color="error" onClick="{{remove.onConfirm}}" hint-size="auto,32px">Remove</x-import>
+    </x-import>
+  </x-import>
+
+  <!-- ============ Review changes ============ -->
+  <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Dialog" open="{{review.open}}" onClose="{{review.onClose}}" max-width="md" hint-size="0,0">
+    <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.DialogTitle" hint-size="auto,auto">Review label changes</x-import>
+    <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.DialogContent" hint-size="auto,auto">
+      <p style="margin:0 0 14px;font-size:12px;color:var(--text-secondary)">These changes apply to this post only.</p>
+      <sc-for list="{{review.groups}}" as="grp" hint-placeholder-count="2">
+        <div style="margin-bottom:16px">
+          <div class="chg-h">{{grp.title}}</div>
+          <sc-for list="{{grp.items}}" as="it" hint-placeholder-count="2">
+            <div class="chg-item"><span>{{it.text}}</span><span class="chg-kind">{{it.kind}}</span></div>
+          </sc-for>
+        </div>
+      </sc-for>
+      <sc-if value="{{review.empty}}" hint-placeholder-val="{{false}}">
+        <p style="margin:0;font-size:13px;color:var(--text-secondary)">No pending changes.</p>
+      </sc-if>
+    </x-import>
+    <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.DialogActions" hint-size="auto,auto">
+      <span style="margin-right:auto;display:inline-flex"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="text" size="small" color="error" onClick="{{review.onDiscard}}" hint-size="auto,32px">Discard changes</x-import></span>
+      <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="text" size="small" onClick="{{review.onClose}}" hint-size="auto,32px">Cancel</x-import>
+      <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="contained" size="small" color="primary" onClick="{{onSave}}" disabled="{{saving}}" hint-size="auto,32px">{{saveLabel}}</x-import>
+    </x-import>
+  </x-import>
+
+  <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Snackbar" open="{{toast.open}}" message="{{toast.message}}" onClose="{{toast.onClose}}" hint-size="0,0"></x-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  nextTempId = -1;
+  nextSavedIdCounter = 100;
+  nextSavedId = 100;
+
+  state = {
+    activeOption: 'h',
+    currentUser: 'You',
+
+    f: {
+      catalog: [
+        { id: 1, category: 'Brand', label: 'Coca-Cola' },
+        { id: 2, category: null, label: 'Plastic' },
+        { id: 3, category: 'Brand', label: 'Adidas' },
+        { id: 4, category: 'Brand', label: 'Real Madrid' },
+        { id: 5, category: 'Product', label: 'Stapler' },
+        { id: 6, category: 'Product', label: 'Football boots' },
+        { id: 7, category: 'Ad rules', label: 'Disclosure missing' },
+        { id: 8, category: 'Ad rules', label: 'Misleading claim' },
+        { id: 9, category: null, label: 'Giveaway' },
+      ],
+      saved: [
+        { id: 1, category: 'Brand', label: 'Coca-Cola', meta: { by: 'Maria Silva', at: 'Jul 28 · 14:02' } },
+        { id: 2, category: null, label: 'Plastic', meta: { by: 'Tomás Ferreira', at: 'Jul 30 · 09:47' } },
+      ],
+      pendingChanges: {},
+      pendingAdds: [],
+      input: '',
+      open: false,
+      editingKey: null,
+      popover: null,
+      removeDialogId: null,
+      saving: false,
+      justSaved: false,
+    },
+    g: {
+      catalog: [
+        { id: 1, category: 'Brand', label: 'Coca-Cola' },
+        { id: 2, category: null, label: 'Plastic' },
+        { id: 3, category: 'Brand', label: 'Adidas' },
+        { id: 4, category: 'Brand', label: 'Real Madrid' },
+        { id: 5, category: 'Product', label: 'Stapler' },
+        { id: 6, category: 'Product', label: 'Football boots' },
+        { id: 7, category: 'Ad rules', label: 'Disclosure missing' },
+        { id: 8, category: 'Ad rules', label: 'Misleading claim' },
+        { id: 9, category: null, label: 'Giveaway' },
+      ],
+      saved: [
+        { id: 1, category: 'Brand', label: 'Coca-Cola', meta: { by: 'Maria Silva', at: 'Jul 28 · 14:02' } },
+        { id: 2, category: null, label: 'Plastic', meta: { by: 'Tomás Ferreira', at: 'Jul 30 · 09:47' } },
+      ],
+      pendingChanges: {},
+      pendingAdds: [],
+      input: '',
+      open: false,
+      editingKey: null,
+      popover: null,
+      saving: false,
+      justSaved: false,
+    },
+    catalogs: { a: this.seedCatalog(), b: this.seedCatalog(), c: this.seedCatalog(), d: this.seedCatalogD(), e: this.seedCatalogE() },
+    assigned: { a: [3, 8], b: [3, 8], c: [3, 8], d: [3, 8], e: [4, 7] },
+    input: { a: '', b: '', c: '', d: '', e: '' },
+    open: { a: false, b: false, c: false, d: false, e: false },
+    categoryFilter: { a: null, b: null, c: null, d: null, e: null },
+    catalog: [
+      { id: 1,  category: 'Brand',      label: 'Real Madrid' },
+      { id: 2,  category: 'Brand',      label: 'Coca-Cola' },
+      { id: 3,  category: 'Brand',      label: 'Adidas' },
+      { id: 4,  category: 'Brand',      label: 'Emirates' },
+      { id: 5,  category: 'Brand',      label: 'Nike' },
+      { id: 6,  category: 'Product',    label: 'Football boots' },
+      { id: 7,  category: 'Product',    label: 'Jersey' },
+      { id: 8,  category: 'Product',    label: 'Energy drink' },
+      { id: 9,  category: 'Ad rules',   label: 'Disclosure missing' },
+      { id: 10, category: 'Ad rules',   label: 'Misleading claim' },
+      { id: 11, category: 'Ad rules',   label: 'Undisclosed partnership' },
+      { id: 12, category: 'Campaign',   label: 'Champions League' },
+      { id: 13, category: 'Campaign',   label: 'Summer 2026' },
+      { id: 14, category: 'Compliance', label: 'GDPR' },
+      { id: 15, category: 'Compliance', label: 'Minors' },
+      { id: 16, category: null,         label: 'Plastic' },
+      { id: 17, category: null,         label: 'Giveaway' },
+      { id: 18, category: null,         label: 'Madridista' },
+      { id: 19, category: null,         label: 'Sponsored' },
+    ],
+    // seeded so both remove paths are demoable: two by other people, one by "You" — dates are
+    // relative to "now" so the hover popover always demoes both the relative ("N days ago") and
+    // absolute date-formatting branches, regardless of when this prototype is actually opened.
+    saved: [
+      { id: 2,  category: 'Brand', label: 'Coca-Cola',   meta: { by: 'Maria Silva',    at: new Date(Date.now() - 2 * 86400000) } },
+      { id: 16, category: null,    label: 'Plastic',     meta: { by: 'Tomás Ferreira', at: new Date(Date.now() - 5 * 86400000) } },
+      { id: 1,  category: 'Brand', label: 'Real Madrid', meta: { by: 'You',            at: new Date(Date.now() - 15 * 86400000) } },
+    ],
+    pendingChanges: {},
+    pendingAdds: [],
+
+    addOpen: false, addTab: 'existing', addSearch: '', addCat: null, addSel: [],
+    newCat: '', newLabel: '',
+    editOpen: false, editTarget: null, editCategory: '', editLabel: '',
+    removeId: null,
+    reviewOpen: false,
+    saving: false,
+    toast: '',
+    hoverId: null,
+  };
+
+  seedCatalogD() {
+    const extra = [
+      { id: 10, category: 'Brand', label: 'Nike' },
+      { id: 11, category: 'Brand', label: 'Emirates' },
+      { id: 12, category: 'Brand', label: 'Puma' },
+      { id: 13, category: 'Product', label: 'Jersey' },
+      { id: 14, category: 'Product', label: 'Energy drink' },
+      { id: 15, category: 'Ad rules', label: 'Undisclosed partnership' },
+      { id: 16, category: 'Ad rules', label: 'Unsubstantiated claim' },
+      { id: 17, category: 'Compliance', label: 'GDPR' },
+      { id: 18, category: 'Compliance', label: 'Minors' },
+      { id: 19, category: 'Campaign', label: 'Summer 2026' },
+      { id: 20, category: 'Campaign', label: 'Champions League' },
+      { id: 21, category: null, label: 'Giveaway rules' },
+      { id: 22, category: null, label: 'Watch later' },
+    ];
+    return this.seedCatalog().concat(extra);
+  }
+
+  seedCatalogE() {
+    return [
+      { id: 1, category: 'Ad rule', label: 'Rule number 1' },
+      { id: 2, category: 'Ad rule', label: 'Rule number 2' },
+      { id: 3, category: 'Ad rule', label: 'Rule number 3' },
+      { id: 4, category: 'Brand', label: 'Coca-Cola' },
+      { id: 5, category: 'Brand', label: 'Fanta' },
+      { id: 6, category: 'Brand', label: 'Sprite' },
+      { id: 7, category: 'Product', label: 'Football boots' },
+      { id: 8, category: 'Product', label: 'Stapler' },
+      { id: 9, category: null, label: 'Giveaway' },
+      { id: 10, category: null, label: 'Plastic' },
+    ];
+  }
+
+  seedCatalog() {
+    return [
+      { id: 1, category: 'Brand', label: 'Coca-Cola' },
+      { id: 2, category: 'Brand', label: 'Adidas' },
+      { id: 3, category: 'Brand', label: 'Real Madrid' },
+      { id: 4, category: 'Product', label: 'Stapler' },
+      { id: 5, category: 'Product', label: 'Football boots' },
+      { id: 6, category: 'Ad rules', label: 'Disclosure missing' },
+      { id: 7, category: 'Ad rules', label: 'Misleading claim' },
+      { id: 8, category: null, label: 'Plastic' },
+      { id: 9, category: null, label: 'Giveaway' },
+    ];
+  }
+
+  buildRows(key, query, categoryFilter) {
+    const catalog = this.state.catalogs[key];
+    const assignedIds = this.state.assigned[key];
+    const q = (query || '').trim();
+    const norm = (s) => (s || '').toLowerCase();
+    let available = catalog.filter((c) => !assignedIds.includes(c.id));
+    if (categoryFilter) available = available.filter((c) => (c.category || 'Unassigned') === categoryFilter);
+    const hasSlash = q.includes('/');
+    let catQuery = '', labelQuery = q;
+    if (hasSlash) {
+      const parts = q.split('/');
+      catQuery = parts[0].trim();
+      labelQuery = parts.slice(1).join('/').trim();
+    }
+    let matches;
+    if (!q) matches = available;
+    else if (hasSlash) matches = available.filter((c) => norm(c.category).includes(norm(catQuery)) && norm(c.label).includes(norm(labelQuery)));
+    else matches = available.filter((c) => norm(c.label).includes(norm(q)) || norm(c.category).includes(norm(q)));
+
+    const groups = {}, order = [];
+    matches.forEach((m) => {
+      const k = m.category || 'Unassigned';
+      if (!groups[k]) { groups[k] = []; order.push(k); }
+      groups[k].push(m);
+    });
+    order.sort((x, y) => (x === 'Unassigned' ? 1 : y === 'Unassigned' ? -1 : x.localeCompare(y)));
+
+    const rows = [];
+    order.forEach((k) => {
+      rows.push({ key: 'h-' + k, isHeader: true, isItem: false, isCreate: false, isEmpty: false, text: k });
+      groups[k].forEach((item) => rows.push({
+        key: 'i-' + item.id, isHeader: false, isItem: true, isCreate: false, isEmpty: false,
+        text: item.category ? item.category + ' / ' + item.label : item.label,
+        onClick: (e) => { e.preventDefault(); this.selectItem(key, item.id); },
+      }));
+    });
+    if (q) {
+      if (hasSlash && labelQuery) {
+        const catExact = catalog.find((c) => c.category && norm(c.category) === norm(catQuery));
+        const exact = matches.some((m) => norm(m.label) === norm(labelQuery) && norm(m.category || '') === norm(catExact ? catExact.category : catQuery));
+        if (!exact) {
+          if (catExact) rows.push({ key: 'c1', isHeader: false, isItem: false, isCreate: true, isEmpty: false, text: 'Create "' + labelQuery + '" in ' + catExact.category, onClick: (e) => { e.preventDefault(); this.createLabel(key, catExact.category, labelQuery); } });
+          else if (catQuery) rows.push({ key: 'c2', isHeader: false, isItem: false, isCreate: true, isEmpty: false, text: 'Create category "' + catQuery + '" with "' + labelQuery + '"', onClick: (e) => { e.preventDefault(); this.createLabel(key, catQuery, labelQuery); } });
+        }
+      } else if (!hasSlash) {
+        const exact = matches.some((m) => norm(m.label) === norm(q));
+        if (!exact) {
+          if (categoryFilter) {
+            const catForCreate = categoryFilter === 'Unassigned' ? null : categoryFilter;
+            rows.push({ key: 'c3', isHeader: false, isItem: false, isCreate: true, isEmpty: false, text: 'Create "' + q + '" in ' + categoryFilter, onClick: (e) => { e.preventDefault(); this.createLabel(key, catForCreate, q); } });
+          } else {
+            rows.push({ key: 'c3', isHeader: false, isItem: false, isCreate: true, isEmpty: false, text: 'Create "' + q + '" (unassigned)', onClick: (e) => { e.preventDefault(); this.createLabel(key, null, q); } });
+          }
+        }
+      }
+    }
+    if (!rows.length) rows.push({ key: 'empty', isHeader: false, isItem: false, isCreate: false, isEmpty: true, text: 'No matches' });
+    return rows;
+  }
+
+  buildFlatRows(key, query) {
+    const catalog = this.state.catalogs[key];
+    const assignedIds = this.state.assigned[key];
+    const q = (query || '').trim();
+    const norm = (s) => (s || '').toLowerCase();
+    const available = catalog.filter((c) => !assignedIds.includes(c.id));
+    const hasSlash = q.includes('/');
+    let catQuery = '', labelQuery = q;
+    if (hasSlash) {
+      const parts = q.split('/');
+      catQuery = parts[0].trim();
+      labelQuery = parts.slice(1).join('/').trim();
+    }
+    let matches;
+    if (!q) matches = available;
+    else if (hasSlash) matches = available.filter((c) => norm(c.category).includes(norm(catQuery)) && norm(c.label).includes(norm(labelQuery)));
+    else matches = available.filter((c) => norm(c.label).includes(norm(q)) || norm(c.category).includes(norm(q)));
+
+    const displayText = (c) => (c.category ? c.category + ' / ' + c.label : c.label);
+    const sorted = [...matches].sort((x, y) => displayText(x).localeCompare(displayText(y)));
+
+    const rows = sorted.map((item) => ({
+      key: 'i-' + item.id, isHeader: false, isItem: true, isCreate: false, isEmpty: false,
+      text: displayText(item),
+      onClick: (e) => { e.preventDefault(); this.selectItem(key, item.id); },
+    }));
+
+    if (q) {
+      if (hasSlash && labelQuery) {
+        const catExact = catalog.find((c) => c.category && norm(c.category) === norm(catQuery));
+        const exact = matches.some((m) => norm(m.label) === norm(labelQuery) && norm(m.category || '') === norm(catExact ? catExact.category : catQuery));
+        if (!exact) {
+          if (catExact) rows.push({ key: 'c1', isHeader: false, isItem: false, isCreate: true, isEmpty: false, text: 'Create "' + labelQuery + '" in ' + catExact.category, onClick: (e) => { e.preventDefault(); this.createLabel(key, catExact.category, labelQuery); } });
+          else if (catQuery) rows.push({ key: 'c2', isHeader: false, isItem: false, isCreate: true, isEmpty: false, text: 'Create category "' + catQuery + '" with "' + labelQuery + '"', onClick: (e) => { e.preventDefault(); this.createLabel(key, catQuery, labelQuery); } });
+        }
+      } else if (!hasSlash) {
+        const exact = matches.some((m) => norm(m.label) === norm(q));
+        if (!exact) rows.push({ key: 'c3', isHeader: false, isItem: false, isCreate: true, isEmpty: false, text: 'Create "' + q + '" (unassigned)', onClick: (e) => { e.preventDefault(); this.createLabel(key, null, q); } });
+      }
+    }
+    if (!rows.length) rows.push({ key: 'empty', isHeader: false, isItem: false, isCreate: false, isEmpty: true, text: 'No matches' });
+    return rows;
+  }
+
+  selectItem(key, id) {
+    this.setState((s) => ({ assigned: { ...s.assigned, [key]: [...s.assigned[key], id] }, input: { ...s.input, [key]: '' } }));
+  }
+
+  createLabel(key, category, label) {
+    this.setState((s) => {
+      const id = Math.max(0, ...s.catalogs[key].map((c) => c.id)) + 1;
+      const catalog = [...s.catalogs[key], { id, category, label }];
+      return {
+        catalogs: { ...s.catalogs, [key]: catalog },
+        assigned: { ...s.assigned, [key]: [...s.assigned[key], id] },
+        input: { ...s.input, [key]: '' },
+      };
+    });
+  }
+
+  fDisplay(entry) { return entry.category ? entry.category + ' / ' + entry.label : entry.label; }
+
+  fDisplayList(key) {
+    const f = this.state[key];
+    const list = [];
+    f.saved.forEach((s) => {
+      const chg = f.pendingChanges[s.id];
+      if (chg && chg.type === 'remove') list.push({ id: s.id, category: s.category, label: s.label, status: 'pendingRemove', meta: s.meta });
+      else if (chg && chg.type === 'edit') list.push({ id: s.id, category: chg.category, label: chg.label, status: 'pendingEdit', meta: s.meta });
+      else list.push({ id: s.id, category: s.category, label: s.label, status: 'saved', meta: s.meta });
+    });
+    f.pendingAdds.forEach((a) => list.push({ id: a.tempId, category: a.category, label: a.label, status: 'pendingAdd', meta: null }));
+    return list;
+  }
+
+  fAvailableRows(key, query) {
+    const f = this.state[key];
+    // ponytail: build occupiedIds from source ids directly (saved ids + the catalog id a pending
+    // add came from) instead of fDisplayList, which loses the catalogId of a pendingAdd — that
+    // loss let the same catalog entry be picked (and duplicated) over and over.
+    const occupiedIds = [];
+    f.saved.forEach((s) => { const chg = f.pendingChanges[s.id]; if (!(chg && chg.type === 'remove')) occupiedIds.push(s.id); });
+    f.pendingAdds.forEach((a) => { if (a.catalogId != null) occupiedIds.push(a.catalogId); });
+    const available = f.catalog.filter((c) => !occupiedIds.includes(c.id));
+    const q = (query || '').trim();
+    const norm = (s) => (s || '').toLowerCase();
+    const hasSlash = q.includes('/');
+    let catQuery = '', labelQuery = q;
+    if (hasSlash) {
+      const parts = q.split('/');
+      catQuery = parts[0].trim();
+      labelQuery = parts.slice(1).join('/').trim();
+    }
+    let matches;
+    if (!q) matches = available;
+    else if (hasSlash) matches = available.filter((c) => norm(c.category).includes(norm(catQuery)) && norm(c.label).includes(norm(labelQuery)));
+    else matches = available.filter((c) => norm(c.label).includes(norm(q)) || norm(c.category).includes(norm(q)));
+
+    const sorted = [...matches].sort((a, b) => this.fDisplay(a).localeCompare(this.fDisplay(b)));
+    const rows = sorted.map((item) => ({ key: 'i-' + item.id, isItem: true, isCreate: false, isEmpty: false, text: this.fDisplay(item), onClick: (e) => { e.preventDefault(); this.fChoose(key, item); } }));
+
+    if (q) {
+      if (hasSlash && labelQuery) {
+        const catExact = f.catalog.find((c) => c.category && norm(c.category) === norm(catQuery));
+        const exact = matches.some((m) => norm(m.label) === norm(labelQuery) && norm(m.category || '') === norm(catExact ? catExact.category : catQuery));
+        if (!exact) {
+          if (catExact) rows.push({ key: 'c1', isItem: false, isCreate: true, isEmpty: false, text: 'Create "' + labelQuery + '" in ' + catExact.category, onClick: (e) => { e.preventDefault(); this.fChoose(key, { category: catExact.category, label: labelQuery, isNew: true }); } });
+          else if (catQuery) rows.push({ key: 'c2', isItem: false, isCreate: true, isEmpty: false, text: 'Create category "' + catQuery + '" with "' + labelQuery + '"', onClick: (e) => { e.preventDefault(); this.fChoose(key, { category: catQuery, label: labelQuery, isNew: true }); } });
+        }
+      } else if (!hasSlash) {
+        const exact = matches.some((m) => norm(m.label) === norm(q));
+        if (!exact) rows.push({ key: 'c3', isItem: false, isCreate: true, isEmpty: false, text: 'Create "' + q + '" (unassigned)', onClick: (e) => { e.preventDefault(); this.fChoose(key, { category: null, label: q, isNew: true }); } });
+      }
+    }
+    if (!rows.length) rows.push({ key: 'empty', isItem: false, isCreate: false, isEmpty: true, text: 'No matches' });
+    return rows;
+  }
+
+  fChoose(key, item) {
+    this.setState((s) => {
+      const f = s[key];
+      const ek = f.editingKey;
+      if (ek && ek.type === 'saved') {
+        const pendingChanges = { ...f.pendingChanges, [ek.id]: { type: 'edit', category: item.category, label: item.label } };
+        return { [key]: { ...f, pendingChanges, input: '', open: false, editingKey: null } };
+      }
+      if (ek && ek.type === 'add') {
+        const pendingAdds = f.pendingAdds.map((a) => (a.tempId === ek.tempId ? { ...a, category: item.category, label: item.label } : a));
+        return { [key]: { ...f, pendingAdds, input: '', open: false, editingKey: null } };
+      }
+      // Re-picking a label that's pending removal just undoes the removal — it's already on
+      // the post — instead of stacking a contradictory "REMOVING" + "NEW" pair for the same label.
+      if (item.id != null && f.pendingChanges[item.id] && f.pendingChanges[item.id].type === 'remove') {
+        const pendingChanges = { ...f.pendingChanges };
+        delete pendingChanges[item.id];
+        return { [key]: { ...f, pendingChanges, input: '', open: false, editingKey: null } };
+      }
+      const tempId = this.nextTempId--;
+      const pendingAdds = [...f.pendingAdds, { tempId, category: item.category, label: item.label, catalogId: item.id ?? null }];
+      return { [key]: { ...f, pendingAdds, input: '', open: false, editingKey: null } };
+    });
+  }
+
+  fRemoveClick(key, entry, skipConfirm) {
+    if (entry.status === 'pendingAdd') { this.setState((s) => ({ [key]: { ...s[key], pendingAdds: s[key].pendingAdds.filter((a) => a.tempId !== entry.id) } })); return; }
+    if (skipConfirm) { this.setState((s) => ({ [key]: { ...s[key], pendingChanges: { ...s[key].pendingChanges, [entry.id]: { type: 'remove' } } } })); return; }
+    this.setState((s) => ({ [key]: { ...s[key], removeDialogId: entry.id } }));
+  }
+
+  fConfirmRemove(key) {
+    this.setState((s) => ({ [key]: { ...s[key], pendingChanges: { ...s[key].pendingChanges, [s[key].removeDialogId]: { type: 'remove' } }, removeDialogId: null } }));
+  }
+
+  fCancelRemoveDialog(key) { this.setState((s) => ({ [key]: { ...s[key], removeDialogId: null } })); }
+
+  fUndoRemove(key, entry) {
+    this.setState((s) => { const pc = { ...s[key].pendingChanges }; delete pc[entry.id]; return { [key]: { ...s[key], pendingChanges: pc } }; });
+  }
+
+  fOpenPopover(key, entry, e) {
+    const rect = e.currentTarget.getBoundingClientRect();
+    this.setState((s) => ({ [key]: { ...s[key], popover: { id: entry.id, top: rect.bottom + 6, left: rect.left } } }));
+  }
+
+  fClosePopover(key) { this.setState((s) => ({ [key]: { ...s[key], popover: null } })); }
+
+  fStartEdit(key, entry) {
+    const editingKey = entry.status === 'pendingAdd' ? { type: 'add', tempId: entry.id } : { type: 'saved', id: entry.id };
+    // ponytail: input starts blank (not prefilled with the current label) so the picker shows
+    // real alternatives instead of filtering itself down to "recreate the same label"
+    this.setState((s) => ({ [key]: { ...s[key], editingKey, input: '', open: true, popover: null } }));
+  }
+
+  fCancelEdit(key) { this.setState((s) => ({ [key]: { ...s[key], editingKey: null, input: '', open: false } })); }
+
+  fSetInput(key, v) { this.setState((s) => ({ [key]: { ...s[key], input: v, open: true } })); }
+  fSetOpen(key, v) { this.setState((s) => ({ [key]: { ...s[key], open: v } })); }
+  fOnBlur(key) { setTimeout(() => this.setState((s) => ({ [key]: { ...s[key], open: false } })), 150); }
+
+  fOnKeyDown(key, e) {
+    if (e.key === 'Escape') { if (this.state[key].editingKey != null) this.fCancelEdit(key); else this.fSetOpen(key, false); }
+    if (e.key === 'Enter') {
+      const rows = this.fAvailableRows(key, this.state[key].input);
+      const first = rows.find((r) => r.isItem || r.isCreate);
+      if (first) first.onClick({ preventDefault() {} });
+    }
+  }
+
+  fPendingCount(key) { const f = this.state[key]; return Object.keys(f.pendingChanges).length + f.pendingAdds.length; }
+
+  fSave(key) {
+    this.setState((s) => ({ [key]: { ...s[key], saving: true } }));
+    setTimeout(() => {
+      this.setState((s) => {
+        const f = s[key];
+        let saved = f.saved
+          .filter((x) => !(f.pendingChanges[x.id] && f.pendingChanges[x.id].type === 'remove'))
+          .map((x) => (f.pendingChanges[x.id] ? { ...x, category: f.pendingChanges[x.id].category, label: f.pendingChanges[x.id].label, meta: { by: 'You', at: 'Just now' } } : x));
+        f.pendingAdds.forEach((a) => { saved.push({ id: this.nextSavedIdCounter++, category: a.category, label: a.label, meta: { by: 'You', at: 'Just now' } }); });
+        return { [key]: { ...f, saved, pendingChanges: {}, pendingAdds: [], saving: false, justSaved: true } };
+      });
+      setTimeout(() => this.setState((s) => ({ [key]: { ...s[key], justSaved: false } })), 2200);
+    }, 700);
+  }
+
+  fDiscard(key) {
+    this.setState((s) => ({ [key]: { ...s[key], pendingChanges: {}, pendingAdds: [], editingKey: null, input: '', open: false, popover: null } }));
+  }
+
+  buildLabelsOption(key, opts) {
+    const simpleRemove = !!(opts && opts.simpleRemove);
+    const f = this.state[key];
+    const list = this.fDisplayList(key);
+    const styleFor = (status) => {
+      if (status === 'pendingAdd') return { borderStyle: 'dashed', borderColor: 'var(--color-primary-main)', textColor: 'var(--text-primary)', textDecoration: 'none', showTag: true, tagText: 'New', tagColor: 'var(--color-primary-main)', showRemove: true, showUndo: false };
+      if (status === 'pendingEdit') return { borderStyle: 'dashed', borderColor: 'var(--color-warning-main)', textColor: 'var(--text-primary)', textDecoration: 'none', showTag: true, tagText: 'Replacing', tagColor: 'var(--color-warning-main)', showRemove: true, showUndo: false };
+      if (status === 'pendingRemove') return { borderStyle: 'dashed', borderColor: 'var(--color-error-main)', textColor: 'var(--text-secondary)', textDecoration: 'line-through', showTag: true, tagText: 'Removing', tagColor: 'var(--color-error-main)', showRemove: false, showUndo: !simpleRemove };
+      return { borderStyle: 'solid', borderColor: 'var(--divider)', textColor: 'var(--text-primary)', textDecoration: 'none', showTag: false, tagText: '', tagColor: 'var(--text-secondary)', showRemove: true, showUndo: false };
+    };
+    const chips = list.map((entry) => ({
+      id: entry.id,
+      text: this.fDisplay(entry),
+      ...styleFor(entry.status),
+      onNameClick: (e) => this.fOpenPopover(key, entry, e),
+      onRemoveClick: () => this.fRemoveClick(key, entry, simpleRemove),
+      onUndoClick: () => this.fUndoRemove(key, entry),
+    }));
+    const popoverEntry = f.popover ? list.find((e) => e.id === f.popover.id) : null;
+    const pendingCount = this.fPendingCount(key);
+    return {
+      chips,
+      noChips: chips.length === 0,
+      rows: this.fAvailableRows(key, f.input),
+      input: f.input,
+      open: f.open,
+      closed: !f.open,
+      editing: f.editingKey != null,
+      inputBorderColor: f.open ? 'var(--color-primary-main)' : 'var(--divider)',
+      placeholder: f.editingKey != null ? 'Replace with …' : 'Add a label — try “Category / …”',
+      onInput: (e) => this.fSetInput(key, e.target.value),
+      onFocus: () => this.fSetOpen(key, true),
+      toggleMenu: () => this.fSetOpen(key, !f.open),
+      onBlur: () => this.fOnBlur(key),
+      onKeyDown: (e) => this.fOnKeyDown(key, e),
+      onCancelEdit: () => this.fCancelEdit(key),
+      hasPending: pendingCount > 0 && !f.justSaved,
+      pendingCount,
+      saving: f.saving,
+      saveLabel: f.saving ? 'Saving…' : 'Save changes',
+      onSave: () => this.fSave(key),
+      onDiscard: () => this.fDiscard(key),
+      justSaved: f.justSaved,
+      popoverOpen: !!f.popover,
+      popoverAnchorStyle: f.popover ? { top: f.popover.top, left: f.popover.left } : { top: 0, left: 0 },
+      popoverIsSaved: !!popoverEntry && popoverEntry.status === 'saved',
+      popoverIsPending: !!popoverEntry && popoverEntry.status !== 'saved',
+      popoverBy: popoverEntry && popoverEntry.meta ? popoverEntry.meta.by : '',
+      popoverAt: popoverEntry && popoverEntry.meta ? popoverEntry.meta.at : '',
+      onPopoverEdit: () => { if (popoverEntry) this.fStartEdit(key, popoverEntry); },
+      onPopoverClose: () => this.fClosePopover(key),
+      removeDialogOpen: !simpleRemove && f.removeDialogId != null,
+      removeDialogText: f.removeDialogId != null ? this.fDisplay(list.find((e) => e.id === f.removeDialogId) || { label: '' }) : '',
+      onConfirmRemove: () => this.fConfirmRemove(key),
+      onCancelRemove: () => this.fCancelRemoveDialog(key),
+    };
+  }
+
+  removeChip(key, id) {
+    this.setState((s) => ({ assigned: { ...s.assigned, [key]: s.assigned[key].filter((x) => x !== id) } }));
+  }
+
+  setInput(key, val) {
+    this.setState((s) => ({ input: { ...s.input, [key]: val }, open: { ...s.open, [key]: true } }));
+  }
+
+  setOpen(key, val) {
+    this.setState((s) => ({ open: { ...s.open, [key]: val } }));
+  }
+
+  buildChips(key) {
+    const catalog = this.state.catalogs[key];
+    return this.state.assigned[key].map((id) => {
+      const item = catalog.find((c) => c.id === id);
+      return {
+        id,
+        text: item.category ? item.category + ' / ' + item.label : item.label,
+        title: item.category || 'Unassigned',
+        onDelete: () => this.removeChip(key, id),
+      };
+    });
+  }
+
+  buildCategoryPills(key) {
+    const catalog = this.state.catalogs[key];
+    const assignedIds = this.state.assigned[key];
+    const available = catalog.filter((c) => !assignedIds.includes(c.id));
+    const counts = {};
+    available.forEach((c) => { const k = c.category || 'Unassigned'; counts[k] = (counts[k] || 0) + 1; });
+    const names = Object.keys(counts).sort((a, b) => (a === 'Unassigned' ? 1 : b === 'Unassigned' ? -1 : a.localeCompare(b)));
+    const active = this.state.categoryFilter[key];
+    const pillStyle = (isActive) => ({
+      bg: isActive ? 'var(--color-primary-main)' : 'transparent',
+      color: isActive ? '#fff' : 'var(--text-primary)',
+      border: isActive ? 'var(--color-primary-main)' : 'var(--divider)',
+    });
+    const pills = [{ name: 'All', count: available.length, onClick: (e) => { e.preventDefault(); this.setCategoryFilter(key, null); }, ...pillStyle(!active) }];
+    names.forEach((n) => pills.push({ name: n, count: counts[n], onClick: (e) => { e.preventDefault(); this.setCategoryFilter(key, n); }, ...pillStyle(active === n) }));
+    return pills;
+  }
+
+  setCategoryFilter(key, name) {
+    this.setState((s) => ({ categoryFilter: { ...s.categoryFilter, [key]: name } }));
+  }
+
+  buildOption(key, flat) {
+    const open = this.state.open[key];
+    const getRows = () => (flat ? this.buildFlatRows(key, this.state.input[key]) : this.buildRows(key, this.state.input[key], this.state.categoryFilter[key]));
+    return {
+      chips: this.buildChips(key),
+      rows: getRows(),
+      categoryPills: flat ? [] : this.buildCategoryPills(key),
+      input: this.state.input[key],
+      placeholder: this.state.assigned[key].length ? '' : 'Add a label — try “Category / …”',
+      borderColor: open ? 'var(--color-primary-main)' : 'var(--divider)',
+      open,
+      closed: !open,
+      focusInput: (e) => { if (e.target === e.currentTarget) { const input = e.currentTarget.querySelector('input'); if (input) input.focus(); } },
+      onInput: (e) => this.setInput(key, e.target.value),
+      openMenu: () => this.setOpen(key, true),
+      closeMenu: () => this.setOpen(key, false),
+      toggleMenu: () => this.setOpen(key, !this.state.open[key]),
+      onBlur: () => setTimeout(() => this.setOpen(key, false), 150),
+      onKeyDown: (e) => {
+        if (e.key === 'Escape') this.setOpen(key, false);
+        if (e.key === 'Enter') {
+          const rows = getRows();
+          const first = rows.find((r) => r.isItem || r.isCreate);
+          if (first) first.onClick();
+        }
+      },
+    };
+  }
+
+  norm(s) { return (s || '').trim().toLowerCase(); }
+  display(e) { return e.category ? e.category + ' / ' + e.label : e.label; }
+  keyOf(e) { return this.norm(e.category) + '::' + this.norm(e.label); }
+
+  /** Saved labels with pending edits/removes applied, plus pending adds. */
+  displayList() {
+    const s = this.state;
+    const list = [];
+    s.saved.forEach((sv) => {
+      const chg = s.pendingChanges[sv.id];
+      if (chg && chg.type === 'remove') list.push({ id: sv.id, category: sv.category, label: sv.label, status: 'pendingRemove', meta: sv.meta });
+      else if (chg && chg.type === 'edit') list.push({ id: sv.id, category: chg.category, label: chg.label, status: 'pendingEdit', meta: sv.meta });
+      else list.push({ id: sv.id, category: sv.category, label: sv.label, status: 'saved', meta: sv.meta });
+    });
+    s.pendingAdds.forEach((a) => list.push({ id: a.tempId, category: a.category, label: a.label, status: 'pendingAdd', meta: null, catalogId: a.catalogId }));
+    return list;
+  }
+
+  pendingCount() { return Object.keys(this.state.pendingChanges).length + this.state.pendingAdds.length; }
+
+  /**
+   * Catalog ids already spoken for: saved ids that aren't pending-removed, plus the
+   * catalogId behind each pending add. Built from source ids (not displayList) so a
+   * pending add can't lose its provenance and be added a second time.
+   */
+  occupiedIds() {
+    const s = this.state;
+    const ids = [];
+    s.saved.forEach((sv) => { const c = s.pendingChanges[sv.id]; if (!(c && c.type === 'remove')) ids.push(sv.id); });
+    s.pendingAdds.forEach((a) => { if (a.catalogId != null) ids.push(a.catalogId); });
+    return ids;
+  }
+
+  /** Saved entry currently pending removal for this catalog id, if any. */
+  pendingRemovedFor(catalogId) {
+    const s = this.state;
+    const sv = s.saved.find((x) => x.id === catalogId);
+    if (!sv) return null;
+    const c = s.pendingChanges[catalogId];
+    return c && c.type === 'remove' ? sv : null;
+  }
+
+  isOwn(entry) { return !!(entry.meta && entry.meta.by === this.state.currentUser); }
+
+  /** Relative for anything within the last week, absolute date/time beyond that. */
+  formatWhen(date) {
+    const diffMs = new Date() - date;
+    const diffDays = Math.floor(diffMs / 86400000);
+    if (diffMs < 60000) return 'just now';
+    if (diffDays <= 0) return 'today';
+    if (diffDays === 1) return 'yesterday';
+    if (diffDays < 7) {
+      const words = ['', 'one', 'two', 'three', 'four', 'five', 'six'];
+      return words[diffDays] + ' days ago';
+    }
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const dd = String(date.getDate()).padStart(2, '0');
+    const hh = String(date.getHours()).padStart(2, '0');
+    const mm = String(date.getMinutes()).padStart(2, '0');
+    return dd + ' ' + months[date.getMonth()] + ' ' + date.getFullYear() + ', ' + hh + ':' + mm;
+  }
+
+  popoverTextFor(entry) {
+    if (entry.status === 'pendingAdd') return 'New — not yet saved';
+    if (entry.status === 'pendingEdit') return 'Replacing — not yet saved';
+    if (entry.status === 'pendingRemove') return 'Removing — not yet saved';
+    return 'Created by: ' + entry.meta.by + ', ' + this.formatWhen(entry.meta.at);
+  }
+
+  categories() { return [...new Set(this.state.catalog.map((c) => c.category).filter(Boolean))].sort(); }
+
+  // ---------- remove ----------
+  onRemove(entry) {
+    if (entry.status === 'pendingRemove') return;
+    // a pending add was never saved, so drop it outright
+    if (entry.status === 'pendingAdd') {
+      this.setState((s) => ({ pendingAdds: s.pendingAdds.filter((a) => a.tempId !== entry.id) }));
+      return;
+    }
+    // PM rule: only confirm when removing something somebody else put on the post
+    if (this.isOwn(entry)) {
+      this.setState((s) => ({ pendingChanges: { ...s.pendingChanges, [entry.id]: { type: 'remove' } } }));
+      return;
+    }
+    this.setState({ removeId: entry.id });
+  }
+  confirmRemove() {
+    this.setState((s) => ({ pendingChanges: { ...s.pendingChanges, [s.removeId]: { type: 'remove' } }, removeId: null }));
+  }
+  undoRemove(entry) {
+    this.setState((s) => { const pc = { ...s.pendingChanges }; delete pc[entry.id]; return { pendingChanges: pc }; });
+  }
+
+  // ---------- add modal ----------
+  openAdd() { this.setState({ addOpen: true, addTab: 'existing', addSearch: '', addCat: null, addSel: [], newCat: '', newLabel: '' }); }
+  closeAdd() { this.setState({ addOpen: false }); }
+
+  addRows() {
+    const s = this.state;
+    const occupied = this.occupiedIds();
+    const q = this.norm(s.addSearch);
+    let items = s.catalog;
+    if (q) items = items.filter((c) => this.display(c).toLowerCase().includes(q));
+    if (s.addCat) items = items.filter((c) => (c.category || 'Unassigned') === s.addCat);
+
+    const groups = {}, order = [];
+    items.forEach((c) => {
+      const k = c.category || 'Unassigned';
+      if (!groups[k]) { groups[k] = []; order.push(k); }
+      groups[k].push(c);
+    });
+    order.sort((a, b) => (a === 'Unassigned' ? 1 : b === 'Unassigned' ? -1 : a.localeCompare(b)));
+
+    const rows = [];
+    order.forEach((k) => {
+      rows.push({ key: 'h-' + k, isHeader: true, isRow: false, isEmpty: false, text: k });
+      groups[k].sort((a, b) => a.label.localeCompare(b.label)).forEach((item) => {
+        const attached = occupied.includes(item.id);
+        const undoes = !!this.pendingRemovedFor(item.id);
+        rows.push({
+          key: 'i-' + item.id, isHeader: false, isRow: true, isEmpty: false,
+          text: this.display(item),
+          checked: s.addSel.includes(item.id),
+          disabled: attached,
+          hasNote: attached || undoes,
+          note: attached ? 'already on post' : undoes ? 'undoes removal' : '',
+          onToggle: () => this.toggleSel(item.id),
+        });
+      });
+    });
+    if (!rows.length) rows.push({ key: 'empty', isHeader: false, isRow: false, isEmpty: true, text: 'No matching labels.' });
+    return rows;
+  }
+
+  toggleSel(id) {
+    this.setState((s) => ({ addSel: s.addSel.includes(id) ? s.addSel.filter((x) => x !== id) : [...s.addSel, id] }));
+  }
+
+  confirmAdd() {
+    this.setState((s) => {
+      const pendingChanges = { ...s.pendingChanges };
+      const pendingAdds = [...s.pendingAdds];
+      s.addSel.forEach((id) => {
+        // re-picking a label that's pending removal just cancels the removal
+        const c = pendingChanges[id];
+        if (c && c.type === 'remove') { delete pendingChanges[id]; return; }
+        if (pendingAdds.some((a) => a.catalogId === id)) return;
+        const item = s.catalog.find((x) => x.id === id);
+        if (!item) return;
+        pendingAdds.push({ tempId: this.nextTempId--, category: item.category, label: item.label, catalogId: item.id });
+      });
+      return { pendingChanges, pendingAdds, addOpen: false, addSel: [] };
+    });
+  }
+
+  createNew() {
+    const category = this.state.newCat.trim() || null;
+    const label = this.state.newLabel.trim();
+    if (!label) return;
+    const cand = { category, label };
+    if (this.displayList().some((e) => e.status !== 'pendingRemove' && this.keyOf(e) === this.keyOf(cand))) {
+      this.setState({ toast: 'That label is already on this post.' });
+      return;
+    }
+    const existing = this.state.catalog.find((c) => this.keyOf(c) === this.keyOf(cand));
+    this.setState((s) => ({
+      pendingAdds: [...s.pendingAdds, { tempId: this.nextTempId--, category, label, catalogId: existing ? existing.id : null }],
+      addOpen: false, newCat: '', newLabel: '',
+    }));
+  }
+
+  // ---------- edit modal ----------
+  openEdit(entry) {
+    if (entry.status === 'pendingRemove') return;
+    this.setState({ editOpen: true, editTarget: entry, editCategory: entry.category || '', editLabel: entry.label });
+  }
+  applyEdit() {
+    const t = this.state.editTarget;
+    if (!t) return;
+    const category = this.state.editCategory.trim() || null;
+    const label = this.state.editLabel.trim();
+    if (!label) return;
+    const existing = this.state.catalog.find((c) => this.keyOf(c) === this.keyOf({ category, label }));
+    this.setState((s) => {
+      if (t.status === 'pendingAdd') {
+        return {
+          pendingAdds: s.pendingAdds.map((a) => (a.tempId === t.id ? { ...a, category, label, catalogId: existing ? existing.id : null } : a)),
+          editOpen: false, editTarget: null,
+        };
+      }
+      return {
+        pendingChanges: { ...s.pendingChanges, [t.id]: { type: 'edit', category, label } },
+        editOpen: false, editTarget: null,
+      };
+    });
+  }
+
+  // ---------- save / discard ----------
+  save() {
+    this.setState({ saving: true });
+    setTimeout(() => {
+      this.setState((s) => {
+        const stamp = { by: s.currentUser, at: new Date() };
+        let saved = s.saved
+          .filter((x) => !(s.pendingChanges[x.id] && s.pendingChanges[x.id].type === 'remove'))
+          .map((x) => {
+            const c = s.pendingChanges[x.id];
+            return c && c.type === 'edit' ? { ...x, category: c.category, label: c.label, meta: stamp } : x;
+          });
+        const catalog = [...s.catalog];
+        s.pendingAdds.forEach((a) => {
+          let cid = a.catalogId;
+          if (cid == null) {
+            cid = Math.max(0, ...catalog.map((c) => c.id)) + 1;
+            catalog.push({ id: cid, category: a.category, label: a.label });
+          }
+          saved.push({ id: cid, category: a.category, label: a.label, meta: stamp });
+        });
+        return { saved, catalog, pendingChanges: {}, pendingAdds: [], saving: false, reviewOpen: false, toast: 'Label changes saved.' };
+      });
+    }, 600);
+  }
+  discard() {
+    this.setState({ pendingChanges: {}, pendingAdds: [], reviewOpen: false, toast: 'Label changes discarded.' });
+  }
+
+  reviewGroups() {
+    const s = this.state;
+    const added = [], changed = [], removed = [];
+    s.saved.forEach((sv) => {
+      const c = s.pendingChanges[sv.id];
+      if (!c) return;
+      if (c.type === 'remove') removed.push({ key: 'r' + sv.id, text: this.display(sv), kind: 'Remove from post' });
+      else changed.push({ key: 'e' + sv.id, text: this.display(sv) + '  →  ' + this.display(c), kind: 'Replace on post' });
+    });
+    s.pendingAdds.forEach((a) => added.push({
+      key: 'a' + a.tempId, text: this.display(a),
+      kind: a.catalogId != null ? 'Existing label' : 'New — created on save',
+    }));
+    const groups = [];
+    if (added.length) groups.push({ key: 'g-add', title: 'Added', items: added });
+    if (changed.length) groups.push({ key: 'g-chg', title: 'Changed', items: changed });
+    if (removed.length) groups.push({ key: 'g-rem', title: 'Removed', items: removed });
+    return groups;
+  }
+
+  // ---------- render ----------
+  styleFor(status, own) {
+    if (status === 'pendingAdd') return { borderStyle: 'dashed', borderColor: 'var(--color-primary-main)', textColor: 'var(--text-primary)', textDecoration: 'none', showTag: false, tagText: '', tagColor: 'var(--color-primary-main)', showRemove: true, showUndo: false, showUndoText: true, undoTitle: '' };
+    if (status === 'pendingEdit') return { borderStyle: 'dashed', borderColor: 'var(--color-warning-main)', textColor: 'var(--text-primary)', textDecoration: 'none', showTag: true, tagText: 'Replacing', tagColor: 'var(--color-warning-main)', showRemove: true, showUndo: false, showUndoText: true, undoTitle: '' };
+    if (status === 'pendingRemove') {
+      // own labels are removed instantly (no confirm dialog), so the pending state stays quiet:
+      // no "Removing" tag, no inline "Undo" text — just the icon, with "Undo" moved into its tooltip
+      if (own) return { borderStyle: 'dashed', borderColor: 'var(--color-error-main)', textColor: 'var(--text-secondary)', textDecoration: 'line-through', showTag: false, tagText: '', tagColor: 'var(--color-error-main)', showRemove: false, showUndo: true, showUndoText: false, undoTitle: 'Undo' };
+      return { borderStyle: 'dashed', borderColor: 'var(--color-error-main)', textColor: 'var(--text-secondary)', textDecoration: 'line-through', showTag: true, tagText: 'Removing', tagColor: 'var(--color-error-main)', showRemove: false, showUndo: true, showUndoText: true, undoTitle: '' };
+    }
+    return { borderStyle: 'solid', borderColor: 'var(--divider)', textColor: 'var(--text-primary)', textDecoration: 'none', showTag: false, tagText: '', tagColor: 'var(--text-secondary)', showRemove: true, showUndo: false, showUndoText: true, undoTitle: '' };
+  }
+
+  catPickList(current, onPick) {
+    return this.categories().map((c) => ({ key: 'cp-' + c, name: c, active: this.norm(current) === this.norm(c), onClick: () => onPick(c) }));
+  }
+
+  renderVals() {
+    const s = this.state;
+
+    // legacy 1a-1e / 1f / 1g variant props (ported verbatim from Labels Section.dc.html)
+    const opt1a = this.buildOption('a');
+    const opt1b = this.buildOption('b');
+    const opt1c = this.buildOption('c');
+    const opt1d = this.buildOption('d');
+    const opt1e = this.buildOption('e', true);
+    const optF = this.buildLabelsOption('f');
+    const optG = this.buildLabelsOption('g', { simpleRemove: true });
+
+    // 1h (modal management) props — logic ported verbatim from Labels Experience.dc.html
+    const list = this.displayList();
+    const count = this.pendingCount();
+    const hasPending = count > 0;
+
+    const chips = list.map((entry) => ({
+      key: 'c-' + entry.id,
+      text: this.display(entry),
+      popoverOpen: s.hoverId === entry.id,
+      popoverText: this.popoverTextFor(entry),
+      onHoverEnter: () => this.setState({ hoverId: entry.id }),
+      onHoverLeave: () => this.setState({ hoverId: null }),
+      ...this.styleFor(entry.status, this.isOwn(entry)),
+      onEdit: () => this.openEdit(entry),
+      onRemove: () => this.onRemove(entry),
+      onUndo: () => this.undoRemove(entry),
+    }));
+
+    const occupied = this.occupiedIds();
+    const q = this.norm(s.addSearch);
+    let searchable = s.catalog;
+    if (q) searchable = searchable.filter((c) => this.display(c).toLowerCase().includes(q));
+    const counts = {};
+    searchable.forEach((c) => { const k = c.category || 'Unassigned'; counts[k] = (counts[k] || 0) + 1; });
+    const pillNames = Object.keys(counts).sort((a, b) => (a === 'Unassigned' ? 1 : b === 'Unassigned' ? -1 : a.localeCompare(b)));
+    const pills = [{ key: 'p-all', name: 'All', count: searchable.length, active: !s.addCat, onClick: () => this.setState({ addCat: null }) }]
+      .concat(pillNames.map((n) => ({ key: 'p-' + n, name: n, count: counts[n], active: s.addCat === n, onClick: () => this.setState({ addCat: n }) })));
+
+    const newCategory = s.newCat.trim() || null;
+    const newLabelName = s.newLabel.trim();
+    const newDup = newLabelName && list.some((e) => e.status !== 'pendingRemove' && this.keyOf(e) === this.keyOf({ category: newCategory, label: newLabelName }));
+    const newExisting = newLabelName && s.catalog.find((c) => this.keyOf(c) === this.keyOf({ category: newCategory, label: newLabelName }));
+
+    const t = s.editTarget;
+    const editCategory = s.editCategory.trim() || null;
+    const editLabelName = s.editLabel.trim();
+    const editDup = editLabelName && list.some((e) => e.id !== (t && t.id) && e.status !== 'pendingRemove' && this.keyOf(e) === this.keyOf({ category: editCategory, label: editLabelName }));
+    const editExisting = editLabelName && s.catalog.find((c) => this.keyOf(c) === this.keyOf({ category: editCategory, label: editLabelName }));
+    const editUnchanged = t && this.keyOf({ category: editCategory, label: editLabelName }) === this.keyOf(t);
+
+    const removeEntry = s.removeId != null ? list.find((e) => e.id === s.removeId) : null;
+    const groups = this.reviewGroups();
+
+    // top nav: which variant is active, and the shared "Viewing as" switcher
+    const optionDefs = [
+      { id: 'a', name: 'a', note: 'Inline expanding input' },
+      { id: 'b', name: 'b', note: 'Popover launcher, multi-add' },
+      { id: 'c', name: 'c', note: 'Persistent search bar' },
+      { id: 'd', name: 'd', note: 'Chips above bar + category filter pills' },
+      { id: 'e', name: 'e', note: 'Chips inside the input, alphabetical incl. prefix' },
+      { id: 'f', name: 'f', note: 'Add, edit, remove — all pending until saved, always confirms' },
+      { id: 'g', name: 'g', note: 'Remove is immediate — no dialog, no undo' },
+      { id: 'h', name: 'h', note: 'Modal management — confirm only for others’ labels' },
+    ];
+    const activeDef = optionDefs.find((o) => o.id === s.activeOption) || optionDefs[optionDefs.length - 1];
+
+    // top "Changes" button: only f/g/h have a pending-changes concept; only h has a review modal
+    const topPendingCount = s.activeOption === 'f' ? optF.pendingCount : s.activeOption === 'g' ? optG.pendingCount : s.activeOption === 'h' ? count : 0;
+    const hasTopPending = topPendingCount > 0;
+
+    return {
+      options: optionDefs.map((o) => ({ key: o.id, name: o.name, active: s.activeOption === o.id, onClick: () => this.setState({ activeOption: o.id }) })),
+      optionNote: activeDef.note,
+      users: ['You', 'Maria Silva'].map((u) => ({ key: 'u-' + u, name: u, active: s.currentUser === u, onClick: () => this.setState({ currentUser: u }) })),
+
+      is1a: s.activeOption === 'a', is1b: s.activeOption === 'b', is1c: s.activeOption === 'c',
+      is1d: s.activeOption === 'd', is1e: s.activeOption === 'e', is1f: s.activeOption === 'f',
+      is1g: s.activeOption === 'g', is1h: s.activeOption === 'h',
+
+      opt1a, opt1b, opt1c, opt1d, opt1e, optF, optG,
+
+      hasTopPending,
+      topPendingCount,
+      changesBg: hasTopPending ? '#111' : 'var(--action-disabledBackground)',
+      changesFg: hasTopPending ? '#fff' : 'var(--text-disabled)',
+      changesCursor: s.activeOption === 'h' && hasTopPending ? 'pointer' : 'default',
+      onOpenReview: () => { if (s.activeOption === 'h' && hasPending) this.setState({ reviewOpen: true }); },
+
+      chips,
+      noChips: chips.length === 0,
+      hasPending,
+      pendingCount: count,
+      pendingLabel: count + (count === 1 ? ' pending change' : ' pending changes') + ' — not yet saved',
+      saving: s.saving,
+      saveLabel: s.saving ? 'Saving…' : 'Save changes',
+      onSave: () => this.save(),
+      onOpenAdd: () => this.openAdd(),
+
+      add: {
+        open: s.addOpen,
+        isExisting: s.addOpen && s.addTab === 'existing',
+        isNew: s.addOpen && s.addTab === 'new',
+        onTabExisting: () => this.setState({ addTab: 'existing' }),
+        onTabNew: () => this.setState({ addTab: 'new' }),
+        onClose: () => this.closeAdd(),
+        search: s.addSearch,
+        onSearch: (e) => this.setState({ addSearch: e.target.value }),
+        pills,
+        rows: this.addRows(),
+        confirmDisabled: s.addSel.length === 0,
+        confirmLabel: s.addSel.length ? 'Add ' + s.addSel.length + ' label' + (s.addSel.length === 1 ? '' : 's') : 'Add selected',
+        onConfirm: () => this.confirmAdd(),
+        newCat: s.newCat,
+        onNewCat: (e) => this.setState({ newCat: e.target.value }),
+        catPicks: this.catPickList(s.newCat, (c) => this.setState({ newCat: c })),
+        newLabel: s.newLabel,
+        onNewLabel: (e) => this.setState({ newLabel: e.target.value }),
+        newHint: !newLabelName ? 'Give the label a name to continue.'
+          : newDup ? 'That label is already on this post.'
+          : newExisting ? 'This existing workspace label will be reused when you save.'
+          : 'A new workspace label will be created when you save.',
+        createDisabled: !newLabelName || !!newDup,
+        onCreate: () => this.createNew(),
+      },
+
+      edit: {
+        open: s.editOpen,
+        onClose: () => this.setState({ editOpen: false, editTarget: null }),
+        category: s.editCategory,
+        onCategory: (e) => this.setState({ editCategory: e.target.value }),
+        catPicks: this.catPickList(s.editCategory, (c) => this.setState({ editCategory: c })),
+        label: s.editLabel,
+        onLabel: (e) => this.setState({ editLabel: e.target.value }),
+        preview: editLabelName ? (editCategory ? editCategory + ' / ' + editLabelName : editLabelName) : 'Label preview',
+        hint: !editLabelName ? 'Give the label a name to continue.'
+          : editDup ? 'That label is already on this post.'
+          : editUnchanged ? 'This is the current value — change it to apply.'
+          : editExisting ? 'This existing workspace label will be reused when you save.'
+          : 'A new workspace label will be created when you save.',
+        applyDisabled: !editLabelName || !!editDup || !!editUnchanged,
+        onApply: () => this.applyEdit(),
+      },
+
+      remove: {
+        open: s.removeId != null,
+        text: removeEntry ? this.display(removeEntry) : '',
+        by: removeEntry && removeEntry.meta ? 'Added by ' + removeEntry.meta.by + ' · ' + removeEntry.meta.at : '',
+        onCancel: () => this.setState({ removeId: null }),
+        onConfirm: () => this.confirmRemove(),
+      },
+
+      review: {
+        open: s.reviewOpen,
+        onClose: () => this.setState({ reviewOpen: false }),
+        onDiscard: () => this.discard(),
+        groups,
+        empty: groups.length === 0,
+      },
+
+      toast: {
+        open: !!s.toast,
+        message: s.toast,
+        onClose: () => this.setState({ toast: '' }),
+      },
+    };
+  }
+}
+</script>
+</body>
+</html>

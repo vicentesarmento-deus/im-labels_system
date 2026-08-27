@@ -1,0 +1,61 @@
+:root{
+/* IM Blue (primary) — Figma "im-dark-blue" scale */
+--im-blue-50:rgb(237,236,255);--im-blue-75:rgb(230,229,255);--im-blue-100:rgb(222,221,255);--im-blue-150:rgb(205,204,255);--im-blue-200:rgb(188,186,255);--im-blue-300:rgb(155,152,255);--im-blue-350:rgb(139,134,255);--im-blue-400:rgb(122,116,255);--im-blue-450:rgb(105,97,255);--im-blue-500:rgb(87,77,255);--im-blue-600:rgb(46,10,255);--im-blue-700:rgb(28,0,183);--im-blue-800:rgb(18,0,136);--im-blue-900:rgb(9,0,95);--im-blue-950:rgb(5,0,68);
+/* IM Malachite (secondary) */
+--im-green-50:rgb(211,255,214);--im-green-100:rgb(211,255,214);--im-green-200:rgb(31,245,80);--im-green-300:rgb(31,245,80);--im-green-400:rgb(21,188,60);--im-green-500:rgb(27,222,72);--im-green-600:rgb(15,155,48);--im-green-700:rgb(9,121,35);--im-green-800:rgb(5,91,24);--im-green-900:rgb(1,36,5);--im-green-950:rgb(0,24,3);
+/* Neutral greys (MUI grey) */
+--grey-50:rgb(250,250,250);--grey-100:rgb(245,245,245);--grey-200:rgb(238,238,238);--grey-300:rgb(224,224,224);--grey-400:rgb(189,189,189);--grey-500:rgb(158,158,158);--grey-600:rgb(117,117,117);--grey-700:rgb(97,97,97);--grey-800:rgb(66,66,66);--grey-900:rgb(33,33,33);
+/* Blue-grey (text/ink scale) */
+--bluegrey-50:rgb(236,239,241);--bluegrey-100:rgb(207,216,220);--bluegrey-200:rgb(176,190,197);--bluegrey-300:rgb(144,164,174);--bluegrey-400:rgb(120,144,156);--bluegrey-500:rgb(96,125,139);--bluegrey-600:rgb(84,110,122);--bluegrey-700:rgb(69,90,100);--bluegrey-800:rgb(55,71,79);--bluegrey-900:rgb(38,50,56);
+
+/* Semantic — palette mode "IM/Light" (the only palette mode this system uses) */
+--color-primary-main:var(--im-blue-700);
+--color-primary-dark:var(--im-blue-800);
+--color-primary-light:var(--im-blue-50);
+--color-primary-contrast:rgb(255,255,255);
+--color-primary-hover:rgba(28,0,183,0.04);
+--color-primary-selected:rgba(28,0,183,0.08);
+--color-primary-focus:rgba(28,0,183,0.12);
+--color-primary-outlinedBorder:rgba(28,0,183,0.5);
+
+--color-secondary-main:var(--im-green-500);
+--color-secondary-dark:var(--im-green-800);
+--color-secondary-light:var(--im-green-100);
+--color-secondary-contrast:rgb(255,255,255);
+--color-secondary-hover:rgba(27,222,72,0.04);
+--color-secondary-selected:rgba(27,222,72,0.08);
+
+--color-error-main:rgb(186,26,26);--color-error-dark:rgb(65,0,2);--color-error-light:rgb(255,218,214);--color-error-contrast:rgb(255,255,255);
+--color-warning-main:rgb(210,151,0);--color-warning-dark:rgb(46,34,4);--color-warning-light:rgb(253,246,232);--color-warning-contrast:rgb(255,255,255);
+--color-info-main:var(--im-blue-400);--color-info-dark:var(--im-blue-800);--color-info-light:var(--im-blue-50);--color-info-contrast:rgb(255,255,255);
+--color-success-main:rgb(0,102,68);--color-success-dark:rgb(0,32,21);--color-success-light:rgb(206,255,239);--color-success-contrast:rgb(255,255,255);
+
+--text-primary:var(--bluegrey-900);
+--text-secondary:var(--bluegrey-500);
+--text-disabled:var(--bluegrey-200);
+--divider:var(--bluegrey-50);
+--background-default:var(--grey-50);
+--background-paper:rgb(255,255,255);
+
+/* action states key off IM ink (bluegrey-900), not pure black */
+--action-active:rgba(22,29,40,0.54);
+--action-hover:rgba(22,29,40,0.04);
+--action-selected:rgba(22,29,40,0.08);
+--action-focus:rgba(22,29,40,0.12);
+--action-disabled:rgba(22,29,40,0.26);
+--action-disabledBackground:rgba(22,29,40,0.12);
+
+/* social-media accent chips (platform monitoring) */
+--social-instagram:rgb(232,208,245);--social-instagram-text:rgb(131,58,180);
+--social-tiktok:rgb(209,247,245);--social-tiktok-text:rgb(0,122,118);
+--social-youtube:rgb(255,209,209);--social-youtube-text:rgb(194,0,0);
+
+/* chart series (dark/mid/light triads) */
+--chart-1:var(--im-blue-600);--chart-1-light:var(--im-blue-300);--chart-1-dark:var(--im-blue-900);
+--chart-2:var(--im-green-600);--chart-2-light:var(--im-green-300);--chart-2-dark:var(--im-green-900);
+--chart-3:rgb(251,140,0);--chart-3-light:rgb(255,204,128);--chart-3-dark:rgb(230,81,0);
+--chart-4:rgb(211,47,47);--chart-4-light:rgb(239,154,154);--chart-4-dark:rgb(183,28,28);
+--chart-5:rgb(94,53,177);--chart-5-light:rgb(179,157,219);--chart-5-dark:rgb(49,27,146);
+
+--radius-sm:4px;
+}
