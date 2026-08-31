@@ -432,6 +432,8 @@
       if (kind !== "dom") {
         if (key.includes("-") && !(kind === "x-import" && (key.startsWith("aria-") || key.startsWith("data-"))))
           key = kebabToCamel(key);
+        else if (key.startsWith("on") && key.length > 2 && key === key.toLowerCase())
+          key = EVENT_MAP[key] || "on" + key[2].toUpperCase() + key.slice(3);
       } else {
         if (key === "class") key = "className";
         else if (key === "for") key = "htmlFor";
