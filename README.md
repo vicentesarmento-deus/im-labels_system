@@ -33,8 +33,13 @@ the section comments name the letter each one maps to.
 
 ## Where it lives
 
-Published at **<https://vicentesarmento-deus.github.io/im-labels_system/>**,
-deployed from `main` by `.github/workflows/pages.yml` on every push.
+Published at **<https://vicentesarmento-deus.github.io/im-labels_system/>**.
+
+Every push to `main` redeploys it, via `.github/workflows/pages.yml`. That
+workflow assembles the site into `_site` so `.git` and the workflow itself are
+not published, and carries `.nojekyll` through — which is what stops a Jekyll
+build from excluding the underscore-prefixed `_ds/` directory the entire design
+system lives in.
 
 ## Running it locally
 
