@@ -13,11 +13,15 @@
   main{max-width:640px;margin:0 auto}
   h1{font-size:24px;margin:0 0 6px}
   .lede{font-size:14px;color:var(--text-secondary,#555);margin:0 0 28px;line-height:1.5}
+  .lede + .lede{margin-top:-18px}
   a.card{display:block;text-decoration:none;color:inherit;background:var(--background-paper,#fff);
     border:1px solid var(--divider,#e0e0e0);border-radius:2px;padding:18px 20px;margin-bottom:12px}
   a.card:hover{border-color:var(--color-primary-main,#1c00b7)}
   a.card h2{font-size:16px;margin:0 0 4px}
   a.card p{font-size:13px;line-height:1.5;color:var(--text-secondary,#555);margin:0}
+  a.card p + p{margin-top:8px}
+  .ver{display:inline-block;font:600 10.5px/1 ui-monospace,Menlo,monospace;padding:3px 6px;
+    background:var(--action-hover,rgba(0,0,0,.06));border-radius:3px;margin-right:8px;vertical-align:2px}
   .tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
     color:var(--color-primary-main,#1c00b7);margin-bottom:8px}
 </style>
@@ -25,22 +29,24 @@
 <body>
 <main>
   <h1>Labels prototypes</h1>
-  <p class="lede">Interactive prototypes for the labels experience on an evaluation post. Open one and use it as you normally would &mdash; the dark bar at the top is prototype scaffolding, not product UI.</p>
+  <p class="lede">Interactive prototypes for the labels experience on an evaluation post. The question they exist to answer: <b>which interaction model works better &mdash; resolving label changes in place on the page, or resolving them inside a modal?</b> Handling a second person editing the same post is one of the tests that separates the two, not the goal in itself.</p>
+  <p class="lede">Open one and use it as you normally would &mdash; the dark bar at the top is prototype scaffolding, not product UI.</p>
 
-  <a class="card" href="Labels%20Save%20Flow.dc.html">
+  <a class="card" href="%5Bv3%5D%20Save%20flow%20-%20in%20place%20vs%20modal.dc.html">
     <span class="tag">Current &mdash; for interviews</span>
-    <h2>Labels &mdash; save flow</h2>
-    <p>Two versions side by side. <b>V1</b> resolves every action in place on the page; <b>V2</b> resolves everything inside an &ldquo;Edit labels&rdquo; modal. Both have an explicit save step, show who added each label, and can simulate someone else editing the same post.</p>
+    <h2><span class="ver">v3</span>Save flow &mdash; in place vs modal</h2>
+    <p>The two candidate interaction models, side by side. <b>V1</b> resolves every action in place on the page, so the card itself is the editor; <b>V2</b> resolves everything inside an &ldquo;Edit labels&rdquo; modal.</p>
+    <p>Both share the same rules underneath &mdash; an explicit save step, visible authorship on each label, and a switch to simulate someone else editing the same post &mdash; so anything a participant prefers comes from the interaction model, not from a feature one version has and the other lacks.</p>
   </a>
 
-  <a class="card" href="Labels%20Experience.dc.html">
-    <h2>Labels &mdash; full experience</h2>
-    <p>The earlier exploration: eight input variants (a&ndash;h) for adding and managing labels.</p>
+  <a class="card" href="%5Bv2%5D%20Input%20variants%20a-h.dc.html">
+    <h2><span class="ver">v2</span>Input variants a&ndash;h</h2>
+    <p>The exploration that narrowed the field: eight ways (a&ndash;h) of adding and managing labels, from fully inline to fully modal. v3 takes the two ends of that range and makes them comparable.</p>
   </a>
 
-  <a class="card" href="Labels%20Section.dc.html">
-    <h2>Labels &mdash; section only</h2>
-    <p>The original mockups of the labels section on its own.</p>
+  <a class="card" href="%5Bv1%5D%20Section%20mockups.dc.html">
+    <h2><span class="ver">v1</span>Section mockups</h2>
+    <p>Where it started: static mockups of the labels section on its own, before any interaction was decided.</p>
   </a>
 </main>
 </body>
