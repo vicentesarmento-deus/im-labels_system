@@ -31,7 +31,12 @@ candidates *inside* v3. They were once called V1 and V2, which collided with the
 file numbering; the state keys in the source are still `'v1'` and `'v2'`, and
 the section comments name the letter each one maps to.
 
-## Running it
+## Where it lives
+
+Published at **<https://vicentesarmento-deus.github.io/im-labels_system/>**,
+deployed from `main` by `.github/workflows/pages.yml` on every push.
+
+## Running it locally
 
 Opening `index.html` straight from disk works — the pages are built to run
 from `file://`, and the design system loads by relative path.
