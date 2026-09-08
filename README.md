@@ -43,10 +43,13 @@ Everywhere a category appears it carries how many labels sit under it, and a
 count reads "3 of 5" whenever the list in front of you is a subset — filtered by
 a query, or thinned because some are already on the post.
 
-**Nothing is created on this screen.** New labels and categories come from the
-Labels Admin area, so neither candidate offers a "Create …" option; a search
-that matches nothing says where creation went instead of offering a shortcut to
-it.
+**Nothing is created on this screen.** New labels and categories come from
+elsewhere in the product, so neither candidate offers a "Create …" option; a
+search that matches nothing simply says so.
+
+**A category chip opens a viewer.** Clicking one lists every label under that
+category, read-only — the one dialog variant A does open, and it changes
+nothing. Editing in A still happens entirely in place.
 
 ## Where it lives
 

@@ -84,12 +84,14 @@ body{background:var(--background-default);font-family:var(--font-body);padding-t
 .who{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;flex-shrink:0;
   font-size:9px;font-weight:700;letter-spacing:.02em;margin-right:6px;color:#fff;background:var(--bluegrey-400)}
 .chipicon{display:inline-flex;flex-shrink:0;margin-right:5px;color:var(--action-active)}
+/* the category half of a label's name is context, so it carries less weight than the name */
+.chip-cat{color:var(--text-secondary);margin-right:4px}
 .lbl-chip .count{margin-left:6px}
 .lbl-chipname{all:unset;cursor:pointer;font-size:13px;line-height:1;white-space:nowrap}
 .lbl-tag{font-size:9.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;margin-left:6px}
 .lbl-hoverpop{position:absolute;top:100%;left:0;margin-top:6px;min-width:200px;max-width:300px;
   padding:10px 14px;background:var(--background-paper);border-radius:var(--radius);
-  box-shadow:var(--shadow-8);font-size:12px;line-height:1.5;color:var(--text-primary);z-index:20}
+  box-shadow:var(--shadow-8);font-size:12px;line-height:1.5;color:var(--text-primary);z-index:50}
 .lbl-x{all:unset;cursor:pointer;display:flex;padding:4px;margin-left:2px;opacity:.6;border-radius:50%}
 .lbl-x:hover{opacity:1;background:var(--action-hover)}
 /* kept in the DOM while its confirmation is open, so the chip keeps its width and the row
@@ -101,7 +103,9 @@ body{background:var(--background-default);font-family:var(--font-body);padding-t
 .lbl-undo:hover{background:var(--color-primary-hover)}
 
 /* removal confirmation — a popover on the chip, so the chips row never reflows.
-   v1 still never opens a dialog for a label action. */
+   v1 still never opens a dialog to CHANGE labels. Reading is another matter: a category chip
+   opens a viewer, because its contents cannot be shown in a popover and cannot be shown in
+   place without the card growing under the reader's hands. Nothing in that viewer edits. */
 .confirmpop{position:absolute;top:100%;left:0;margin-top:6px;width:262px;z-index:40;
   padding:12px 14px;background:var(--background-paper);border-radius:var(--radius);
   border-top:3px solid var(--color-error-main);box-shadow:var(--shadow-8)}
@@ -202,6 +206,15 @@ body{background:var(--background-default);font-family:var(--font-body);padding-t
   padding:10px;margin-bottom:6px;font-size:12px;color:var(--text-primary)}
 .chg-kind{color:var(--text-secondary);white-space:nowrap}
 .chg-h{margin:0 0 7px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text-secondary)}
+
+/* Category contents — read-only. The dialog shell the design system renders carries no class,
+   so there is nothing to cap directly; the cap goes on the list instead, minus the chrome above
+   and below it. That subtraction is only honest while the chrome is a fixed height, which is why
+   the title and subtitle below are held to one line — 145px measured, and now constant. */
+.catview{max-height:calc(75vh - 145px);overflow-y:auto}
+.catview-head{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.catview-row{padding:9px 2px;font-size:13px;color:var(--text-primary);border-bottom:1px solid var(--divider)}
+.catview-row:last-child{border-bottom:0}
 
 .kbd{display:inline-block;min-width:16px;text-align:center;padding:1px 5px;border-radius:3px;border:1px solid var(--divider);
   background:var(--background-default);font-family:var(--font-mono,monospace);font-size:11px;color:var(--text-primary)}
@@ -324,8 +337,8 @@ button:focus-visible{outline:2px solid var(--color-primary-main);outline-offset:
                   <sc-if value="{{chip.isCategory}}" hint-placeholder-val="{{false}}">
                     <span class="chipicon"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="FolderFilled" size="13" hint-size="13px,13px"></x-import></span>
                   </sc-if>
-                  <button class="lbl-chipname" onClick="{{chip.onShowInfo}}" onFocus="{{chip.onEnter}}" onBlur="{{chip.onLeave}}"
-                    aria-label="{{chip.ariaLabel}}" style="color:{{chip.textColor}};text-decoration:{{chip.textDecoration}}">{{chip.text}}</button>
+                  <button class="lbl-chipname" onClick="{{chip.onActivate}}" onFocus="{{chip.onEnter}}" onBlur="{{chip.onLeave}}"
+                    aria-label="{{chip.ariaLabel}}" style="color:{{chip.textColor}};text-decoration:{{chip.textDecoration}}"><sc-if value="{{chip.hasCat}}" hint-placeholder-val="{{false}}"><span class="chip-cat">{{chip.catPrefix}}</span></sc-if><span>{{chip.nameText}}</span></button>
                   <sc-if value="{{chip.showCount}}" hint-placeholder-val="{{false}}">
                     <span class="count">{{chip.countText}}</span>
                   </sc-if>
@@ -572,13 +585,13 @@ button:focus-visible{outline:2px solid var(--color-primary-main);outline-offset:
     <div style="margin-bottom:16px">
       <div class="chg-h">Changed by others</div>
       <sc-for list="{{rec.theirs}}" as="it" hint-placeholder-count="1">
-        <div class="chg-item" style="border-color:var(--color-warning-main)"><span>{{it.text}}</span><span class="chg-kind">{{it.kind}}</span></div>
+        <div class="chg-item" style="border-color:var(--color-warning-main)"><span><sc-if value="{{it.hasCat}}" hint-placeholder-val="{{false}}"><span class="chip-cat">{{it.catPrefix}}</span></sc-if>{{it.nameText}}</span><span class="chg-kind">{{it.kind}}</span></div>
       </sc-for>
     </div>
     <div>
       <div class="chg-h">Your changes</div>
       <sc-for list="{{rec.mine}}" as="it" hint-placeholder-count="2">
-        <div class="chg-item"><span>{{it.text}}</span><span class="chg-kind">{{it.kind}}</span></div>
+        <div class="chg-item"><span><sc-if value="{{it.hasCat}}" hint-placeholder-val="{{false}}"><span class="chip-cat">{{it.catPrefix}}</span></sc-if>{{it.nameText}}</span><span class="chg-kind">{{it.kind}}</span></div>
       </sc-for>
     </div>
   </x-import>
@@ -586,6 +599,22 @@ button:focus-visible{outline:2px solid var(--color-primary-main);outline-offset:
     <span style="margin-right:auto;display:inline-flex"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="text" size="small" color="error" onClick="{{rec.onDiscardMine}}" hint-size="auto,32px">Discard mine</x-import></span>
     <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="text" size="small" onClick="{{rec.onCancel}}" hint-size="auto,32px">Cancel</x-import>
     <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="contained" size="small" color="primary" onClick="{{rec.onKeepBoth}}" hint-size="auto,32px">Keep both and save</x-import>
+  </x-import>
+</x-import>
+
+<!-- ============ Shared — what is inside a category. A viewer: nothing here edits. ============ -->
+<x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Dialog" open="{{catView.open}}" onClose="{{catView.onClose}}" max-width="xs" hint-size="0,0">
+  <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.DialogTitle" hint-size="auto,auto"><span class="catview-head">{{catView.title}}</span></x-import>
+  <div class="catview-head" style="padding:0 24px 4px;margin-top:-8px;font-size:12px;color:var(--text-secondary)">{{catView.sub}}</div>
+  <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.DialogContent" hint-size="auto,auto">
+    <div class="catview">
+      <sc-for list="{{catView.rows}}" as="row" hint-placeholder-count="5">
+        <div class="catview-row">{{row.text}}</div>
+      </sc-for>
+    </div>
+  </x-import>
+  <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.DialogActions" hint-size="auto,auto">
+    <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="contained" size="small" onClick="{{catView.onClose}}" hint-size="auto,32px">Close</x-import>
   </x-import>
 </x-import>
 
@@ -612,6 +641,7 @@ class Component extends DCLogic {
   state = {
     version: 'v1',
     helpOpen: false,
+    catView: null,     // category name whose contents are open for reading
     reconcile: null,   // 'v1' | 'v2' — which variant is blocked on a stale save
     toast: '',
     liveCursor: 0,     // rotates the pool of labels "Maria" adds
@@ -681,6 +711,18 @@ class Component extends DCLogic {
   keyOf(e) { return this.norm(e.category) + '::' + this.norm(e.label); }
   isOwn(e) { return e.by === 'You'; }
   isCategory(e) { return e.kind === 'category'; }
+
+  /* On a label, the category is context — "Brand /" tells you where "Real Madrid" lives, it is
+     not what you picked. Split so the two halves can carry different weight. A category picked
+     in its own right is the thing itself and keeps the full weight. */
+  splitName(e) {
+    const isCat = this.isCategory(e);
+    return {
+      hasCat: !isCat && !!e.category,
+      catPrefix: isCat || !e.category ? '' : e.category + ' /',
+      nameText: isCat ? e.category : e.label,
+    };
+  }
 
   /* Categories are derived from the catalog, never stored separately — so a category
      assignment needs a synthetic id. String ids never collide with the numeric label ones,
@@ -784,13 +826,9 @@ class Component extends DCLogic {
     return g.items.length === total ? String(total) : g.items.length + ' of ' + total;
   }
 
-  /* Creating labels moved to the Labels Admin area, so a query that matches nothing is now a
-     dead end. It has to say where creation went, or it reads as a bug. */
   emptyText(query) {
     const q = (query || '').trim();
-    return q
-      ? 'No labels match “' + q + '”. New labels and categories are created in Labels Admin.'
-      : 'Everything in the catalogue is already on this post.';
+    return q ? 'No labels match “' + q + '”.' : 'Everything in the catalogue is already on this post.';
   }
 
   /** Split "Category / name" queries; plain text searches both fields. */
@@ -1233,6 +1271,7 @@ class Component extends DCLogic {
       if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); this.save(v); return; }
 
       if (e.key === 'Escape') {
+        if (s.catView) { this.setState({ catView: null }); return; }
         if (s.helpOpen) { this.setState({ helpOpen: false }); return; }
         if (s.reconcile) { this.setState({ reconcile: null }); return; }
         if (f.modalDiscard) { this.setIn(v, { modalDiscard: false }); return; }
@@ -1245,6 +1284,7 @@ class Component extends DCLogic {
 
       if (inField || e.metaKey || e.ctrlKey || e.altKey) return;
 
+      if (s.catView) return;
       if (e.key === '?') { e.preventDefault(); this.setState({ helpOpen: !s.helpOpen }); return; }
       if (e.key === '/' && v === 'v1') {
         e.preventDefault();
@@ -1341,6 +1381,7 @@ class Component extends DCLogic {
     const f = this.state[v];
     return this.chipList(v, inPlace).map((c) => {
       const text = this.display(c);
+      const name = this.splitName(c);
       const confirming = inPlace && f.confirmRemoveId === c.id && c.origin === 'saved';
 
       let borderStyle = 'solid', borderColor = confirming ? 'var(--color-error-main)' : 'var(--divider)', textColor = 'var(--text-primary)';
@@ -1360,16 +1401,28 @@ class Component extends DCLogic {
       }
 
       const members = c.isCategory ? this.countIn(v, c.category) : 0;
-      const whole = c.isCategory ? ' It puts all ' + members + ' of its labels on this post.' : '';
       let infoText;
-      if (c.origin === 'add') infoText = (c.isCategory ? 'Category added by you' : 'Added by you') + ' — not saved yet.' + whole;
+      if (c.isCategory) {
+        /* A pending category already says it is unsaved twice over — dashed border, ADDING tag.
+           Saying it a third time in words crowded out the one thing this popover can offer that
+           nothing else does: that there is something behind the click. */
+        const origin = c.origin === 'add'
+          ? 'Category added by you.'
+          : c.removing
+            ? 'Removing this category. It was added by ' + c.by + ', ' + this.formatWhen(c.at) + '.'
+            : 'Category added by ' + c.by + ', ' + this.formatWhen(c.at) + '.';
+        infoText = origin + ' It puts all ' + members + ' of its labels on this post.'
+          + ' Click to see every label under it.';
+      }
+      else if (c.origin === 'add') infoText = 'Added by you — not saved yet.';
       else if (c.removing) infoText = 'Removing — not saved yet. Originally added by ' + c.by + ', ' + this.formatWhen(c.at) + '.';
-      else infoText = 'Added by ' + c.by + ', ' + this.formatWhen(c.at) + '.' + whole;
+      else infoText = 'Added by ' + c.by + ', ' + this.formatWhen(c.at) + '.';
       if (c.covered) infoText += ' Covered by the category “' + c.category + '” — take that off to change this one.';
 
       return {
         key: c.key,
         text,
+        ...name,
         ariaLabel: text + ' — ' + infoText,
         borderStyle, borderColor, textColor, textDecoration,
         showTag, tagText, tagColor,
@@ -1385,7 +1438,10 @@ class Component extends DCLogic {
         infoText,
         onEnter: () => this.setIn(v, { chipInfoId: c.key }),
         onLeave: () => this.setIn(v, (cur) => (cur.chipInfoId === c.key ? { chipInfoId: null } : {})),
-        onShowInfo: () => this.setIn(v, { chipInfoId: c.key }),
+        // a label chip explains itself in place; a category chip has contents worth opening
+        onActivate: c.isCategory
+          ? () => this.setState({ catView: c.category })
+          : () => this.setIn(v, { chipInfoId: c.key }),
 
         confirming,
         confirmText: c.isCategory ? 'Remove the category “' + c.category + '”?' : 'Remove “' + c.label + '”?',
@@ -1409,12 +1465,12 @@ class Component extends DCLogic {
     const f = this.state[v];
     const items = [];
     f.pendingAdds.forEach((a) => items.push({
-      key: 'a' + a.tempId, text: this.display(a),
+      key: 'a' + a.tempId, ...this.splitName(a),
       kind: this.isCategory(a) ? 'Add category (' + this.countIn(v, a.category) + ' labels)' : 'Add to post',
     }));
     f.pendingRemoves.forEach((id) => {
       const sv = f.saved.find((x) => x.id === id);
-      if (sv) items.push({ key: 'r' + id, text: this.display(sv),
+      if (sv) items.push({ key: 'r' + id, ...this.splitName(sv),
         kind: (this.isCategory(sv) ? 'Remove category' : 'Remove') + ' (added by ' + sv.by + ')' });
     });
     return items;
@@ -1556,13 +1612,27 @@ class Component extends DCLogic {
       rec: {
         open: !!recV,
         theirs: recF && recF.stale
-          ? [{ key: 't1', text: this.display(recF.stale), kind: 'Added by ' + recF.stale.by }]
+          ? [{ key: 't1', ...this.splitName(recF.stale), kind: 'Added by ' + recF.stale.by }]
           : [],
         mine: recV ? this.reviewItems(recV) : [],
         onCancel: () => this.setState({ reconcile: null }),
         onKeepBoth: () => this.commit(recV, true),
         onDiscardMine: () => this.discardMine(recV),
       },
+
+      catView: (() => {
+        const name = s.catView;
+        const items = name
+          ? f.catalog.filter((c) => c.category === name).sort((a, b) => a.label.localeCompare(b.label))
+          : [];
+        return {
+          open: !!name,
+          title: name || '',
+          sub: items.length + (items.length === 1 ? ' label in this category' : ' labels in this category'),
+          rows: items.map((c) => ({ key: 'cv' + c.id, text: c.label })),
+          onClose: () => this.setState({ catView: null }),
+        };
+      })(),
 
       help: {
         open: s.helpOpen,
