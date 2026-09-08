@@ -83,6 +83,8 @@ body{background:var(--background-default);font-family:var(--font-body);padding-t
 .lbl-chip[data-fresh="true"]{box-shadow:0 0 0 3px var(--color-warning-light)}
 .who{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;flex-shrink:0;
   font-size:9px;font-weight:700;letter-spacing:.02em;margin-right:6px;color:#fff;background:var(--bluegrey-400)}
+.chipicon{display:inline-flex;flex-shrink:0;margin-right:5px;color:var(--action-active)}
+.lbl-chip .count{margin-left:6px}
 .lbl-chipname{all:unset;cursor:pointer;font-size:13px;line-height:1;white-space:nowrap}
 .lbl-tag{font-size:9.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;margin-left:6px}
 .lbl-hoverpop{position:absolute;top:100%;left:0;margin-top:6px;min-width:200px;max-width:300px;
@@ -125,8 +127,18 @@ body{background:var(--background-default);font-family:var(--font-body);padding-t
   font-family:var(--font-body);text-align:left}
 .lbl-row:hover{background:var(--action-hover)}
 .lbl-row[data-active="true"]{background:var(--color-primary-hover);box-shadow:inset 3px 0 0 var(--color-primary-main)}
-.lbl-create{color:var(--color-primary-main);font-weight:600}
 .rownote{margin-left:auto;font-size:11px;color:var(--text-secondary);white-space:nowrap}
+/* a category is a target, not a caption — so in A it is a row like any other, only heavier,
+   and the labels under it are indented to show what belongs to what */
+.lbl-cat{font-weight:700}
+.menuhint{padding:9px 12px;font-size:11.5px;line-height:1.4;color:var(--text-secondary);
+  background:var(--background-default);border-bottom:1px solid var(--divider)}
+.lbl-sub{padding-left:34px}
+.grouphdr-inert{padding:10px 12px 3px;font-size:11px;font-weight:700;letter-spacing:.04em;
+  text-transform:uppercase;color:var(--text-secondary)}
+/* the count note 2 asks for, wherever a category shows up */
+.count{flex-shrink:0;padding:1px 6px;border-radius:2px;background:var(--background-default);
+  color:var(--text-secondary);font-size:11px;font-weight:600;white-space:nowrap}
 
 /* save bar */
 .savebar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;
@@ -151,7 +163,11 @@ body{background:var(--background-default);font-family:var(--font-body);padding-t
   border:2px solid var(--action-active);color:#fff}
 .ck[data-on="true"]{background:var(--color-primary-main);border-color:var(--color-primary-main)}
 .ck[data-on="removing"]{background:var(--background-paper);border-color:var(--color-error-main)}
+.ck[data-on="covered"]{background:var(--bluegrey-200);border-color:var(--bluegrey-200);color:var(--text-secondary)}
 .optnote{margin-left:auto;font-size:11px;white-space:nowrap;padding-left:8px}
+.optrow[data-inert="true"]{cursor:default}
+.optrow[data-inert="true"]:hover{background:transparent}
+.optrow-cat{font-weight:700}
 .grouphdr{padding:10px 8px 3px;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--text-secondary)}
 /* One growth primitive. A row that animates between 0 and its natural height, used by both
    the activity strip and the removal warning: 0fr -> 1fr is the only way to transition to an
@@ -305,8 +321,14 @@ button:focus-visible{outline:2px solid var(--color-primary-main);outline-offset:
                   <sc-if value="{{chip.showAuthor}}" hint-placeholder-val="{{false}}">
                     <span class="who" style="background:{{chip.authorColor}}" title="{{chip.authorTitle}}">{{chip.authorInitial}}</span>
                   </sc-if>
+                  <sc-if value="{{chip.isCategory}}" hint-placeholder-val="{{false}}">
+                    <span class="chipicon"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="FolderFilled" size="13" hint-size="13px,13px"></x-import></span>
+                  </sc-if>
                   <button class="lbl-chipname" onClick="{{chip.onShowInfo}}" onFocus="{{chip.onEnter}}" onBlur="{{chip.onLeave}}"
                     aria-label="{{chip.ariaLabel}}" style="color:{{chip.textColor}};text-decoration:{{chip.textDecoration}}">{{chip.text}}</button>
+                  <sc-if value="{{chip.showCount}}" hint-placeholder-val="{{false}}">
+                    <span class="count">{{chip.countText}}</span>
+                  </sc-if>
                   <sc-if value="{{chip.showTag}}" hint-placeholder-val="{{false}}">
                     <span class="lbl-tag" style="color:{{chip.tagColor}}">{{chip.tagText}}</span>
                   </sc-if>
@@ -348,27 +370,34 @@ button:focus-visible{outline:2px solid var(--color-primary-main);outline-offset:
             <div class="combo">
               <div class="combo-field" style="border-color:{{v1.borderColor}}">
                 <span style="color:var(--action-active);display:inline-flex"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="AddFilled" size="16" hint-size="16px,16px"></x-import></span>
-                <input id="v1input" class="combo-input" role="combobox" aria-expanded="{{v1.open}}" aria-label="Add a label"
+                <input id="v1input" class="combo-input" role="combobox" aria-expanded="{{v1.open}}" aria-label="Add a label or a category"
                   value="{{v1.input}}" onChange="{{v1.onInput}}" onKeyDown="{{v1.onKeyDown}}"
-                  onFocus="{{v1.onFocus}}" onBlur="{{v1.onBlur}}" placeholder="Add a label — type to search, or “Category / name”" />
+                  onFocus="{{v1.onFocus}}" onBlur="{{v1.onBlur}}" placeholder="Add a label, or a whole category — type to search" />
               </div>
               <sc-if value="{{v1.open}}" hint-placeholder-val="{{false}}">
                 <div class="combo-menu" role="listbox">
-                  <sc-for list="{{v1.rows}}" as="row" hint-placeholder-count="4">
+                  <sc-if value="{{v1.hasCategories}}" hint-placeholder-val="{{true}}">
+                    <div class="menuhint">Pick a category to put all of its labels on the post at once.</div>
+                  </sc-if>
+                  <sc-for list="{{v1.rows}}" as="row" hint-placeholder-count="5">
+                    <sc-if value="{{row.actionable}}" hint-placeholder-val="{{true}}">
+                      <button class="lbl-row lbl-cat" role="option" data-active="{{row.active}}" data-dcrow-active="{{row.active}}" onMouseDown="{{row.onPick}}">
+                        <span class="chipicon"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="FolderFilled" size="14" hint-size="14px,14px"></x-import></span>
+                        <span>{{row.text}}</span>
+                        <span class="count">{{row.count}}</span>
+                      </button>
+                    </sc-if>
+                    <sc-if value="{{row.inert}}" hint-placeholder-val="{{false}}">
+                      <div class="grouphdr-inert">{{row.text}}</div>
+                    </sc-if>
                     <sc-if value="{{row.isItem}}" hint-placeholder-val="{{true}}">
-                      <button class="lbl-row" role="option" data-active="{{row.active}}" data-dcrow-active="{{row.active}}" onMouseDown="{{row.onPick}}">
+                      <button class="lbl-row lbl-sub" role="option" data-active="{{row.active}}" data-dcrow-active="{{row.active}}" onMouseDown="{{row.onPick}}">
                         <span>{{row.text}}</span>
                         <sc-if value="{{row.hasNote}}" hint-placeholder-val="{{false}}"><span class="rownote">{{row.note}}</span></sc-if>
                       </button>
                     </sc-if>
-                    <sc-if value="{{row.isCreate}}" hint-placeholder-val="{{false}}">
-                      <button class="lbl-row lbl-create" role="option" data-active="{{row.active}}" data-dcrow-active="{{row.active}}" onMouseDown="{{row.onPick}}">
-                        <span>{{row.text}}</span>
-                        <span class="rownote">created on save</span>
-                      </button>
-                    </sc-if>
                     <sc-if value="{{row.isEmpty}}" hint-placeholder-val="{{false}}">
-                      <div style="padding:12px;font-size:13px;color:var(--text-secondary)">{{row.text}}</div>
+                      <div style="padding:12px;font-size:13px;line-height:1.5;color:var(--text-secondary)">{{row.text}}</div>
                     </sc-if>
                   </sc-for>
                 </div>
@@ -425,7 +454,7 @@ button:focus-visible{outline:2px solid var(--color-primary-main);outline-offset:
 <!-- ============ B — Edit labels modal ============ -->
 <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Dialog" open="{{v2.open}}" onClose="{{v2.onCancel}}" max-width="sm" hint-size="0,0">
   <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.DialogTitle" hint-size="auto,auto">Edit labels</x-import>
-  <div style="padding:0 24px 4px;margin-top:-8px;font-size:12px;color:var(--text-secondary)">Add, remove or create labels for this post. Nothing changes until you save.</div>
+  <div style="padding:0 24px 4px;margin-top:-8px;font-size:12px;color:var(--text-secondary)">Add or remove labels for this post, or a whole category at once. Nothing changes until you save.</div>
   <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.DialogContent" hint-size="auto,auto">
 
     <div class="growslot dlgslot" data-open="{{news.modalOpen}}">
@@ -457,18 +486,36 @@ button:focus-visible{outline:2px solid var(--color-primary-main);outline-offset:
 
     <div class="combo-field" style="border-color:{{v2.borderColor}}">
       <span style="color:var(--action-active);display:inline-flex"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="AddFilled" size="16" hint-size="16px,16px"></x-import></span>
-      <input id="v2search" class="combo-input" aria-label="Search or create labels"
+      <input id="v2search" class="combo-input" aria-label="Search labels and categories"
         value="{{v2.search}}" onChange="{{v2.onSearch}}" onKeyDown="{{v2.onKeyDown}}"
-        placeholder="Search labels, or type a new name to create one" />
+        placeholder="Search labels and categories" />
     </div>
 
     <div class="v2list">
-      <sc-for list="{{v2.rows}}" as="row" hint-placeholder-count="6">
-        <sc-if value="{{row.isHeader}}" hint-placeholder-val="{{false}}">
+      <sc-for list="{{v2.rows}}" as="row" hint-placeholder-count="7">
+        <sc-if value="{{row.isPlainHeader}}" hint-placeholder-val="{{false}}">
           <div class="grouphdr">{{row.text}}</div>
         </sc-if>
+        <sc-if value="{{row.isCatRow}}" hint-placeholder-val="{{true}}">
+          <button class="optrow optrow-cat" data-active="{{row.active}}" data-dcrow-active="{{row.active}}" onClick="{{row.onToggle}}" aria-pressed="{{row.checked}}">
+            <span class="ck" data-on="{{row.ckState}}">
+              <sc-if value="{{row.checked}}" hint-placeholder-val="{{false}}">
+                <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="CheckFilled" size="14" hint-size="14px,14px"></x-import>
+              </sc-if>
+              <sc-if value="{{row.removing}}" hint-placeholder-val="{{false}}">
+                <span style="color:var(--color-error-main);display:inline-flex"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="CloseFilled" size="13" hint-size="13px,13px"></x-import></span>
+              </sc-if>
+            </span>
+            <span class="chipicon"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="FolderFilled" size="14" hint-size="14px,14px"></x-import></span>
+            <span style="text-decoration:{{row.deco}};color:{{row.textColor}}">{{row.text}}</span>
+            <span class="count">{{row.count}}</span>
+            <sc-if value="{{row.hasNote}}" hint-placeholder-val="{{false}}">
+              <span class="optnote" style="color:{{row.noteColor}}">{{row.note}}</span>
+            </sc-if>
+          </button>
+        </sc-if>
         <sc-if value="{{row.isItem}}" hint-placeholder-val="{{true}}">
-          <button class="optrow" data-active="{{row.active}}" data-dcrow-active="{{row.active}}" onClick="{{row.onToggle}}" aria-pressed="{{row.checked}}">
+          <button class="optrow" data-active="{{row.active}}" data-dcrow-active="{{row.active}}" data-inert="{{row.disabled}}" onClick="{{row.onToggle}}" aria-pressed="{{row.checked}}">
             <span class="ck" data-on="{{row.ckState}}">
               <sc-if value="{{row.checked}}" hint-placeholder-val="{{false}}">
                 <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="CheckFilled" size="14" hint-size="14px,14px"></x-import>
@@ -483,15 +530,8 @@ button:focus-visible{outline:2px solid var(--color-primary-main);outline-offset:
             </sc-if>
           </button>
         </sc-if>
-        <sc-if value="{{row.isCreate}}" hint-placeholder-val="{{false}}">
-          <button class="optrow lbl-create" data-active="{{row.active}}" data-dcrow-active="{{row.active}}" onClick="{{row.onToggle}}">
-            <span class="ck" data-on="false"></span>
-            <span>{{row.text}}</span>
-            <span class="optnote">created on save</span>
-          </button>
-        </sc-if>
         <sc-if value="{{row.isEmpty}}" hint-placeholder-val="{{false}}">
-          <div style="padding:14px 8px;font-size:13px;color:var(--text-secondary)">{{row.text}}</div>
+          <div style="padding:14px 8px;font-size:13px;line-height:1.5;color:var(--text-secondary)">{{row.text}}</div>
         </sc-if>
       </sc-for>
     </div>
@@ -610,9 +650,9 @@ class Component extends DCLogic {
      always exercises both the relative ("three days ago") and absolute branches. */
   seedSaved() {
     return [
-      { id: 2,  category: 'Brand', label: 'Coca-Cola',   by: 'Maria Silva',    at: new Date(Date.now() - 2 * 86400000) },
-      { id: 16, category: null,    label: 'Plastic',     by: 'Tomás Ferreira', at: new Date(Date.now() - 5 * 86400000) },
-      { id: 1,  category: 'Brand', label: 'Real Madrid', by: 'You',            at: new Date(Date.now() - 15 * 86400000) },
+      { id: 2,  kind: 'label', category: 'Brand', label: 'Coca-Cola',   by: 'Maria Silva',    at: new Date(Date.now() - 2 * 86400000) },
+      { id: 16, kind: 'label', category: null,    label: 'Plastic',     by: 'Tomás Ferreira', at: new Date(Date.now() - 5 * 86400000) },
+      { id: 1,  kind: 'label', category: 'Brand', label: 'Real Madrid', by: 'You',            at: new Date(Date.now() - 15 * 86400000) },
     ];
   }
 
@@ -620,7 +660,7 @@ class Component extends DCLogic {
     return {
       catalog: this.seedCatalog(),
       saved: this.seedSaved(),
-      pendingAdds: [],      // { tempId, category, label, catalogId|null }
+      pendingAdds: [],      // { tempId, kind: 'label'|'category', category, label, catalogId }
       pendingRemoves: [],   // saved ids
       input: '', open: false, activeRow: -1, confirmRemoveId: null,
       news: [],             // { id, by, verb, label, hit } — changes by other people, already saved
@@ -635,9 +675,31 @@ class Component extends DCLogic {
   // ---------------- tiny helpers ----------------
 
   norm(s) { return (s || '').trim().toLowerCase(); }
-  display(e) { return e.category ? e.category + ' / ' + e.label : e.label; }
+  /* A category goes on the post as one unit, so it displays as its bare name. Its key,
+     "brand::", can never collide with a label's — those always carry a label half. */
+  display(e) { return e.kind === 'category' ? e.category : e.category ? e.category + ' / ' + e.label : e.label; }
   keyOf(e) { return this.norm(e.category) + '::' + this.norm(e.label); }
   isOwn(e) { return e.by === 'You'; }
+  isCategory(e) { return e.kind === 'category'; }
+
+  /* Categories are derived from the catalog, never stored separately — so a category
+     assignment needs a synthetic id. String ids never collide with the numeric label ones,
+     which is what lets saved, pendingRemoves and occupied() hold both without branching. */
+  catId(name) { return 'cat:' + name; }
+  catItem(name) { return { id: this.catId(name), kind: 'category', category: name, label: null }; }
+  countIn(v, name) { return this.state[v].catalog.filter((c) => c.category === name).length; }
+
+  /** Category names the current draft puts on the post, saved or pending. */
+  appliedCats(v) {
+    const f = this.state[v];
+    const names = new Set();
+    f.saved.forEach((x) => { if (this.isCategory(x) && !f.pendingRemoves.includes(x.id)) names.add(x.category); });
+    f.pendingAdds.forEach((a) => { if (this.isCategory(a)) names.add(a.category); });
+    return names;
+  }
+
+  /** Is this label already implied by a category the draft applies as a unit? */
+  isCovered(v, item) { return !!item.category && this.appliedCats(v).has(item.category); }
 
   /** First name + last name, e.g. "Jose Carneiro" -> "JC". */
   initials(name) {
@@ -696,7 +758,40 @@ class Component extends DCLogic {
     return hasQuery ? 0 : -1;
   }
 
-  categoriesOf(v) { return [...new Set(this.state[v].catalog.map((c) => c.category).filter(Boolean))]; }
+  /* One grouping for both menus: categories first, alphabetically, with the labels that belong
+     to no category last — it is not a category, so it never gets a category's affordances. */
+  groupByCategory(items) {
+    const NONE = 'No category';
+    const buckets = {}, order = [];
+    items.forEach((c) => {
+      const k = c.category || NONE;
+      if (!buckets[k]) { buckets[k] = []; order.push(k); }
+      buckets[k].push(c);
+    });
+    order.sort((a, b) => (a === NONE ? 1 : b === NONE ? -1 : a.localeCompare(b)));
+    return order.map((name) => ({
+      name, isCategory: name !== NONE,
+      items: buckets[name].sort((a, b) => a.label.localeCompare(b.label)),
+    }));
+  }
+
+  /* What note 2 asks for: how many labels sit under this category. When the list in front of
+     you is a subset — filtered by a query, or thinned because some are already on the post —
+     saying "5" would be a lie about what the row will do, so it reads "3 of 5". */
+  groupCount(v, g) {
+    if (!g.isCategory) return String(g.items.length);
+    const total = this.countIn(v, g.name);
+    return g.items.length === total ? String(total) : g.items.length + ' of ' + total;
+  }
+
+  /* Creating labels moved to the Labels Admin area, so a query that matches nothing is now a
+     dead end. It has to say where creation went, or it reads as a bug. */
+  emptyText(query) {
+    const q = (query || '').trim();
+    return q
+      ? 'No labels match “' + q + '”. New labels and categories are created in Labels Admin.'
+      : 'Everything in the catalogue is already on this post.';
+  }
 
   /** Split "Category / name" queries; plain text searches both fields. */
   matchCatalog(v, query, pool) {
@@ -716,49 +811,34 @@ class Component extends DCLogic {
     return { matches, catQuery, labelQuery, hasSlash };
   }
 
-  /** The "Create …" row for a query, or null when an exact label already exists. */
-  createRowFor(v, query, matches, onPick) {
-    const q = (query || '').trim();
-    if (!q) return null;
-    const { catQuery, labelQuery, hasSlash } = this.matchCatalog(v, q, []);
-    const f = this.state[v];
-    if (hasSlash) {
-      if (!labelQuery) return null;
-      const catExact = f.catalog.find((c) => c.category && this.norm(c.category) === this.norm(catQuery));
-      const category = catExact ? catExact.category : catQuery;
-      if (!category) return null;
-      const dup = f.catalog.concat(f.pendingAdds).some((c) => this.keyOf(c) === this.keyOf({ category, label: labelQuery }));
-      if (dup) return null;
-      return {
-        text: 'Create “' + category + ' / ' + labelQuery + '”',
-        onPick: () => onPick({ category, label: labelQuery, id: null }),
-      };
-    }
-    if (matches.some((m) => this.norm(m.label) === this.norm(q))) return null;
-    if (f.catalog.concat(f.pendingAdds).some((c) => this.keyOf(c) === this.keyOf({ category: null, label: q }))) return null;
-    return { text: 'Create “' + q + '” (no category)', onPick: () => onPick({ category: null, label: q, id: null }) };
-  }
-
   // ---------------- draft mutations (shared by both versions) ----------------
 
-  /** Put a label on the post. Re-picking one that is pending removal just undoes the removal. */
+  /**
+   * Put a label — or a whole category — on the post. Re-picking something pending removal just
+   * undoes the removal. A category arrives as one unit, so it absorbs my own pending adds of
+   * its members: they would be redundant the moment the category lands. Members somebody else
+   * already saved are left alone — taking another person's label off is never a side effect.
+   */
   pick(v, item) {
+    const cleared = { input: '', activeRow: -1, modalSearch: '', modalActive: -1 };
     this.setIn(v, (f) => {
-      if (item.id != null && f.pendingRemoves.includes(item.id)) {
-        return { pendingRemoves: f.pendingRemoves.filter((x) => x !== item.id), input: '', activeRow: -1 };
+      if (f.pendingRemoves.includes(item.id)) {
+        return { ...cleared, pendingRemoves: f.pendingRemoves.filter((x) => x !== item.id) };
       }
-      if (item.id != null && f.pendingAdds.some((a) => a.catalogId === item.id)) return { input: '', activeRow: -1 };
-      if (item.id == null && f.pendingAdds.some((a) => this.keyOf(a) === this.keyOf(item))) return { input: '', activeRow: -1 };
-      return {
-        pendingAdds: [...f.pendingAdds, { tempId: this.nextTemp--, category: item.category, label: item.label, catalogId: item.id }],
-        input: '', activeRow: -1, modalSearch: '', modalActive: -1,
-      };
+      if (f.pendingAdds.some((a) => a.catalogId === item.id)) return cleared;
+      const entry = { tempId: this.nextTemp--, kind: item.kind || 'label', category: item.category, label: item.label, catalogId: item.id };
+      if (this.isCategory(item)) {
+        const members = f.catalog.filter((c) => c.category === item.category).map((c) => c.id);
+        const kept = f.pendingAdds.filter((a) => this.isCategory(a) || !members.includes(a.catalogId));
+        return { ...cleared, pendingAdds: [...kept, entry] };
+      }
+      return { ...cleared, pendingAdds: [...f.pendingAdds, entry] };
     });
   }
 
   /** Take a label off the post. `force` skips the awareness step (own labels, or already confirmed). */
   drop(v, chip, force) {
-    if (chip.kind === 'add') {
+    if (chip.origin === 'add') {
       this.setIn(v, (f) => ({ pendingAdds: f.pendingAdds.filter((a) => a.tempId !== chip.id) }));
       return;
     }
@@ -790,7 +870,7 @@ class Component extends DCLogic {
     if (!f.stale) return f;
     const st = f.stale;
     if (f.saved.some((x) => x.id === st.catalogId)) return { ...f, stale: null };
-    const saved = [...f.saved, { id: st.catalogId, category: st.category, label: st.label, by: st.by, at: new Date(), fresh: true }];
+    const saved = [...f.saved, { id: st.catalogId, kind: 'label', category: st.category, label: st.label, by: st.by, at: new Date(), fresh: true }];
     return { ...f, saved, stale: null };
   }
 
@@ -800,22 +880,16 @@ class Component extends DCLogic {
       this.setState((s) => {
         let f = s[v];
         if (withStale) f = this.applyStale(f);
-        const catalog = [...f.catalog];
         const stamp = new Date();
         const saved = f.saved
           .filter((x) => !f.pendingRemoves.includes(x.id))
           .map((x) => ({ ...x, fresh: false }));
         f.pendingAdds.forEach((a) => {
-          let cid = a.catalogId;
-          if (cid == null) {
-            cid = Math.max(0, ...catalog.map((c) => c.id)) + 1;
-            catalog.push({ id: cid, category: a.category, label: a.label });
-          }
-          if (saved.some((x) => x.id === cid)) return;
-          saved.push({ id: cid, category: a.category, label: a.label, by: 'You', at: stamp, fresh: false });
+          if (saved.some((x) => x.id === a.catalogId)) return;
+          saved.push({ id: a.catalogId, kind: a.kind, category: a.category, label: a.label, by: 'You', at: stamp, fresh: false });
         });
         return {
-          [v]: { ...f, catalog, saved, pendingAdds: [], pendingRemoves: [], saving: false,
+          [v]: { ...f, saved, pendingAdds: [], pendingRemoves: [], saving: false,
             input: '', open: false, activeRow: -1, confirmRemoveId: null, news: [], newsExpanded: false, chipInfoId: null,
             modalOpen: false, modalSearch: '', modalActive: -1, modalDiscard: false },
           reconcile: null,
@@ -852,7 +926,7 @@ class Component extends DCLogic {
         if (cand) item = cand;
       }
       if (!item) return { toast: 'Nothing left for Maria to add.' };
-      const saved = [...f.saved, { id: item.id, category: item.category, label: item.label, by: 'Maria Silva', at: new Date(), fresh: true }];
+      const saved = [...f.saved, { id: item.id, kind: 'label', category: item.category, label: item.label, by: 'Maria Silva', at: new Date(), fresh: true }];
       // if I had the same label staged, hers lands first and mine is now redundant
       const mine = f.pendingAdds.some((a) => a.catalogId === item.id);
       const news = [...f.news, { id: 'n' + Date.now() + '-' + f.news.length, by: 'Maria Silva',
@@ -946,32 +1020,51 @@ class Component extends DCLogic {
 
   // ---------------- v1 combobox ----------------
 
+  /**
+   * A's menu is grouped the way B's list already is, so the two candidates differ in where the
+   * list lives rather than in what it holds. A category header is an actionable row: picking it
+   * puts the whole category on the post as one thing. "No category" is the absence of one, so
+   * its header stays inert. A category the draft already applies drops out of the menu entirely,
+   * members and all — in a 264px dropdown five dead rows would push everything else out of
+   * sight, and in A the chip in the card is where you see and undo it. B, which has the room,
+   * keeps them visible and struck as covered instead.
+   */
   v1Rows() {
     const v = this.state.version;
     const f = this.state[v];
     const occ = this.occupied(v);
-    const pool = f.catalog.filter((c) => !occ.includes(c.id));
+    const applied = this.appliedCats(v);
+    const pool = f.catalog.filter((c) => !occ.includes(c.id) && !this.isCovered(v, c));
     const { matches } = this.matchCatalog(v, f.input, pool);
-    const sorted = [...matches].sort((a, b) => this.display(a).localeCompare(this.display(b)));
+    const groups = this.groupByCategory(matches);
 
-    const rows = sorted.map((item) => ({
-      key: 'i' + item.id, isItem: true, isCreate: false, isEmpty: false,
-      text: this.display(item),
-      hasNote: f.pendingRemoves.includes(item.id),
-      note: 'undoes your removal',
-      onPick: (e) => { if (e && e.preventDefault) e.preventDefault(); this.pick(v, item); },
-    }));
+    const rows = [];
+    groups.forEach((g) => {
+      rows.push({
+        key: 'h' + g.name, isHeader: true, isItem: false, isEmpty: false,
+        text: g.name, actionable: g.isCategory, inert: !g.isCategory,
+        count: this.groupCount(v, g),
+        onPick: (e) => { if (e && e.preventDefault) e.preventDefault(); this.pick(v, this.catItem(g.name)); },
+      });
+      g.items.forEach((item) => rows.push({
+        key: 'i' + item.id, isHeader: false, isItem: true, isEmpty: false,
+        text: item.label,
+        hasNote: f.pendingRemoves.includes(item.id),
+        note: 'undoes your removal',
+        onPick: (e) => { if (e && e.preventDefault) e.preventDefault(); this.pick(v, item); },
+      }));
+    });
 
-    const create = this.createRowFor(v, f.input, matches, (item) => this.pick(v, item));
-    if (create) rows.push({ key: 'create', isItem: false, isCreate: true, isEmpty: false, text: create.text,
-      hasNote: false, note: '', onPick: (e) => { if (e && e.preventDefault) e.preventDefault(); create.onPick(); } });
-
-    if (!rows.length) rows.push({ key: 'empty', isItem: false, isCreate: false, isEmpty: true, text: 'No matches.', hasNote: false, note: '' });
+    if (!rows.length) rows.push({ key: 'empty', isHeader: false, isItem: false, isEmpty: true,
+      text: this.emptyText(f.input), hasNote: false, note: '' });
     return rows;
   }
 
+  /** Rows the keyboard can land on: every label, and every category header that can be picked. */
+  v1Selectable(rows) { return rows.filter((r) => r.isItem || (r.isHeader && r.actionable)); }
+
   v1Move(delta) {
-    const rows = this.v1Rows().filter((r) => !r.isEmpty);
+    const rows = this.v1Selectable(this.v1Rows());
     if (!rows.length) return;
     this.setV((f) => {
       // from "nothing highlighted", ArrowDown lands on the first row and ArrowUp on the last
@@ -989,7 +1082,7 @@ class Component extends DCLogic {
     if (e.key === 'ArrowUp') { e.preventDefault(); this.v1Move(-1); return; }
     if (e.key === 'Enter') {
       e.preventDefault();
-      const rows = this.v1Rows().filter((r) => !r.isEmpty);
+      const rows = this.v1Selectable(this.v1Rows());
       const row = rows[this.activeIndex(f.activeRow, !!f.input.trim(), rows.length)];
       if (row) row.onPick(e);
       return;
@@ -1010,59 +1103,85 @@ class Component extends DCLogic {
     this.setIn('v2', { modalOpen: false, modalSearch: '', modalActive: -1 });
   }
 
+  /**
+   * B has the room A's dropdown does not, so it shows the whole truth: the category header is
+   * itself a checkbox row, and the labels it covers stay visible underneath, checked and inert,
+   * saying what covers them. That inertness is the face of the atomic model — you take the
+   * category off to get its members back — and it is exactly what the interview should provoke
+   * a reaction to.
+   */
   v2Rows() {
     const f = this.state.v2;
     const occ = this.occupied('v2');
-    const brandNew = f.pendingAdds
-      .filter((a) => a.catalogId == null)
-      .map((a) => ({ id: a.tempId, category: a.category, label: a.label, isNew: true }));
-    const { matches } = this.matchCatalog('v2', f.modalSearch, f.catalog.concat(brandNew));
-
-    const groups = {}, order = [];
-    matches.forEach((c) => {
-      const k = c.category || 'No category';
-      if (!groups[k]) { groups[k] = []; order.push(k); }
-      groups[k].push(c);
-    });
-    order.sort((a, b) => (a === 'No category' ? 1 : b === 'No category' ? -1 : a.localeCompare(b)));
+    const applied = this.appliedCats('v2');
+    const { matches } = this.matchCatalog('v2', f.modalSearch, f.catalog);
+    const groups = this.groupByCategory(matches);
 
     const rows = [];
-    order.forEach((k) => {
-      rows.push({ key: 'h' + k, isHeader: true, isItem: false, isCreate: false, isEmpty: false, text: k });
-      groups[k].sort((a, b) => a.label.localeCompare(b.label)).forEach((item) => {
-        const sv = item.isNew ? null : f.saved.find((x) => x.id === item.id);
-        const removing = !!sv && f.pendingRemoves.includes(item.id);
-        const adding = item.isNew || f.pendingAdds.some((a) => a.catalogId === item.id);
-        const checked = item.isNew || occ.includes(item.id);
+    groups.forEach((g) => {
+      const catOn = g.isCategory && applied.has(g.name);
+      if (g.isCategory) {
+        const id = this.catId(g.name);
+        const sv = f.saved.find((x) => x.id === id);
+        const removing = !!sv && f.pendingRemoves.includes(id);
+        const adding = f.pendingAdds.some((a) => a.catalogId === id);
         let note = '', noteColor = 'var(--text-secondary)';
         if (removing) { note = 'Removing — was added by ' + sv.by; noteColor = 'var(--color-error-main)'; }
-        else if (item.isNew) { note = 'New label — created on save'; noteColor = 'var(--color-primary-main)'; }
-        else if (adding) { note = 'Adding'; noteColor = 'var(--color-primary-main)'; }
+        else if (adding) { note = 'Adding the whole category'; noteColor = 'var(--color-primary-main)'; }
         else if (sv) { note = 'Added by ' + sv.by + (sv.fresh ? ' just now' : ''); noteColor = sv.fresh ? 'var(--color-warning-dark)' : 'var(--text-secondary)'; }
         rows.push({
-          key: 'i' + item.id, isHeader: false, isItem: true, isCreate: false, isEmpty: false,
-          text: this.display(item),
-          checked, removing,
-          ckState: removing ? 'removing' : checked ? 'true' : 'false',
+          key: 'h' + g.name, isHeader: true, isCatRow: true, isPlainHeader: false, isItem: false, isEmpty: false,
+          text: g.name, count: this.groupCount('v2', g),
+          checked: catOn, removing, disabled: false,
+          ckState: removing ? 'removing' : catOn ? 'true' : 'false',
           deco: removing ? 'line-through' : 'none',
           textColor: removing ? 'var(--text-secondary)' : 'var(--text-primary)',
           hasNote: !!note, note, noteColor,
-          onToggle: () => this.v2Toggle(item),
+          onToggle: () => this.v2Toggle(this.catItem(g.name)),
+        });
+      } else {
+        rows.push({ key: 'hNone', isHeader: true, isCatRow: false, isPlainHeader: true, isItem: false, isEmpty: false,
+          text: g.name, count: this.groupCount('v2', g), hasNote: false, note: '', noteColor: '' });
+      }
+
+      g.items.forEach((item) => {
+        const sv = f.saved.find((x) => x.id === item.id);
+        const removing = !!sv && f.pendingRemoves.includes(item.id);
+        const adding = f.pendingAdds.some((a) => a.catalogId === item.id);
+        const checked = catOn || occ.includes(item.id);
+        const bits = [];
+        let noteColor = 'var(--text-secondary)';
+        if (removing) { bits.push('Removing — was added by ' + sv.by); noteColor = 'var(--color-error-main)'; }
+        else if (adding) { bits.push('Adding'); noteColor = 'var(--color-primary-main)'; }
+        else if (sv) { bits.push('Added by ' + sv.by + (sv.fresh ? ' just now' : '')); if (sv.fresh) noteColor = 'var(--color-warning-dark)'; }
+        if (catOn) bits.push('covered by ' + g.name);
+        const note = bits.join(' · ');
+        // covered rows are inert, except while they carry a removal of their own — locking that
+        // in would strand the user with a change they cannot undo without dropping the category
+        const disabled = catOn && !removing;
+        rows.push({
+          key: 'i' + item.id, isHeader: false, isCatRow: false, isPlainHeader: false, isItem: true, isEmpty: false,
+          text: item.label, count: '',
+          checked, removing, disabled,
+          ckState: removing ? 'removing' : disabled ? 'covered' : checked ? 'true' : 'false',
+          deco: removing ? 'line-through' : 'none',
+          textColor: removing || disabled ? 'var(--text-secondary)' : 'var(--text-primary)',
+          hasNote: !!note, note, noteColor,
+          onToggle: () => { if (!disabled) this.v2Toggle(item); },
         });
       });
     });
 
-    const create = this.createRowFor('v2', f.modalSearch, matches, (item) => this.pick('v2', item));
-    if (create) rows.push({ key: 'create', isHeader: false, isItem: false, isCreate: true, isEmpty: false,
-      text: create.text, onToggle: () => create.onPick() });
-
-    if (!rows.length) rows.push({ key: 'empty', isHeader: false, isItem: false, isCreate: false, isEmpty: true, text: 'No matching labels.' });
+    if (!rows.length) rows.push({ key: 'empty', isHeader: false, isCatRow: false, isPlainHeader: false, isItem: false, isEmpty: true,
+      text: this.emptyText(f.modalSearch) });
     return rows;
   }
 
+  /** Rows the keyboard can land on: labels and category headers, minus anything inert. */
+  v2Selectable(rows) { return rows.filter((r) => (r.isItem || r.isCatRow) && !r.disabled); }
+
   v2Toggle(item) {
     const f = this.state.v2;
-    if (item.isNew) { this.setIn('v2', { pendingAdds: f.pendingAdds.filter((a) => a.tempId !== item.id) }); return; }
     const sv = f.saved.find((x) => x.id === item.id);
     if (f.pendingAdds.some((a) => a.catalogId === item.id)) {
       this.setIn('v2', { pendingAdds: f.pendingAdds.filter((a) => a.catalogId !== item.id) });
@@ -1079,7 +1198,7 @@ class Component extends DCLogic {
   }
 
   v2Move(delta) {
-    const rows = this.v2Rows().filter((r) => r.isItem || r.isCreate);
+    const rows = this.v2Selectable(this.v2Rows());
     if (!rows.length) return;
     this.setIn('v2', (f) => {
       const base = f.modalActive >= 0 ? f.modalActive : delta > 0 ? -1 : 0;
@@ -1093,7 +1212,7 @@ class Component extends DCLogic {
     if (e.key === 'ArrowUp') { e.preventDefault(); this.v2Move(-1); return; }
     if (e.key === 'Enter') {
       e.preventDefault();
-      const rows = this.v2Rows().filter((r) => r.isItem || r.isCreate);
+      const rows = this.v2Selectable(this.v2Rows());
       const f = this.state.v2;
       const row = rows[this.activeIndex(f.modalActive, !!f.modalSearch.trim(), rows.length)];
       if (row) row.onToggle();
@@ -1194,17 +1313,26 @@ class Component extends DCLogic {
    */
   chipList(v, inPlace) {
     const f = this.state[v];
+    // which categories cover a label here follows the same rule as everything else on the card:
+    // in A the draft counts, in B only what is actually saved does
+    const covering = new Set();
+    f.saved.forEach((x) => { if (this.isCategory(x) && !(inPlace && f.pendingRemoves.includes(x.id))) covering.add(x.category); });
+    if (inPlace) f.pendingAdds.forEach((a) => { if (this.isCategory(a)) covering.add(a.category); });
+
     const out = [];
     f.saved.forEach((sv) => out.push({
-      key: 's' + sv.id, id: sv.id, kind: 'saved',
+      key: 's' + sv.id, id: sv.id, origin: 'saved', kind: sv.kind,
       category: sv.category, label: sv.label, by: sv.by, at: sv.at,
+      isCategory: this.isCategory(sv),
+      covered: !this.isCategory(sv) && !!sv.category && covering.has(sv.category),
       own: this.isOwn(sv), fresh: !!sv.fresh,
       removing: inPlace && f.pendingRemoves.includes(sv.id),
     }));
     if (inPlace) f.pendingAdds.forEach((a) => out.push({
-      key: 'a' + a.tempId, id: a.tempId, kind: 'add',
+      key: 'a' + a.tempId, id: a.tempId, origin: 'add', kind: a.kind,
       category: a.category, label: a.label, by: 'You', at: null,
-      own: true, fresh: false, removing: false, isNew: a.catalogId == null,
+      isCategory: this.isCategory(a), covered: false,
+      own: true, fresh: false, removing: false,
     }));
     return out;
   }
@@ -1213,25 +1341,31 @@ class Component extends DCLogic {
     const f = this.state[v];
     return this.chipList(v, inPlace).map((c) => {
       const text = this.display(c);
-      const confirming = inPlace && f.confirmRemoveId === c.id && c.kind === 'saved';
+      const confirming = inPlace && f.confirmRemoveId === c.id && c.origin === 'saved';
 
       let borderStyle = 'solid', borderColor = confirming ? 'var(--color-error-main)' : 'var(--divider)', textColor = 'var(--text-primary)';
       let textDecoration = 'none', showTag = false, tagText = '', tagColor = 'var(--text-secondary)';
-      if (c.kind === 'add') {
+      if (c.origin === 'add') {
         borderStyle = 'dashed'; borderColor = 'var(--color-primary-main)';
-        showTag = true; tagText = c.isNew ? 'New label' : 'Adding'; tagColor = 'var(--color-primary-main)';
+        showTag = true; tagText = 'Adding'; tagColor = 'var(--color-primary-main)';
       } else if (c.removing) {
         borderStyle = 'dashed'; borderColor = 'var(--color-error-main)';
         textColor = 'var(--text-secondary)'; textDecoration = 'line-through';
         showTag = true; tagText = 'Removing'; tagColor = 'var(--color-error-main)';
+      } else if (c.covered) {
+        textColor = 'var(--text-secondary)';
+        showTag = true; tagText = 'Covered'; tagColor = 'var(--text-secondary)';
       } else if (c.fresh) {
         showTag = true; tagText = 'Just now'; tagColor = 'var(--color-warning-dark)';
       }
 
+      const members = c.isCategory ? this.countIn(v, c.category) : 0;
+      const whole = c.isCategory ? ' It puts all ' + members + ' of its labels on this post.' : '';
       let infoText;
-      if (c.kind === 'add') infoText = c.isNew ? 'New label — created for the workspace when you save.' : 'Added by you — not saved yet.';
+      if (c.origin === 'add') infoText = (c.isCategory ? 'Category added by you' : 'Added by you') + ' — not saved yet.' + whole;
       else if (c.removing) infoText = 'Removing — not saved yet. Originally added by ' + c.by + ', ' + this.formatWhen(c.at) + '.';
-      else infoText = 'Added by ' + c.by + ', ' + this.formatWhen(c.at) + '.';
+      else infoText = 'Added by ' + c.by + ', ' + this.formatWhen(c.at) + '.' + whole;
+      if (c.covered) infoText += ' Covered by the category “' + c.category + '” — take that off to change this one.';
 
       return {
         key: c.key,
@@ -1239,8 +1373,11 @@ class Component extends DCLogic {
         ariaLabel: text + ' — ' + infoText,
         borderStyle, borderColor, textColor, textDecoration,
         showTag, tagText, tagColor,
+        isCategory: c.isCategory,
+        showCount: c.isCategory,
+        countText: String(members),
         fresh: c.fresh && !c.removing,
-        showAuthor: c.kind === 'saved' && !c.own,
+        showAuthor: c.origin === 'saved' && !c.own,
         authorInitial: this.initials(c.by),
         authorColor: c.fresh ? 'var(--color-warning-main)' : 'var(--bluegrey-400)',
         authorTitle: 'Added by ' + c.by,
@@ -1251,16 +1388,16 @@ class Component extends DCLogic {
         onShowInfo: () => this.setIn(v, { chipInfoId: c.key }),
 
         confirming,
-        confirmText: 'Remove “' + c.label + '”?',
+        confirmText: c.isCategory ? 'Remove the category “' + c.category + '”?' : 'Remove “' + c.label + '”?',
         // only saved chips carry an author + date; a pending add has neither, and this prop is
         // built for every chip, not just the one being confirmed
         confirmSub: c.at ? 'Added by ' + c.by + ', ' + this.formatWhen(c.at) + '. It stays in the workspace and on other posts.' : '',
         onConfirm: () => this.drop(v, c, true),
         onCancelConfirm: () => this.setIn(v, { confirmRemoveId: null }),
 
-        showRemove: inPlace && !c.removing,
+        showRemove: inPlace && !c.removing && !c.covered,
         removeDisabled: confirming,
-        removeAria: c.own || c.kind === 'add' ? 'Remove ' + text : 'Remove ' + text + ', added by ' + c.by,
+        removeAria: c.own || c.origin === 'add' ? 'Remove ' + text : 'Remove ' + text + ', added by ' + c.by,
         onRemove: () => this.drop(v, c, false),
         showUndo: inPlace && !confirming && c.removing,
         onUndo: () => this.undoDrop(v, c.id),
@@ -1273,11 +1410,12 @@ class Component extends DCLogic {
     const items = [];
     f.pendingAdds.forEach((a) => items.push({
       key: 'a' + a.tempId, text: this.display(a),
-      kind: a.catalogId != null ? 'Add to post' : 'Create + add',
+      kind: this.isCategory(a) ? 'Add category (' + this.countIn(v, a.category) + ' labels)' : 'Add to post',
     }));
     f.pendingRemoves.forEach((id) => {
       const sv = f.saved.find((x) => x.id === id);
-      if (sv) items.push({ key: 'r' + id, text: this.display(sv), kind: 'Remove (added by ' + sv.by + ')' });
+      if (sv) items.push({ key: 'r' + id, text: this.display(sv),
+        kind: (this.isCategory(sv) ? 'Remove category' : 'Remove') + ' (added by ' + sv.by + ')' });
     });
     return items;
   }
@@ -1295,11 +1433,11 @@ class Component extends DCLogic {
 
     // ---- v2 modal ----
     const v2rows = isV2 ? this.v2Rows() : [];
-    const selectable = v2rows.filter((r) => r.isItem || r.isCreate);
+    const selectable = this.v2Selectable(v2rows);
     const activeIdx = this.activeIndex(f.modalActive, !!f.modalSearch.trim(), selectable.length);
     let seen = -1;
     v2rows.forEach((r) => {
-      if (r.isItem || r.isCreate) { seen += 1; r.active = seen === activeIdx; }
+      if ((r.isItem || r.isCatRow) && !r.disabled) { seen += 1; r.active = seen === activeIdx; }
       else r.active = false;
     });
     const othersRemoved = f.pendingRemoves
@@ -1310,11 +1448,16 @@ class Component extends DCLogic {
         ? 'Removing “' + this.display(othersRemoved[0]) + '” — added by ' + othersRemoved[0].by + '. It stays in the workspace and on other posts.'
         : 'Removing ' + othersRemoved.length + ' labels added by other people. They stay in the workspace and on other posts.';
     }
-    const adds = f.pendingAdds.length;
-    const removes = f.pendingRemoves.length;
-    const summaryBits = [];
-    if (adds) summaryBits.push(adds + (adds === 1 ? ' label added' : ' labels added'));
-    if (removes) summaryBits.push(removes + (removes === 1 ? ' label removed' : ' labels removed'));
+    // a category is not a label, and the footer is the last thing read before saving — so it
+    // counts the two separately rather than reporting "1 label added" for a whole category
+    const removed = f.pendingRemoves.map((id) => f.saved.find((x) => x.id === id)).filter(Boolean);
+    const summaryBits = [
+      [f.pendingAdds.filter((a) => !this.isCategory(a)).length, 'label', 'added'],
+      [f.pendingAdds.filter((a) => this.isCategory(a)).length, 'category', 'added'],
+      [removed.filter((x) => !this.isCategory(x)).length, 'label', 'removed'],
+      [removed.filter((x) => this.isCategory(x)).length, 'category', 'removed'],
+    ].filter(([n]) => n > 0).map(([n, noun, verb]) =>
+      n + ' ' + (n === 1 ? noun : noun === 'category' ? 'categories' : 'labels') + ' ' + verb);
 
     // ---- stale-save reconciliation ----
     const recV = s.reconcile;
@@ -1324,7 +1467,7 @@ class Component extends DCLogic {
       ? [
           { key: 'k1', keys: '/', what: 'Jump to the label field' },
           { key: 'k2', keys: '↓ ↑', what: 'Move through the suggestions' },
-          { key: 'k3', keys: 'Enter', what: 'Add the highlighted label, or create it' },
+          { key: 'k3', keys: 'Enter', what: 'Add the highlighted label, or the whole category' },
           { key: 'k4', keys: 'Backspace', what: 'From the empty field, jump to the last chip' },
           { key: 'k5', keys: 'Tab', what: 'Step through chips and their remove buttons' },
           { key: 'k6', keys: '⌘/Ctrl + Enter', what: 'Save the pending changes' },
@@ -1333,7 +1476,7 @@ class Component extends DCLogic {
       : [
           { key: 'k1', keys: 'E', what: 'Open “Edit labels”' },
           { key: 'k2', keys: '↓ ↑', what: 'Move through the list' },
-          { key: 'k3', keys: 'Enter', what: 'Add or remove the highlighted label' },
+          { key: 'k3', keys: 'Enter', what: 'Add or remove the highlighted label or category' },
           { key: 'k4', keys: 'Tab', what: 'Step through the rows one by one' },
           { key: 'k5', keys: '⌘/Ctrl + Enter', what: 'Save and close' },
           { key: 'k6', keys: 'Esc', what: 'Close the modal (asks first if you have changes)' },
@@ -1345,7 +1488,7 @@ class Component extends DCLogic {
         { key: 'v2', name: 'B · In a modal', active: isV2, onClick: () => this.setState({ version: 'v2' }) },
       ],
       versionNote: isV1
-        ? 'Add, create and remove directly on the page — then save'
+        ? 'Add and remove labels and categories on the page — then save'
         : 'Everything happens inside “Edit labels” — save from there',
 
       sim: {
@@ -1377,9 +1520,10 @@ class Component extends DCLogic {
         input: f.input,
         open: isV1 && f.open,
         borderColor: f.open ? 'var(--color-primary-main)' : 'var(--divider)',
+        hasCategories: isV1 && this.v1Rows().some((r) => r.actionable),
         rows: isV1 ? (() => {
           const all = this.v1Rows();
-          const sel = all.filter((x) => !x.isEmpty);
+          const sel = this.v1Selectable(all);
           const at = this.activeIndex(f.activeRow, !!f.input.trim(), sel.length);
           return all.map((r) => ({ ...r, active: at >= 0 && sel.indexOf(r) === at }));
         })() : [],

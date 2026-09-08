@@ -21,7 +21,7 @@ Open `index.html` for the cover, or go straight to one:
 
 | | | |
 | --- | --- | --- |
-| **v3** | [`[v3] Save flow - in place vs modal.dc.html`](<[v3] Save flow - in place vs modal.dc.html>) | **Current — used in interviews.** The two candidates side by side. **A** resolves every action in place on the page, so the card itself is the editor; **B** resolves everything inside an "Edit labels" modal. Both share the same rules underneath — an explicit save step, visible authorship on each label, and a switch to simulate someone else editing the same post — so a preference comes from the interaction model, not from a feature one has and the other lacks. |
+| **v3** | [`[v3] Save flow - in place vs modal.dc.html`](<[v3] Save flow - in place vs modal.dc.html>) | **Current — used in interviews.** The two candidates side by side. **A** resolves every action in place on the page, so the card itself is the editor; **B** resolves everything inside an "Edit labels" modal. Both share the same rules underneath — an explicit save step, visible authorship on each label, categories that can be applied whole, and a switch to simulate someone else editing the same post — so a preference comes from the interaction model, not from a feature one has and the other lacks. |
 | **v2** | [`[v2] Input variants a-h.dc.html`](<[v2] Input variants a-h.dc.html>) | The exploration that narrowed the field: eight ways (a–h) of adding and managing labels, from fully inline to fully modal. v3 takes the two ends of that range and makes them comparable. |
 | **v1** | [`[v1] Section mockups.dc.html`](<[v1] Section mockups.dc.html>) | Where it started: static mockups of the labels section on its own, before any interaction was decided. |
 
@@ -30,6 +30,23 @@ number the prototypes in this repository, oldest to newest. **A/B** name the two
 candidates *inside* v3. They were once called V1 and V2, which collided with the
 file numbering; the state keys in the source are still `'v1'` and `'v2'`, and
 the section comments name the letter each one maps to.
+
+## Two rules v3 encodes
+
+**A category goes on a post as one unit.** Applying "Brand" puts a single thing
+on the post, not its five labels — and its members cannot then be unpicked one
+by one. They show as *covered*: greyed in the card, ticked and inert in the
+modal, saying what covers them. Take the category off to get them back. Labels
+somebody had already put on the post individually stay exactly where they are;
+applying a category never removes another person's work as a side effect.
+Everywhere a category appears it carries how many labels sit under it, and a
+count reads "3 of 5" whenever the list in front of you is a subset — filtered by
+a query, or thinned because some are already on the post.
+
+**Nothing is created on this screen.** New labels and categories come from the
+Labels Admin area, so neither candidate offers a "Create …" option; a search
+that matches nothing says where creation went instead of offering a shortcut to
+it.
 
 ## Where it lives
 
