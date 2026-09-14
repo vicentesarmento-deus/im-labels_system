@@ -132,11 +132,12 @@ body{background:var(--background-default);font-family:var(--font-body);padding-t
 .lbl-row:hover{background:var(--action-hover)}
 .lbl-row[data-active="true"]{background:var(--color-primary-hover);box-shadow:inset 3px 0 0 var(--color-primary-main)}
 .rownote{margin-left:auto;font-size:11px;color:var(--text-secondary);white-space:nowrap}
-/* a category is a target, not a caption — so in A it is a row like any other, only heavier,
-   and the labels under it are indented to show what belongs to what */
+/* a category header is heavier than a label row, but it is no longer a target — it groups
+   what is under it and nothing more, so it never takes the hover/active affordances a real
+   option gets */
 .lbl-cat{font-weight:700}
-.menuhint{padding:9px 12px;font-size:11.5px;line-height:1.4;color:var(--text-secondary);
-  background:var(--background-default);border-bottom:1px solid var(--divider)}
+.lbl-cat-inert{cursor:default}
+.lbl-cat-inert:hover{background:transparent}
 .lbl-sub{padding-left:34px}
 .grouphdr-inert{padding:10px 12px 3px;font-size:11px;font-weight:700;letter-spacing:.04em;
   text-transform:uppercase;color:var(--text-secondary)}
@@ -172,6 +173,8 @@ body{background:var(--background-default);font-family:var(--font-body);padding-t
 .optrow[data-inert="true"]{cursor:default}
 .optrow[data-inert="true"]:hover{background:transparent}
 .optrow-cat{font-weight:700}
+.optrow-cat-inert{cursor:default}
+.optrow-cat-inert:hover{background:transparent}
 .grouphdr{padding:10px 8px 3px;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--text-secondary)}
 /* One growth primitive. A row that animates between 0 and its natural height, used by both
    the activity strip and the removal warning: 0fr -> 1fr is the only way to transition to an
@@ -383,22 +386,19 @@ button:focus-visible{outline:2px solid var(--color-primary-main);outline-offset:
             <div class="combo">
               <div class="combo-field" style="border-color:{{v1.borderColor}}">
                 <span style="color:var(--action-active);display:inline-flex"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="AddFilled" size="16" hint-size="16px,16px"></x-import></span>
-                <input id="v1input" class="combo-input" role="combobox" aria-expanded="{{v1.open}}" aria-label="Add a label or a category"
+                <input id="v1input" class="combo-input" role="combobox" aria-expanded="{{v1.open}}" aria-label="Add a label"
                   value="{{v1.input}}" onChange="{{v1.onInput}}" onKeyDown="{{v1.onKeyDown}}"
-                  onFocus="{{v1.onFocus}}" onBlur="{{v1.onBlur}}" placeholder="Add a label, or a whole category — type to search" />
+                  onFocus="{{v1.onFocus}}" onBlur="{{v1.onBlur}}" placeholder="Add a label — type to search" />
               </div>
               <sc-if value="{{v1.open}}" hint-placeholder-val="{{false}}">
                 <div class="combo-menu" role="listbox">
-                  <sc-if value="{{v1.hasCategories}}" hint-placeholder-val="{{true}}">
-                    <div class="menuhint">Pick a category to put all of its labels on the post at once.</div>
-                  </sc-if>
                   <sc-for list="{{v1.rows}}" as="row" hint-placeholder-count="5">
-                    <sc-if value="{{row.actionable}}" hint-placeholder-val="{{true}}">
-                      <button class="lbl-row lbl-cat" role="option" data-active="{{row.active}}" data-dcrow-active="{{row.active}}" onMouseDown="{{row.onPick}}">
+                    <sc-if value="{{row.isCategoryHeader}}" hint-placeholder-val="{{false}}">
+                      <div class="lbl-row lbl-cat lbl-cat-inert">
                         <span class="chipicon"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="FolderFilled" size="14" hint-size="14px,14px"></x-import></span>
                         <span>{{row.text}}</span>
                         <span class="count">{{row.count}}</span>
-                      </button>
+                      </div>
                     </sc-if>
                     <sc-if value="{{row.inert}}" hint-placeholder-val="{{false}}">
                       <div class="grouphdr-inert">{{row.text}}</div>
@@ -467,7 +467,7 @@ button:focus-visible{outline:2px solid var(--color-primary-main);outline-offset:
 <!-- ============ B — Edit labels modal ============ -->
 <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Dialog" open="{{v2.open}}" onClose="{{v2.onCancel}}" max-width="sm" hint-size="0,0">
   <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.DialogTitle" hint-size="auto,auto">Edit labels</x-import>
-  <div style="padding:0 24px 4px;margin-top:-8px;font-size:12px;color:var(--text-secondary)">Add or remove labels for this post, or a whole category at once. Nothing changes until you save.</div>
+  <div style="padding:0 24px 4px;margin-top:-8px;font-size:12px;color:var(--text-secondary)">Add or remove labels for this post. Nothing changes until you save.</div>
   <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.DialogContent" hint-size="auto,auto">
 
     <div class="growslot dlgslot" data-open="{{news.modalOpen}}">
@@ -499,9 +499,9 @@ button:focus-visible{outline:2px solid var(--color-primary-main);outline-offset:
 
     <div class="combo-field" style="border-color:{{v2.borderColor}}">
       <span style="color:var(--action-active);display:inline-flex"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="AddFilled" size="16" hint-size="16px,16px"></x-import></span>
-      <input id="v2search" class="combo-input" aria-label="Search labels and categories"
+      <input id="v2search" class="combo-input" aria-label="Search labels"
         value="{{v2.search}}" onChange="{{v2.onSearch}}" onKeyDown="{{v2.onKeyDown}}"
-        placeholder="Search labels and categories" />
+        placeholder="Search labels" />
     </div>
 
     <div class="v2list">
@@ -509,23 +509,12 @@ button:focus-visible{outline:2px solid var(--color-primary-main);outline-offset:
         <sc-if value="{{row.isPlainHeader}}" hint-placeholder-val="{{false}}">
           <div class="grouphdr">{{row.text}}</div>
         </sc-if>
-        <sc-if value="{{row.isCatRow}}" hint-placeholder-val="{{true}}">
-          <button class="optrow optrow-cat" data-active="{{row.active}}" data-dcrow-active="{{row.active}}" onClick="{{row.onToggle}}" aria-pressed="{{row.checked}}">
-            <span class="ck" data-on="{{row.ckState}}">
-              <sc-if value="{{row.checked}}" hint-placeholder-val="{{false}}">
-                <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="CheckFilled" size="14" hint-size="14px,14px"></x-import>
-              </sc-if>
-              <sc-if value="{{row.removing}}" hint-placeholder-val="{{false}}">
-                <span style="color:var(--color-error-main);display:inline-flex"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="CloseFilled" size="13" hint-size="13px,13px"></x-import></span>
-              </sc-if>
-            </span>
+        <sc-if value="{{row.isCategoryHeader}}" hint-placeholder-val="{{true}}">
+          <div class="optrow optrow-cat optrow-cat-inert">
             <span class="chipicon"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="FolderFilled" size="14" hint-size="14px,14px"></x-import></span>
-            <span style="text-decoration:{{row.deco}};color:{{row.textColor}}">{{row.text}}</span>
+            <span>{{row.text}}</span>
             <span class="count">{{row.count}}</span>
-            <sc-if value="{{row.hasNote}}" hint-placeholder-val="{{false}}">
-              <span class="optnote" style="color:{{row.noteColor}}">{{row.note}}</span>
-            </sc-if>
-          </button>
+          </div>
         </sc-if>
         <sc-if value="{{row.isItem}}" hint-placeholder-val="{{true}}">
           <button class="optrow" data-active="{{row.active}}" data-dcrow-active="{{row.active}}" data-inert="{{row.disabled}}" onClick="{{row.onToggle}}" aria-pressed="{{row.checked}}">
@@ -724,11 +713,6 @@ class Component extends DCLogic {
     };
   }
 
-  /* Categories are derived from the catalog, never stored separately — so a category
-     assignment needs a synthetic id. String ids never collide with the numeric label ones,
-     which is what lets saved, pendingRemoves and occupied() hold both without branching. */
-  catId(name) { return 'cat:' + name; }
-  catItem(name) { return { id: this.catId(name), kind: 'category', category: name, label: null }; }
   countIn(v, name) { return this.state[v].catalog.filter((c) => c.category === name).length; }
 
   /** Category names the current draft puts on the post, saved or pending. */
@@ -852,10 +836,10 @@ class Component extends DCLogic {
   // ---------------- draft mutations (shared by both versions) ----------------
 
   /**
-   * Put a label — or a whole category — on the post. Re-picking something pending removal just
-   * undoes the removal. A category arrives as one unit, so it absorbs my own pending adds of
-   * its members: they would be redundant the moment the category lands. Members somebody else
-   * already saved are left alone — taking another person's label off is never a side effect.
+   * Put a label on the post. Re-picking something pending removal just undoes the removal.
+   * (The function still branches on `isCategory` for a whole-category entry — nothing in the
+   * UI produces one any more, since neither picker offers a category as a pickable row, but the
+   * branch is left in place rather than ripped out from underneath the data model.)
    */
   pick(v, item) {
     const cleared = { input: '', activeRow: -1, modalSearch: '', modalActive: -1 };
@@ -1060,12 +1044,9 @@ class Component extends DCLogic {
 
   /**
    * A's menu is grouped the way B's list already is, so the two candidates differ in where the
-   * list lives rather than in what it holds. A category header is an actionable row: picking it
-   * puts the whole category on the post as one thing. "No category" is the absence of one, so
-   * its header stays inert. A category the draft already applies drops out of the menu entirely,
-   * members and all — in a 264px dropdown five dead rows would push everything else out of
-   * sight, and in A the chip in the card is where you see and undo it. B, which has the room,
-   * keeps them visible and struck as covered instead.
+   * list lives rather than in what it holds. Neither header is pickable: a category header
+   * groups the labels under it and nothing more, exactly like the "No category" header already
+   * did — you add labels one at a time.
    */
   v1Rows() {
     const v = this.state.version;
@@ -1080,9 +1061,10 @@ class Component extends DCLogic {
     groups.forEach((g) => {
       rows.push({
         key: 'h' + g.name, isHeader: true, isItem: false, isEmpty: false,
-        text: g.name, actionable: g.isCategory, inert: !g.isCategory,
+        // a category header only groups the labels under it now — it cannot be picked as a
+        // whole, so it carries no onPick at all
+        text: g.name, isCategoryHeader: g.isCategory, inert: !g.isCategory,
         count: this.groupCount(v, g),
-        onPick: (e) => { if (e && e.preventDefault) e.preventDefault(); this.pick(v, this.catItem(g.name)); },
       });
       g.items.forEach((item) => rows.push({
         key: 'i' + item.id, isHeader: false, isItem: true, isEmpty: false,
@@ -1098,8 +1080,8 @@ class Component extends DCLogic {
     return rows;
   }
 
-  /** Rows the keyboard can land on: every label, and every category header that can be picked. */
-  v1Selectable(rows) { return rows.filter((r) => r.isItem || (r.isHeader && r.actionable)); }
+  /** Rows the keyboard can land on: every label. Category headers are no longer pickable. */
+  v1Selectable(rows) { return rows.filter((r) => r.isItem); }
 
   v1Move(delta) {
     const rows = this.v1Selectable(this.v1Rows());
@@ -1142,43 +1124,25 @@ class Component extends DCLogic {
   }
 
   /**
-   * B has the room A's dropdown does not, so it shows the whole truth: the category header is
-   * itself a checkbox row, and the labels it covers stay visible underneath, checked and inert,
-   * saying what covers them. That inertness is the face of the atomic model — you take the
-   * category off to get its members back — and it is exactly what the interview should provoke
-   * a reaction to.
+   * B has the room A's dropdown does not, so a category header stays visible as a group label —
+   * it just cannot be picked any more. Checking a label still names who added it, and now says
+   * when, the same way the chip's own popover already does.
    */
   v2Rows() {
     const f = this.state.v2;
     const occ = this.occupied('v2');
-    const applied = this.appliedCats('v2');
     const { matches } = this.matchCatalog('v2', f.modalSearch, f.catalog);
     const groups = this.groupByCategory(matches);
 
     const rows = [];
     groups.forEach((g) => {
-      const catOn = g.isCategory && applied.has(g.name);
       if (g.isCategory) {
-        const id = this.catId(g.name);
-        const sv = f.saved.find((x) => x.id === id);
-        const removing = !!sv && f.pendingRemoves.includes(id);
-        const adding = f.pendingAdds.some((a) => a.catalogId === id);
-        let note = '', noteColor = 'var(--text-secondary)';
-        if (removing) { note = 'Removing — was added by ' + sv.by; noteColor = 'var(--color-error-main)'; }
-        else if (adding) { note = 'Adding the whole category'; noteColor = 'var(--color-primary-main)'; }
-        else if (sv) { note = 'Added by ' + sv.by + (sv.fresh ? ' just now' : ''); noteColor = sv.fresh ? 'var(--color-warning-dark)' : 'var(--text-secondary)'; }
         rows.push({
-          key: 'h' + g.name, isHeader: true, isCatRow: true, isPlainHeader: false, isItem: false, isEmpty: false,
+          key: 'h' + g.name, isHeader: true, isCategoryHeader: true, isPlainHeader: false, isItem: false, isEmpty: false,
           text: g.name, count: this.groupCount('v2', g),
-          checked: catOn, removing, disabled: false,
-          ckState: removing ? 'removing' : catOn ? 'true' : 'false',
-          deco: removing ? 'line-through' : 'none',
-          textColor: removing ? 'var(--text-secondary)' : 'var(--text-primary)',
-          hasNote: !!note, note, noteColor,
-          onToggle: () => this.v2Toggle(this.catItem(g.name)),
         });
       } else {
-        rows.push({ key: 'hNone', isHeader: true, isCatRow: false, isPlainHeader: true, isItem: false, isEmpty: false,
+        rows.push({ key: 'hNone', isHeader: true, isCategoryHeader: false, isPlainHeader: true, isItem: false, isEmpty: false,
           text: g.name, count: this.groupCount('v2', g), hasNote: false, note: '', noteColor: '' });
       }
 
@@ -1186,37 +1150,33 @@ class Component extends DCLogic {
         const sv = f.saved.find((x) => x.id === item.id);
         const removing = !!sv && f.pendingRemoves.includes(item.id);
         const adding = f.pendingAdds.some((a) => a.catalogId === item.id);
-        const checked = catOn || occ.includes(item.id);
+        const checked = occ.includes(item.id);
         const bits = [];
         let noteColor = 'var(--text-secondary)';
-        if (removing) { bits.push('Removing — was added by ' + sv.by); noteColor = 'var(--color-error-main)'; }
+        if (removing) { bits.push('Removing — was added by ' + sv.by + ', ' + this.formatWhen(sv.at)); noteColor = 'var(--color-error-main)'; }
         else if (adding) { bits.push('Adding'); noteColor = 'var(--color-primary-main)'; }
-        else if (sv) { bits.push('Added by ' + sv.by + (sv.fresh ? ' just now' : '')); if (sv.fresh) noteColor = 'var(--color-warning-dark)'; }
-        if (catOn) bits.push('covered by ' + g.name);
+        else if (sv) { bits.push('Added by ' + sv.by + ', ' + this.formatWhen(sv.at)); if (sv.fresh) noteColor = 'var(--color-warning-dark)'; }
         const note = bits.join(' · ');
-        // covered rows are inert, except while they carry a removal of their own — locking that
-        // in would strand the user with a change they cannot undo without dropping the category
-        const disabled = catOn && !removing;
         rows.push({
-          key: 'i' + item.id, isHeader: false, isCatRow: false, isPlainHeader: false, isItem: true, isEmpty: false,
+          key: 'i' + item.id, isHeader: false, isCategoryHeader: false, isPlainHeader: false, isItem: true, isEmpty: false,
           text: item.label, count: '',
-          checked, removing, disabled,
-          ckState: removing ? 'removing' : disabled ? 'covered' : checked ? 'true' : 'false',
+          checked, removing, disabled: false,
+          ckState: removing ? 'removing' : checked ? 'true' : 'false',
           deco: removing ? 'line-through' : 'none',
-          textColor: removing || disabled ? 'var(--text-secondary)' : 'var(--text-primary)',
+          textColor: removing ? 'var(--text-secondary)' : 'var(--text-primary)',
           hasNote: !!note, note, noteColor,
-          onToggle: () => { if (!disabled) this.v2Toggle(item); },
+          onToggle: () => this.v2Toggle(item),
         });
       });
     });
 
-    if (!rows.length) rows.push({ key: 'empty', isHeader: false, isCatRow: false, isPlainHeader: false, isItem: false, isEmpty: true,
+    if (!rows.length) rows.push({ key: 'empty', isHeader: false, isCategoryHeader: false, isPlainHeader: false, isItem: false, isEmpty: true,
       text: this.emptyText(f.modalSearch) });
     return rows;
   }
 
-  /** Rows the keyboard can land on: labels and category headers, minus anything inert. */
-  v2Selectable(rows) { return rows.filter((r) => (r.isItem || r.isCatRow) && !r.disabled); }
+  /** Rows the keyboard can land on: labels only. Category headers are no longer pickable. */
+  v2Selectable(rows) { return rows.filter((r) => r.isItem); }
 
   v2Toggle(item) {
     const f = this.state.v2;
@@ -1493,7 +1453,7 @@ class Component extends DCLogic {
     const activeIdx = this.activeIndex(f.modalActive, !!f.modalSearch.trim(), selectable.length);
     let seen = -1;
     v2rows.forEach((r) => {
-      if ((r.isItem || r.isCatRow) && !r.disabled) { seen += 1; r.active = seen === activeIdx; }
+      if (r.isItem) { seen += 1; r.active = seen === activeIdx; }
       else r.active = false;
     });
     const othersRemoved = f.pendingRemoves
@@ -1523,7 +1483,7 @@ class Component extends DCLogic {
       ? [
           { key: 'k1', keys: '/', what: 'Jump to the label field' },
           { key: 'k2', keys: '↓ ↑', what: 'Move through the suggestions' },
-          { key: 'k3', keys: 'Enter', what: 'Add the highlighted label, or the whole category' },
+          { key: 'k3', keys: 'Enter', what: 'Add the highlighted label' },
           { key: 'k4', keys: 'Backspace', what: 'From the empty field, jump to the last chip' },
           { key: 'k5', keys: 'Tab', what: 'Step through chips and their remove buttons' },
           { key: 'k6', keys: '⌘/Ctrl + Enter', what: 'Save the pending changes' },
@@ -1532,7 +1492,7 @@ class Component extends DCLogic {
       : [
           { key: 'k1', keys: 'E', what: 'Open “Edit labels”' },
           { key: 'k2', keys: '↓ ↑', what: 'Move through the list' },
-          { key: 'k3', keys: 'Enter', what: 'Add or remove the highlighted label or category' },
+          { key: 'k3', keys: 'Enter', what: 'Add or remove the highlighted label' },
           { key: 'k4', keys: 'Tab', what: 'Step through the rows one by one' },
           { key: 'k5', keys: '⌘/Ctrl + Enter', what: 'Save and close' },
           { key: 'k6', keys: 'Esc', what: 'Close the modal (asks first if you have changes)' },
@@ -1544,7 +1504,7 @@ class Component extends DCLogic {
         { key: 'v2', name: 'B · In a modal', active: isV2, onClick: () => this.setState({ version: 'v2' }) },
       ],
       versionNote: isV1
-        ? 'Add and remove labels and categories on the page — then save'
+        ? 'Add and remove labels on the page — then save'
         : 'Everything happens inside “Edit labels” — save from there',
 
       sim: {
@@ -1576,7 +1536,6 @@ class Component extends DCLogic {
         input: f.input,
         open: isV1 && f.open,
         borderColor: f.open ? 'var(--color-primary-main)' : 'var(--divider)',
-        hasCategories: isV1 && this.v1Rows().some((r) => r.actionable),
         rows: isV1 ? (() => {
           const all = this.v1Rows();
           const sel = this.v1Selectable(all);

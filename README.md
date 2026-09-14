@@ -21,7 +21,7 @@ Open `index.html` for the cover, or go straight to one:
 
 | | | |
 | --- | --- | --- |
-| **v3** | [`[v3] Save flow - in place vs modal.dc.html`](<[v3] Save flow - in place vs modal.dc.html>) | **Current — used in interviews.** The two candidates side by side. **A** resolves every action in place on the page, so the card itself is the editor; **B** resolves everything inside an "Edit labels" modal. Both share the same rules underneath — an explicit save step, visible authorship on each label, categories that can be applied whole, and a switch to simulate someone else editing the same post — so a preference comes from the interaction model, not from a feature one has and the other lacks. |
+| **v3** | [`[v3] Save flow - in place vs modal.dc.html`](<[v3] Save flow - in place vs modal.dc.html>) | **Current — used in interviews.** The two candidates side by side. **A** resolves every action in place on the page, so the card itself is the editor; **B** resolves everything inside an "Edit labels" modal. Both share the same rules underneath — an explicit save step, visible authorship and timestamp on each label, and a switch to simulate someone else editing the same post — so a preference comes from the interaction model, not from a feature one has and the other lacks. |
 | **v2** | [`[v2] Input variants a-h.dc.html`](<[v2] Input variants a-h.dc.html>) | The exploration that narrowed the field: eight ways (a–h) of adding and managing labels, from fully inline to fully modal. v3 takes the two ends of that range and makes them comparable. |
 | **v1** | [`[v1] Section mockups.dc.html`](<[v1] Section mockups.dc.html>) | Where it started: static mockups of the labels section on its own, before any interaction was decided. |
 
@@ -33,23 +33,24 @@ the section comments name the letter each one maps to.
 
 ## Two rules v3 encodes
 
-**A category goes on a post as one unit.** Applying "Brand" puts a single thing
-on the post, not its five labels — and its members cannot then be unpicked one
-by one. They show as *covered*: greyed in the card, ticked and inert in the
-modal, saying what covers them. Take the category off to get them back. Labels
-somebody had already put on the post individually stay exactly where they are;
-applying a category never removes another person's work as a side effect.
-Everywhere a category appears it carries how many labels sit under it, and a
-count reads "3 of 5" whenever the list in front of you is a subset — filtered by
-a query, or thinned because some are already on the post.
+**Categories are context, not something you pick.** Every label still shows
+the category it lives under — as a "Brand /" prefix on its chip, and as a
+group header when you're adding one — but neither candidate lets you apply a
+whole category to a post. A category header in the menu (A) or the modal (B)
+is inert: it groups the labels beneath it and nothing more. You add and
+remove labels one at a time. (v3 originally let a category go on as one unit,
+covering its members; that model's supporting code — the "covered" styling,
+the read-only category viewer — is still here, just unreachable from either
+picker now that adding a whole category isn't offered.)
 
-**Nothing is created on this screen.** New labels and categories come from
-elsewhere in the product, so neither candidate offers a "Create …" option; a
-search that matches nothing simply says so.
+**Nothing is created on this screen.** New labels come from elsewhere in the
+product, so neither candidate offers a "Create …" option; a search that
+matches nothing simply says so.
 
-**A category chip opens a viewer.** Clicking one lists every label under that
-category, read-only — the one dialog variant A does open, and it changes
-nothing. Editing in A still happens entirely in place.
+**Every saved label says who added it, and when.** The card chip's popover
+has always carried both; the "Edit labels" modal's list now does too — a
+label added by someone else reads "Added by Maria Silva, three days ago"
+rather than just naming her.
 
 ## Where it lives
 
