@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<template id="__bundler_thumbnail" data-bg-color="#1C00B7">
+  <svg viewBox="0 0 100 70" xmlns="http://www.w3.org/2000/svg">
+    <rect x="6" y="8" width="40" height="54" rx="3" fill="#fff" opacity="0.9"/>
+    <rect x="54" y="8" width="40" height="54" rx="3" fill="#fff" opacity="0.35"/>
+    <rect x="10" y="22" width="16" height="5" rx="2.5" fill="#1C00B7"/>
+    <rect x="28" y="22" width="10" height="5" rx="2.5" fill="#1C00B7" opacity="0.5"/>
+    <rect x="58" y="22" width="26" height="5" rx="2.5" fill="#1C00B7" opacity="0.7"/>
+  </svg>
+</template>
+<link rel="stylesheet" href="_ds/monitoring-design-system-1b6ea82e-2f03-4829-a388-b1ad0eec86ff/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/monitoring-design-system-1b6ea82e-2f03-4829-a388-b1ad0eec86ff/tokens/colors.css">
+<link rel="stylesheet" href="_ds/monitoring-design-system-1b6ea82e-2f03-4829-a388-b1ad0eec86ff/tokens/typography.css">
+<link rel="stylesheet" href="_ds/monitoring-design-system-1b6ea82e-2f03-4829-a388-b1ad0eec86ff/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/monitoring-design-system-1b6ea82e-2f03-4829-a388-b1ad0eec86ff/styles.css">
+<script src="_ds/monitoring-design-system-1b6ea82e-2f03-4829-a388-b1ad0eec86ff/_ds_bundle.js"></script>
+<style>
+html,body{margin:0}
+body{background:var(--background-default);font-family:var(--font-body);padding-top:96px}
+
+/* ---- facilitator chrome (prototype only, not part of the product UI) ---- */
+.gnav{position:fixed;top:0;left:0;right:0;height:48px;z-index:100;display:flex;align-items:center;gap:10px;
+  padding:0 16px;background:#15171b;color:#fff;box-sizing:border-box;overflow-x:auto}
+.gnav-title{font-size:12px;font-weight:600;letter-spacing:.02em;color:#fff;white-space:nowrap}
+.gnav-sub{font-size:11px;color:rgba(255,255,255,.45);white-space:nowrap}
+.gnav-spacer{flex:1}
+.gnav-sim{display:flex;align-items:center;gap:6px;white-space:nowrap}
+.gnav-simlbl{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.35)}
+.gnav-simbtn{all:unset;cursor:pointer;padding:5px 10px;border-radius:4px;font-size:11px;
+  color:rgba(255,255,255,.72);border:1px solid rgba(255,255,255,.16);white-space:nowrap}
+.gnav-simbtn:hover{background:rgba(255,255,255,.1);color:#fff}
+.gnav-simbtn[data-armed="true"]{border-color:var(--color-warning-main);color:var(--color-warning-main)}
+.gnav-sep{width:1px;height:22px;background:rgba(255,255,255,.14)}
+.gnav a{color:rgba(255,255,255,.45);font-size:11px;text-decoration:none;white-space:nowrap}
+.gnav a:hover{color:#fff}
+
+/* ---- static top bar mimicking the real product chrome, DS tokens only ---- */
+.topbar{position:fixed;top:48px;left:0;right:0;height:48px;z-index:90;display:flex;align-items:center;gap:10px;
+  padding:0 24px;background:var(--background-paper);border-bottom:1px solid var(--divider);box-sizing:border-box}
+.crumb{font-size:12px;color:var(--text-secondary)}
+.crumb b{color:var(--text-primary);font-weight:700}
+.topbar-spacer{flex:1}
+
+/* ---- page layout ---- */
+.page{max-width:1180px;margin:24px auto 60px;padding:0 24px;display:flex;gap:24px;align-items:flex-start}
+.postcol{flex:1 1 auto;min-width:0}
+.panelcol{flex:0 0 460px}
+.postplaceholder{aspect-ratio:4/3;background:var(--background-default);border:1px dashed var(--divider);
+  border-radius:var(--radius);display:flex;align-items:center;justify-content:center}
+
+.card{border:1px solid var(--divider);border-radius:2px;background:var(--background-paper);margin-bottom:16px}
+.card:last-child{margin-bottom:0}
+.card-head{display:flex;align-items:center;justify-content:space-between;padding:16px 16px 10px}
+.card-title{font-size:16px;font-weight:700;color:var(--text-primary)}
+.card-body{padding:0 16px 16px}
+.sub{font-size:13px;font-weight:700;color:var(--text-primary);margin:6px 0 4px}
+.muted{font-size:13px;color:var(--text-secondary);line-height:1.5;margin:0 0 12px}
+.hl{background:var(--color-success-light)}
+.seg{display:flex}
+.seg span{flex:1;border:1px solid var(--divider);padding:8px;font-size:11px;text-align:center;color:var(--text-secondary)}
+.seg span + span{border-left:0}
+
+/* ---- labels ---- */
+.lblbody{display:flex;flex-direction:column;gap:10px}
+.lbl-chips{display:flex;flex-wrap:wrap;gap:8px;min-height:30px}
+.chipwrap{position:relative;display:inline-flex}
+.lbl-chip{display:inline-flex;align-items:center;height:28px;padding:0 4px 0 8px;border-radius:14px;
+  border-width:1px;background:var(--background-paper);box-sizing:border-box}
+.lbl-chip[data-fresh="true"]{box-shadow:0 0 0 3px var(--color-warning-light)}
+.who{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;flex-shrink:0;
+  font-size:9px;font-weight:700;letter-spacing:.02em;margin-right:6px;color:#fff;background:var(--bluegrey-400)}
+.chipicon{display:inline-flex;flex-shrink:0;margin-right:5px;color:var(--action-active)}
+/* the category half of a label's name is context, so it carries less weight than the name */
+.chip-cat{color:var(--text-secondary);margin-right:4px}
+.lbl-chip .count{margin-left:6px}
+.lbl-chipname{all:unset;cursor:pointer;font-size:13px;line-height:1;white-space:nowrap}
+.lbl-tag{font-size:9.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;margin-left:6px}
+.lbl-hoverpop{position:absolute;top:100%;left:0;margin-top:6px;min-width:200px;max-width:300px;
+  padding:10px 14px;background:var(--background-paper);border-radius:var(--radius);
+  box-shadow:var(--shadow-8);font-size:12px;line-height:1.5;color:var(--text-primary);z-index:50}
+.lbl-x{all:unset;cursor:pointer;display:flex;padding:4px;margin-left:2px;opacity:.6;border-radius:50%}
+.lbl-x:hover{opacity:1;background:var(--action-hover)}
+/* kept in the DOM while its confirmation is open, so the chip keeps its width and the row
+   never rewraps — just inert */
+.lbl-x[disabled]{opacity:.22;cursor:default}
+.lbl-x[disabled]:hover{opacity:.22;background:transparent}
+.lbl-undo{all:unset;cursor:pointer;display:flex;align-items:center;gap:3px;padding:4px 6px;margin-left:2px;
+  font-size:11px;font-weight:600;color:var(--color-primary-main);border-radius:10px}
+.lbl-undo:hover{background:var(--color-primary-hover)}
+
+/* removal confirmation — a popover on the chip, so the chips row never reflows. Labels are
+   still resolved one at a time on the card — nothing here opens a dialog to change one. */
+.confirmpop{position:absolute;top:100%;left:0;margin-top:6px;width:262px;z-index:40;
+  padding:12px 14px;background:var(--background-paper);border-radius:var(--radius);
+  border-top:3px solid var(--color-error-main);box-shadow:var(--shadow-8)}
+.confirmpop-txt{font-size:13px;font-weight:700;color:var(--text-primary);line-height:1.4}
+.confirmpop-sub{margin-top:5px;font-size:11.5px;color:var(--text-secondary);line-height:1.45}
+.confirmpop-acts{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}
+.cc-btn{all:unset;cursor:pointer;font-size:11.5px;font-weight:700;padding:5px 11px;border-radius:2px;white-space:nowrap}
+.cc-yes{background:var(--color-error-main);color:#fff}
+.cc-yes:hover{background:var(--color-error-dark)}
+.cc-no{color:var(--text-secondary)}
+.cc-no:hover{background:var(--action-hover)}
+
+/* combobox */
+.combo{position:relative}
+.combo-field{display:flex;align-items:center;gap:6px;border:1px solid var(--divider);border-radius:2px;
+  padding:0 8px;height:38px;background:var(--background-paper);box-sizing:border-box}
+.combo-input{border:none;outline:none;flex:1;min-width:40px;font-size:13px;font-family:var(--font-body);
+  color:var(--text-primary);background:transparent}
+.combo-menu{position:absolute;top:calc(100% + 4px);left:0;right:0;max-height:264px;overflow-y:auto;z-index:30;
+  background:var(--background-paper);border:1px solid var(--divider);border-radius:2px;box-shadow:var(--shadow-8)}
+.lbl-row{display:flex;align-items:center;gap:8px;width:100%;box-sizing:border-box;padding:8px 12px;
+  font-size:13px;color:var(--text-primary);cursor:pointer;background:transparent;border:0;
+  font-family:var(--font-body);text-align:left}
+.lbl-row:hover{background:var(--action-hover)}
+.lbl-row[data-active="true"]{background:var(--color-primary-hover);box-shadow:inset 3px 0 0 var(--color-primary-main)}
+.rownote{margin-left:auto;font-size:11px;color:var(--text-secondary);white-space:nowrap}
+/* a category header is heavier than a label row, but it is no longer a target — it groups
+   what is under it and nothing more, so it never takes the hover/active affordances a real
+   option gets */
+.lbl-cat{font-weight:700}
+.lbl-cat-inert{cursor:default}
+.lbl-cat-inert:hover{background:transparent}
+.lbl-sub{padding-left:34px}
+.grouphdr-inert{padding:10px 12px 3px;font-size:11px;font-weight:700;letter-spacing:.04em;
+  text-transform:uppercase;color:var(--text-secondary)}
+/* the row that creates a new label (and, via "Category / Label", a new category with it) —
+   ported from v2's staged-creation pattern; nothing it produces exists until Save */
+.lbl-create:hover{background:var(--color-primary-hover)}
+/* the count note asks for, wherever a category shows up */
+.count{flex-shrink:0;padding:1px 6px;border-radius:2px;background:var(--background-default);
+  color:var(--text-secondary);font-size:11px;font-weight:600;white-space:nowrap}
+
+/* the small "how creation works" affordance next to the combobox */
+.infowrap{position:relative;display:inline-flex;flex-shrink:0}
+.info-btn{all:unset;cursor:pointer;display:inline-flex;padding:4px;border-radius:50%;color:var(--action-active)}
+.info-btn:hover{background:var(--action-hover)}
+.info-pop{position:absolute;top:100%;right:0;left:auto;margin-top:6px;width:260px;z-index:45}
+
+/* save bar */
+.savebar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;
+  padding-top:10px;border-top:1px solid var(--divider)}
+.savebar-txt{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-secondary)}
+
+/* live-activity banner */
+.news{display:flex;align-items:flex-start;gap:8px;padding:9px 10px;border-radius:2px;font-size:12px;
+  line-height:1.45;background:var(--color-warning-light);color:var(--color-warning-dark)}
+.news b{font-weight:700}
+.news-x{all:unset;cursor:pointer;margin-left:auto;padding:2px;opacity:.7;flex-shrink:0}
+.news-x:hover{opacity:1}
+
+/* One growth primitive: a row that animates between 0 and its natural height. Because it is a
+   single element that rewrites itself in place, later updates change the text without moving
+   anything. */
+.growslot{display:grid;grid-template-rows:0fr;transition:grid-template-rows .22s ease,margin .22s ease}
+.growslot[data-open="true"]{grid-template-rows:1fr}
+.growslot > div{overflow:hidden;min-height:0}
+.growslot .news{opacity:0;transition:opacity .16s ease .04s}
+.growslot[data-open="true"] .news{opacity:1}
+@media (prefers-reduced-motion:reduce){.growslot,.growslot .news{transition:none}}
+/* the card lays its children out with a 10px gap — cancel it while the strip is closed, so a
+   hidden strip costs nothing */
+.lblbody > .growslot{margin-bottom:-10px}
+.lblbody > .growslot[data-open="true"]{margin-bottom:0}
+
+.news-more{all:unset;cursor:pointer;flex-shrink:0;align-self:flex-start;font-size:11px;font-weight:700;
+  padding:2px 7px;border-radius:2px;border:1px solid currentColor;opacity:.75}
+.news-more:hover{opacity:1}
+.news-list{display:block;margin-top:7px;padding-top:7px;border-top:1px solid currentColor;
+  max-height:104px;overflow-y:auto;opacity:.9}
+.news-list > span{display:block;padding:1px 0}
+.news-hit{display:block;margin-top:5px;font-weight:700}
+.undo-inline{all:unset;cursor:pointer;font-size:11px;font-weight:700;color:var(--color-primary-main);padding:2px 6px;border-radius:10px}
+.undo-inline:hover{background:var(--color-primary-hover)}
+
+/* diff / review rows */
+.chg-item{display:flex;justify-content:space-between;gap:12px;border:1px solid var(--divider);border-radius:2px;
+  padding:10px;margin-bottom:6px;font-size:12px;color:var(--text-primary)}
+.chg-kind{color:var(--text-secondary);white-space:nowrap}
+.chg-h{margin:0 0 7px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text-secondary)}
+
+.kbd{display:inline-block;min-width:16px;text-align:center;padding:1px 5px;border-radius:3px;border:1px solid var(--divider);
+  background:var(--background-default);font-family:var(--font-mono,monospace);font-size:11px;color:var(--text-primary)}
+.kbdrow{display:flex;align-items:baseline;gap:10px;padding:6px 0;font-size:12.5px;color:var(--text-primary)}
+.kbdrow span:first-child{flex:0 0 150px}
+
+/* all:unset strips the browser's default focus ring from every custom button (chips, rows,
+   nav) — restore a clear one, :focus-visible so it only shows for keyboard, not mouse. */
+button:focus-visible{outline:2px solid var(--color-primary-main);outline-offset:2px;border-radius:2px}
+</style>
+</helmet>
+
+<div class="gnav">
+  <span class="gnav-title">[v4] Labels &mdash; save &amp; create, in place</span>
+  <span class="gnav-sub">Add, remove or create labels on the page &mdash; then save</span>
+  <div class="gnav-spacer"></div>
+  <div class="gnav-sim">
+    <span class="gnav-simlbl">Simulate</span>
+    <button class="gnav-simbtn" onClick="{{sim.onAdd}}">Maria adds</button>
+    <button class="gnav-simbtn" onClick="{{sim.onRemove}}">Maria removes</button>
+    <button class="gnav-simbtn" data-armed="{{sim.staleArmed}}" onClick="{{sim.onStale}}">{{sim.staleText}}</button>
+    <span class="gnav-sep"></span>
+    <button class="gnav-simbtn" onClick="{{sim.onHelp}}">? Shortcuts</button>
+    <button class="gnav-simbtn" onClick="{{sim.onReset}}">Reset</button>
+    <span class="gnav-sep"></span>
+    <a href="%5Bv3%5D%20Save%20flow%20-%20in%20place%20vs%20modal.dc.html">[v3] Save flow &rsaquo;</a>
+  </div>
+</div>
+
+<div class="topbar">
+  <span class="crumb">Evaluations &rsaquo; Demo &rsaquo; <b>3 of 174</b></span>
+  <span class="topbar-spacer"></span>
+  <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="contained" size="small" disabled="{{true}}" hint-size="auto,32px">Previous</x-import>
+  <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="contained" size="small" disabled="{{true}}" hint-size="auto,32px">Next</x-import>
+</div>
+
+<div class="page">
+  <div class="postcol">
+    <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Card" hint-size="auto,auto">
+      <div style="padding:16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--divider)">
+        <span style="width:36px;height:36px;border-radius:50%;background:var(--im-green-600);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0">R</span>
+        <span>
+          <div style="font-weight:700;font-size:14px;color:var(--text-primary)">realmadrid</div>
+          <div style="font-size:12px;color:var(--text-secondary)">01 Feb 2026, 13:20 &middot; Instagram Post</div>
+        </span>
+      </div>
+      <div style="padding:16px">
+        <div class="postplaceholder">
+          <span style="display:inline-flex;flex-direction:column;align-items:center;gap:8px;color:var(--text-disabled)">
+            <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="PhotoFilled" size="40" hint-size="40px,40px"></x-import>
+            <span style="font-size:12px">Post media</span>
+          </span>
+        </div>
+        <p class="muted" style="margin-top:16px;margin-bottom:0"><span class="hl">hala madrid</span><br />#realmadridrayo</p>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="panelcol">
+    <section class="card">
+      <div class="card-head"><span class="card-title">Details</span>
+        <span style="color:var(--action-active);display:inline-flex"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ArrowDropUpFilled" size="20" hint-size="20px,20px"></x-import></span>
+      </div>
+      <div class="card-body">
+        <div class="sub">Description</div>
+        <p class="muted"><span class="hl">hala madrid</span><br />#realmadridrayo</p>
+        <div class="sub">Hashtags</div>
+        <p class="muted" style="margin-bottom:0">#realmadridrayo</p>
+      </div>
+    </section>
+
+    <!-- ================= LABELS ================= -->
+    <section class="card">
+      <div class="card-head"><span class="card-title">Labels</span>
+        <span style="color:var(--action-active);display:inline-flex"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ArrowDropUpFilled" size="20" hint-size="20px,20px"></x-import></span>
+      </div>
+      <div class="card-body">
+        <div class="lblbody">
+
+          <div class="growslot" data-open="{{news.cardOpen}}">
+            <div>
+              <div class="news" style="background:{{news.bg}};color:{{news.fg}}">
+                <span style="display:inline-flex;flex-shrink:0;margin-top:1px"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="{{news.icon}}" size="15" hint-size="15px,15px"></x-import></span>
+                <span style="flex:1;min-width:0">
+                  <span>{{news.summary}}</span>
+                  <sc-for list="{{news.hits}}" as="hit" hint-placeholder-count="1">
+                    <span class="news-hit">{{hit.text}}</span>
+                  </sc-for>
+                  <sc-if value="{{news.expanded}}" hint-placeholder-val="{{false}}">
+                    <span class="news-list">
+                      <sc-for list="{{news.items}}" as="it" hint-placeholder-count="2">
+                        <span>{{it.text}}</span>
+                      </sc-for>
+                    </span>
+                  </sc-if>
+                </span>
+                <sc-if value="{{news.expandable}}" hint-placeholder-val="{{false}}">
+                  <button class="news-more" onClick="{{news.onToggle}}">{{news.moreLabel}}</button>
+                </sc-if>
+                <button class="news-x" onClick="{{news.onDismiss}}" aria-label="Dismiss">
+                  <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="CloseFilled" size="13" hint-size="13px,13px"></x-import>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="lbl-chips v1chips">
+            <sc-for list="{{chips}}" as="chip" hint-placeholder-count="3">
+              <span class="chipwrap" onMouseEnter="{{chip.onEnter}}" onMouseLeave="{{chip.onLeave}}">
+
+                <span class="lbl-chip" data-fresh="{{chip.fresh}}" style="border-style:{{chip.borderStyle}};border-color:{{chip.borderColor}}">
+                  <sc-if value="{{chip.showAuthor}}" hint-placeholder-val="{{false}}">
+                    <span class="who" style="background:{{chip.authorColor}}" title="{{chip.authorTitle}}">{{chip.authorInitial}}</span>
+                  </sc-if>
+                  <button class="lbl-chipname" onClick="{{chip.onActivate}}" onFocus="{{chip.onEnter}}" onBlur="{{chip.onLeave}}"
+                    aria-label="{{chip.ariaLabel}}" style="color:{{chip.textColor}};text-decoration:{{chip.textDecoration}}"><sc-if value="{{chip.hasCat}}" hint-placeholder-val="{{false}}"><span class="chip-cat">{{chip.catPrefix}}</span></sc-if><span>{{chip.nameText}}</span></button>
+                  <sc-if value="{{chip.showTag}}" hint-placeholder-val="{{false}}">
+                    <span class="lbl-tag" style="color:{{chip.tagColor}}">{{chip.tagText}}</span>
+                  </sc-if>
+                  <sc-if value="{{chip.showUndo}}" hint-placeholder-val="{{false}}">
+                    <button class="lbl-undo chipact" onClick="{{chip.onUndo}}" aria-label="Undo removing {{chip.text}}">
+                      <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="RestoreFilled" size="13" hint-size="13px,13px"></x-import>Undo
+                    </button>
+                  </sc-if>
+                  <sc-if value="{{chip.showRemove}}" hint-placeholder-val="{{true}}">
+                    <button class="lbl-x chipact" onClick="{{chip.onRemove}}" disabled="{{chip.removeDisabled}}" aria-label="{{chip.removeAria}}">
+                      <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="CloseFilled" size="13" hint-size="13px,13px"></x-import>
+                    </button>
+                  </sc-if>
+                </span>
+
+                <sc-if value="{{chip.confirming}}" hint-placeholder-val="{{false}}">
+                  <div class="confirmpop">
+                    <div class="confirmpop-txt">{{chip.confirmText}}</div>
+                    <div class="confirmpop-sub">{{chip.confirmSub}}</div>
+                    <div class="confirmpop-acts">
+                      <button class="cc-btn cc-no" onClick="{{chip.onCancelConfirm}}">Cancel</button>
+                      <button class="cc-btn cc-yes ccyes" onClick="{{chip.onConfirm}}">Remove</button>
+                    </div>
+                  </div>
+                </sc-if>
+
+                <sc-if value="{{chip.infoOpen}}" hint-placeholder-val="{{false}}">
+                  <div class="lbl-hoverpop">{{chip.infoText}}</div>
+                </sc-if>
+              </span>
+            </sc-for>
+            <sc-if value="{{noChips}}" hint-placeholder-val="{{false}}">
+              <span style="font-size:13px;color:var(--text-secondary)">No labels on this post yet.</span>
+            </sc-if>
+          </div>
+
+          <!-- ---------- everything resolved in place, including creating new labels ---------- -->
+          <div class="combo">
+            <div class="combo-field" style="border-color:{{v1.borderColor}}">
+              <span style="color:var(--action-active);display:inline-flex"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="AddFilled" size="16" hint-size="16px,16px"></x-import></span>
+              <input id="v1input" class="combo-input" role="combobox" aria-expanded="{{v1.open}}" aria-label="Add a label"
+                value="{{v1.input}}" onChange="{{v1.onInput}}" onKeyDown="{{v1.onKeyDown}}"
+                onFocus="{{v1.onFocus}}" onBlur="{{v1.onBlur}}" placeholder="Add a label — type to search or create" />
+              <span class="infowrap" onMouseEnter="{{addInfo.onEnter}}" onMouseLeave="{{addInfo.onLeave}}">
+                <button class="info-btn" onClick="{{addInfo.onToggle}}" onFocus="{{addInfo.onEnter}}" onBlur="{{addInfo.onLeave}}"
+                  aria-label="How creating a label works" aria-expanded="{{addInfo.open}}">
+                  <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="InfoOutlined" size="15" hint-size="15px,15px"></x-import>
+                </button>
+                <sc-if value="{{addInfo.open}}" hint-placeholder-val="{{false}}">
+                  <div class="lbl-hoverpop info-pop">
+                    Type a name that doesn't match anything to create it &mdash; unassigned, unless you give it a category.
+                    <br /><br />
+                    <b>Category / Label</b> creates the label inside that category, and creates the category too if it doesn't exist yet.
+                    <br /><br />
+                    Nothing is created until you save.
+                  </div>
+                </sc-if>
+              </span>
+            </div>
+            <sc-if value="{{v1.open}}" hint-placeholder-val="{{false}}">
+              <div class="combo-menu" role="listbox">
+                <sc-for list="{{v1.rows}}" as="row" hint-placeholder-count="5">
+                  <sc-if value="{{row.isCategoryHeader}}" hint-placeholder-val="{{false}}">
+                    <div class="lbl-row lbl-cat lbl-cat-inert">
+                      <span class="chipicon"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="FolderFilled" size="14" hint-size="14px,14px"></x-import></span>
+                      <span>{{row.text}}</span>
+                      <span class="count">{{row.count}}</span>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{row.inert}}" hint-placeholder-val="{{false}}">
+                    <div class="grouphdr-inert">{{row.text}}</div>
+                  </sc-if>
+                  <sc-if value="{{row.isItem}}" hint-placeholder-val="{{true}}">
+                    <button class="lbl-row lbl-sub" role="option" data-active="{{row.active}}" data-dcrow-active="{{row.active}}" onMouseDown="{{row.onPick}}">
+                      <span>{{row.text}}</span>
+                      <sc-if value="{{row.hasNote}}" hint-placeholder-val="{{false}}"><span class="rownote">{{row.note}}</span></sc-if>
+                    </button>
+                  </sc-if>
+                  <sc-if value="{{row.isCreate}}" hint-placeholder-val="{{false}}">
+                    <button class="lbl-row lbl-create" role="option" data-active="{{row.active}}" data-dcrow-active="{{row.active}}" onMouseDown="{{row.onPick}}" style="color:var(--color-primary-main);border-top:1px solid var(--divider)">+ {{row.text}}</button>
+                  </sc-if>
+                  <sc-if value="{{row.isEmpty}}" hint-placeholder-val="{{false}}">
+                    <div style="padding:12px;font-size:13px;line-height:1.5;color:var(--text-secondary)">{{row.text}}</div>
+                  </sc-if>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
+
+          <!-- save bar -->
+          <sc-if value="{{showSaveBar}}" hint-placeholder-val="{{false}}">
+            <div class="savebar">
+              <span class="savebar-txt">
+                <span style="color:var(--color-warning-main);display:inline-flex"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="AccessTimeFilled" size="14" hint-size="14px,14px"></x-import></span>
+                {{pendingLabel}}
+              </span>
+              <span style="display:flex;gap:8px;flex-shrink:0">
+                <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="text" size="small" onClick="{{onDiscard}}" hint-size="auto,32px">Discard</x-import>
+                <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="contained" size="small" color="primary" onClick="{{onSave}}" disabled="{{saving}}" hint-size="auto,32px">{{saveLabel}}</x-import>
+              </span>
+            </div>
+          </sc-if>
+
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-head"><span class="card-title">Rating</span>
+        <span style="color:var(--action-active);display:inline-flex"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ArrowDropUpFilled" size="20" hint-size="20px,20px"></x-import></span>
+      </div>
+      <div class="card-body">
+        <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.FormControlLabel" label="Not relevant" hint-size="auto,auto">
+          <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Checkbox" checked="{{false}}" size="small" hint-size="20px,20px"></x-import>
+        </x-import>
+        <hr style="border:0;border-top:1px solid var(--divider);margin:14px 0" />
+        <p style="margin:0 0 8px;font-size:13px;color:var(--text-primary)">What type of content is displayed in the post?</p>
+        <div class="seg"><span>Advertisement</span><span>Questionable</span><span>Organic</span></div>
+        <p style="margin:12px 0 8px;font-size:13px;color:var(--text-primary)">Why?</p>
+        <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.TextField" placeholder="Optional" size="small" full-width="{{true}}" hint-size="auto,40px"></x-import>
+        <div style="text-align:right;margin-top:12px">
+          <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="contained" size="small" disabled="{{true}}" hint-size="auto,32px">Rate post</x-import>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- ============ Stale-save reconciliation ============ -->
+<x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Dialog" open="{{rec.open}}" onClose="{{rec.onCancel}}" max-width="sm" hint-size="0,0">
+  <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.DialogTitle" hint-size="auto,auto">This post changed while you were editing</x-import>
+  <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.DialogContent" hint-size="auto,auto">
+    <p style="margin:0 0 16px;font-size:13px;color:var(--text-secondary);line-height:1.5">Someone else saved labels on this post since you started. Check both sides before you save.</p>
+    <div style="margin-bottom:16px">
+      <div class="chg-h">Changed by others</div>
+      <sc-for list="{{rec.theirs}}" as="it" hint-placeholder-count="1">
+        <div class="chg-item" style="border-color:var(--color-warning-main)"><span><sc-if value="{{it.hasCat}}" hint-placeholder-val="{{false}}"><span class="chip-cat">{{it.catPrefix}}</span></sc-if>{{it.nameText}}</span><span class="chg-kind">{{it.kind}}</span></div>
+      </sc-for>
+    </div>
+    <div>
+      <div class="chg-h">Your changes</div>
+      <sc-for list="{{rec.mine}}" as="it" hint-placeholder-count="2">
+        <div class="chg-item"><span><sc-if value="{{it.hasCat}}" hint-placeholder-val="{{false}}"><span class="chip-cat">{{it.catPrefix}}</span></sc-if>{{it.nameText}}</span><span class="chg-kind">{{it.kind}}</span></div>
+      </sc-for>
+    </div>
+  </x-import>
+  <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.DialogActions" hint-size="auto,auto">
+    <span style="margin-right:auto;display:inline-flex"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="text" size="small" color="error" onClick="{{rec.onDiscardMine}}" hint-size="auto,32px">Discard mine</x-import></span>
+    <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="text" size="small" onClick="{{rec.onCancel}}" hint-size="auto,32px">Cancel</x-import>
+    <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="contained" size="small" color="primary" onClick="{{rec.onKeepBoth}}" hint-size="auto,32px">Keep both and save</x-import>
+  </x-import>
+</x-import>
+
+<!-- ============ Shortcuts ============ -->
+<x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Dialog" open="{{help.open}}" onClose="{{help.onClose}}" max-width="xs" hint-size="0,0">
+  <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.DialogTitle" hint-size="auto,auto">Keyboard shortcuts</x-import>
+  <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.DialogContent" hint-size="auto,auto">
+    <sc-for list="{{help.rows}}" as="r" hint-placeholder-count="6">
+      <div class="kbdrow"><span><span class="kbd">{{r.keys}}</span></span><span>{{r.what}}</span></div>
+    </sc-for>
+  </x-import>
+  <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.DialogActions" hint-size="auto,auto">
+    <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="contained" size="small" onClick="{{help.onClose}}" hint-size="auto,32px">Close</x-import>
+  </x-import>
+</x-import>
+
+<x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Snackbar" open="{{toast.open}}" message="{{toast.message}}" onClose="{{toast.onClose}}" hint-size="0,0"></x-import>
+</x-dc>
+
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  nextTemp = -1;
+
+  state = {
+    helpOpen: false,
+    infoOpen: false,   // the "how creation works" popover next to the combobox
+    reconcile: false,  // true while the draft is blocked on a stale save
+    toast: '',
+    liveCursor: 0,      // rotates the pool of labels "Maria" adds
+    draft: this.seedVariant(),
+  };
+
+  // ---------------- seed ----------------
+
+  seedCatalog() {
+    return [
+      { id: 1,  category: 'Brand',      label: 'Real Madrid' },
+      { id: 2,  category: 'Brand',      label: 'Coca-Cola' },
+      { id: 3,  category: 'Brand',      label: 'Adidas' },
+      { id: 4,  category: 'Brand',      label: 'Emirates' },
+      { id: 5,  category: 'Brand',      label: 'Nike' },
+      { id: 6,  category: 'Product',    label: 'Football boots' },
+      { id: 7,  category: 'Product',    label: 'Jersey' },
+      { id: 8,  category: 'Product',    label: 'Energy drink' },
+      { id: 9,  category: 'Ad rules',   label: 'Disclosure missing' },
+      { id: 10, category: 'Ad rules',   label: 'Misleading claim' },
+      { id: 11, category: 'Ad rules',   label: 'Undisclosed partnership' },
+      { id: 12, category: 'Campaign',   label: 'Champions League' },
+      { id: 13, category: 'Campaign',   label: 'Summer 2026' },
+      { id: 14, category: 'Compliance', label: 'GDPR' },
+      { id: 15, category: 'Compliance', label: 'Minors' },
+      { id: 16, category: null,         label: 'Plastic' },
+      { id: 17, category: null,         label: 'Giveaway' },
+      { id: 18, category: null,         label: 'Madridista' },
+      { id: 19, category: null,         label: 'Sponsored' },
+    ];
+  }
+
+  /* Seeded so both remove paths are demoable in the first 10 seconds of the interview: two
+     labels by other people, one by "You". Dates are relative to "now" so the chip popover
+     always exercises both the relative ("three days ago") and absolute branches. */
+  seedSaved() {
+    return [
+      { id: 2,  category: 'Brand', label: 'Coca-Cola',   by: 'Maria Silva',    at: new Date(Date.now() - 2 * 86400000) },
+      { id: 16, category: null,    label: 'Plastic',     by: 'Tomás Ferreira', at: new Date(Date.now() - 5 * 86400000) },
+      { id: 1,  category: 'Brand', label: 'Real Madrid', by: 'You',            at: new Date(Date.now() - 15 * 86400000) },
+    ];
+  }
+
+  seedVariant() {
+    return {
+      catalog: this.seedCatalog(),
+      saved: this.seedSaved(),
+      pendingAdds: [],      // { tempId, category, label, catalogId } — catalogId is null for a brand-new label/category
+      pendingRemoves: [],   // saved ids
+      input: '', open: false, activeRow: -1, confirmRemoveId: null,
+      news: [],             // { id, by, verb, label, hit } — changes by other people, already saved
+      newsExpanded: false,
+      stale: null,          // a change by someone else the client has NOT seen yet
+      chipInfoId: null,
+      saving: false,
+    };
+  }
+
+  // ---------------- tiny helpers ----------------
+
+  norm(s) { return (s || '').trim().toLowerCase(); }
+  display(e) { return e.category ? e.category + ' / ' + e.label : e.label; }
+  keyOf(e) { return this.norm(e.category) + '::' + this.norm(e.label); }
+  isOwn(e) { return e.by === 'You'; }
+
+  /* On a chip, the category is context — "Brand /" tells you where "Real Madrid" lives, it is
+     not what you picked — so it is split out to carry less visual weight than the label. */
+  splitName(e) {
+    return { hasCat: !!e.category, catPrefix: e.category ? e.category + ' /' : '', nameText: e.label };
+  }
+
+  countIn(name) { return this.state.draft.catalog.filter((c) => c.category === name).length; }
+
+  /** First name + last name, e.g. "Jose Carneiro" -> "JC". */
+  initials(name) {
+    const parts = (name || '').trim().split(/\s+/).filter(Boolean);
+    if (!parts.length) return '?';
+    return (parts[0][0] + (parts.length > 1 ? parts[parts.length - 1][0] : '')).toUpperCase();
+  }
+
+  setDraft(patch, cb) {
+    this.setState((s) => ({ draft: { ...s.draft, ...(typeof patch === 'function' ? patch(s.draft, s) : patch) } }), cb);
+  }
+
+  /** Relative for anything within the last week, absolute date/time beyond that. */
+  formatWhen(date) {
+    const diffMs = new Date() - date;
+    const diffDays = Math.floor(diffMs / 86400000);
+    if (diffMs < 60000) return 'just now';
+    if (diffDays <= 0) return 'today';
+    if (diffDays === 1) return 'yesterday';
+    if (diffDays < 7) {
+      const words = ['', 'one', 'two', 'three', 'four', 'five', 'six'];
+      return words[diffDays] + ' days ago';
+    }
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const dd = String(date.getDate()).padStart(2, '0');
+    const hh = String(date.getHours()).padStart(2, '0');
+    const mm = String(date.getMinutes()).padStart(2, '0');
+    return dd + ' ' + months[date.getMonth()] + ' ' + date.getFullYear() + ', ' + hh + ':' + mm;
+  }
+
+  /** Catalog ids the post already holds under the current draft. */
+  occupied() {
+    const f = this.state.draft;
+    const ids = [];
+    f.saved.forEach((s) => { if (!f.pendingRemoves.includes(s.id)) ids.push(s.id); });
+    f.pendingAdds.forEach((a) => { if (a.catalogId != null) ids.push(a.catalogId); });
+    return ids;
+  }
+
+  dirty() { const f = this.state.draft; return f.pendingAdds.length + f.pendingRemoves.length; }
+
+  /**
+   * Which row the keyboard is on. -1 (nothing highlighted) until you actually navigate, so an
+   * untouched list never looks like it has a preselected row — but a live query pre-arms the
+   * first match, so "type a few letters, press Enter" still works without arrowing first.
+   */
+  activeIndex(raw, hasQuery, count) {
+    if (!count) return -1;
+    if (raw >= 0) return Math.min(raw, count - 1);
+    return hasQuery ? 0 : -1;
+  }
+
+  /* Categories first, alphabetically, with the labels that belong to no category last — it is
+     not a category, so it never gets a category's affordances. */
+  groupByCategory(items) {
+    const NONE = 'No category';
+    const buckets = {}, order = [];
+    items.forEach((c) => {
+      const k = c.category || NONE;
+      if (!buckets[k]) { buckets[k] = []; order.push(k); }
+      buckets[k].push(c);
+    });
+    order.sort((a, b) => (a === NONE ? 1 : b === NONE ? -1 : a.localeCompare(b)));
+    return order.map((name) => ({
+      name, isCategory: name !== NONE,
+      items: buckets[name].sort((a, b) => a.label.localeCompare(b.label)),
+    }));
+  }
+
+  /* How many labels sit under this category. When the list in front of you is a subset —
+     filtered by a query, or thinned because some are already on the post — saying "5" would be
+     a lie about what the row will do, so it reads "3 of 5". */
+  groupCount(g) {
+    if (!g.isCategory) return String(g.items.length);
+    const total = this.countIn(g.name);
+    return g.items.length === total ? String(total) : g.items.length + ' of ' + total;
+  }
+
+  emptyText(query) {
+    const q = (query || '').trim();
+    return q ? 'No labels match “' + q + '”.' : 'Everything in the catalogue is already on this post.';
+  }
+
+  /** Split "Category / name" queries; plain text searches both fields. */
+  matchCatalog(query, pool) {
+    const q = (query || '').trim();
+    const n = (s) => this.norm(s);
+    if (!q) return { matches: pool, catQuery: '', labelQuery: '', hasSlash: false };
+    const hasSlash = q.includes('/');
+    let catQuery = '', labelQuery = q;
+    if (hasSlash) {
+      const parts = q.split('/');
+      catQuery = parts[0].trim();
+      labelQuery = parts.slice(1).join('/').trim();
+    }
+    const matches = hasSlash
+      ? pool.filter((c) => n(c.category).includes(n(catQuery)) && n(c.label).includes(n(labelQuery)))
+      : pool.filter((c) => n(c.label).includes(n(q)) || n(c.category).includes(n(q)));
+    return { matches, catQuery, labelQuery, hasSlash };
+  }
+
+  // ---------------- draft mutations ----------------
+
+  /** Put an existing catalog label on the post. Re-picking something pending removal just
+   *  undoes the removal. */
+  pick(item) {
+    const cleared = { input: '', activeRow: -1 };
+    this.setDraft((f) => {
+      if (f.pendingRemoves.includes(item.id)) {
+        return { ...cleared, pendingRemoves: f.pendingRemoves.filter((x) => x !== item.id) };
+      }
+      if (f.pendingAdds.some((a) => a.catalogId === item.id)) return cleared;
+      const entry = { tempId: this.nextTemp--, category: item.category, label: item.label, catalogId: item.id };
+      return { ...cleared, pendingAdds: [...f.pendingAdds, entry] };
+    });
+  }
+
+  /**
+   * Stage a brand-new label — and, if `category` names one that doesn't exist yet, a brand-new
+   * category with it. Ported from v2's staged-creation pattern: this only ever appends to
+   * `pendingAdds` with `catalogId: null`; nothing is created in the real catalog until
+   * `commit()` runs on Save. A bare/empty category is never offered — `category` is always
+   * either a real name or `null` (unassigned).
+   */
+  createLabel(category, label) {
+    category = (category || '').trim() || null;
+    label = (label || '').trim();
+    if (!label) return;
+    const cand = { category, label };
+    const f = this.state.draft;
+    const onPost = f.saved.some((x) => !f.pendingRemoves.includes(x.id) && this.keyOf(x) === this.keyOf(cand))
+      || f.pendingAdds.some((a) => this.keyOf(a) === this.keyOf(cand));
+    if (onPost) { this.setState({ toast: 'That label is already on this post.' }); return; }
+    this.setDraft((cur) => {
+      const existing = cur.catalog.find((c) => this.keyOf(c) === this.keyOf(cand));
+      return {
+        pendingAdds: [...cur.pendingAdds, { tempId: this.nextTemp--, category, label, catalogId: existing ? existing.id : null }],
+        input: '', open: false, activeRow: -1,
+      };
+    });
+  }
+
+  /** Take a label off the post. `force` skips the awareness step (own labels, or already confirmed). */
+  drop(chip, force) {
+    if (chip.origin === 'add') {
+      this.setDraft((f) => ({ pendingAdds: f.pendingAdds.filter((a) => a.tempId !== chip.id) }));
+      return;
+    }
+    if (!force && !chip.own) { this.setDraft({ confirmRemoveId: chip.id, chipInfoId: null, open: false }); return; }
+    this.setDraft((f) => ({ pendingRemoves: [...f.pendingRemoves, chip.id], confirmRemoveId: null }));
+  }
+
+  undoDrop(id) {
+    this.setDraft((f) => ({ pendingRemoves: f.pendingRemoves.filter((x) => x !== id) }));
+  }
+
+  discard() {
+    this.setDraft({ pendingAdds: [], pendingRemoves: [], input: '', open: false, confirmRemoveId: null });
+    this.setState({ toast: 'Label changes discarded.' });
+  }
+
+  // ---------------- save ----------------
+
+  save() {
+    const f = this.state.draft;
+    if (f.saving || !this.dirty()) return;
+    if (f.stale) { this.setDraft({ open: false }); this.setState({ reconcile: true }); return; }
+    this.commit(false);
+  }
+
+  /** Fold a not-yet-seen change by another user into the draft. */
+  applyStale(f) {
+    if (!f.stale) return f;
+    const st = f.stale;
+    if (f.saved.some((x) => x.id === st.catalogId)) return { ...f, stale: null };
+    const saved = [...f.saved, { id: st.catalogId, category: st.category, label: st.label, by: st.by, at: new Date(), fresh: true }];
+    return { ...f, saved, stale: null };
+  }
+
+  /**
+   * Materializes the draft. A pending add with a real `catalogId` just folds into `saved`, same
+   * as always. A pending add with `catalogId == null` — a brand-new label, or a brand-new label
+   * + category together — gets a real catalog row first (next free id), and *that* row is what
+   * `saved` points to. This is the one place v3 assumed every pending add already had a catalog
+   * id; v4 removes that assumption.
+   */
+  commit(withStale) {
+    this.setDraft({ saving: true });
+    setTimeout(() => {
+      this.setState((s) => {
+        let f = s.draft;
+        if (withStale) f = this.applyStale(f);
+        const stamp = new Date();
+        const catalog = [...f.catalog];
+        const saved = f.saved
+          .filter((x) => !f.pendingRemoves.includes(x.id))
+          .map((x) => ({ ...x, fresh: false }));
+        f.pendingAdds.forEach((a) => {
+          if (saved.some((x) => x.id === a.catalogId)) return;
+          let cid = a.catalogId;
+          if (cid == null) {
+            cid = Math.max(0, ...catalog.map((c) => c.id)) + 1;
+            catalog.push({ id: cid, category: a.category, label: a.label });
+          }
+          saved.push({ id: cid, category: a.category, label: a.label, by: 'You', at: stamp, fresh: false });
+        });
+        return {
+          draft: { ...f, catalog, saved, pendingAdds: [], pendingRemoves: [], saving: false,
+            input: '', open: false, activeRow: -1, confirmRemoveId: null, news: [], newsExpanded: false, chipInfoId: null },
+          reconcile: false,
+          toast: 'Label changes saved.',
+        };
+      });
+    }, 600);
+  }
+
+  discardMine() {
+    this.setState((s) => {
+      const f = this.applyStale(s.draft);
+      return {
+        draft: { ...f, pendingAdds: [], pendingRemoves: [], input: '', open: false, activeRow: -1, confirmRemoveId: null },
+        reconcile: false,
+        toast: 'Your changes were dropped. The post shows the latest saved version.',
+      };
+    });
+  }
+
+  // ---------------- other people (facilitator controls) ----------------
+
+  simulateAdd() {
+    this.setState((s) => {
+      const f = s.draft;
+      const pool = ['Emirates', 'Jersey', 'Champions League', 'Giveaway', 'Minors', 'GDPR'];
+      const onPost = f.saved.map((x) => x.id);
+      let item = null;
+      for (let i = 0; i < pool.length && !item; i++) {
+        const name = pool[(s.liveCursor + i) % pool.length];
+        const cand = f.catalog.find((c) => c.label === name && !onPost.includes(c.id));
+        if (cand) item = cand;
+      }
+      if (!item) return { toast: 'Nothing left for Maria to add.' };
+      const saved = [...f.saved, { id: item.id, category: item.category, label: item.label, by: 'Maria Silva', at: new Date(), fresh: true }];
+      // if I had the same label staged, hers lands first and mine is now redundant
+      const mine = f.pendingAdds.some((a) => a.catalogId === item.id);
+      const news = [...f.news, { id: 'n' + Date.now() + '-' + f.news.length, by: 'Maria Silva',
+        verb: 'added', label: this.display(item), hit: mine }];
+      return {
+        draft: { ...f, saved, news, pendingAdds: f.pendingAdds.filter((a) => a.catalogId !== item.id) },
+        liveCursor: s.liveCursor + 1,
+      };
+    });
+  }
+
+  simulateRemove() {
+    this.setState((s) => {
+      const f = s.draft;
+      const victim = f.saved.find((x) => !this.isOwn(x)) || f.saved[0];
+      if (!victim) return { toast: 'There is nothing left for Maria to remove.' };
+      const iHadItStaged = f.pendingRemoves.includes(victim.id);
+      const saved = f.saved.filter((x) => x.id !== victim.id);
+      const news = [...f.news, { id: 'n' + Date.now() + '-' + f.news.length, by: 'Maria Silva',
+        verb: 'removed', label: this.display(victim), hit: iHadItStaged }];
+      return {
+        draft: { ...f, saved, news, pendingRemoves: f.pendingRemoves.filter((x) => x !== victim.id),
+          confirmRemoveId: f.confirmRemoveId === victim.id ? null : f.confirmRemoveId },
+      };
+    });
+  }
+
+  /* A change the client never sees — it only surfaces when you try to save, which is exactly
+     the "you were working from a stale copy" case. */
+  simulateStale() {
+    this.setState((s) => {
+      const f = s.draft;
+      if (f.stale) return { draft: { ...f, stale: null }, toast: 'Stale-save simulation disarmed.' };
+      const item = f.catalog.find((c) => c.label === 'Nike') || f.catalog[0];
+      return {
+        draft: { ...f, stale: { catalogId: item.id, category: item.category, label: item.label, by: 'Tomás Ferreira' } },
+        toast: 'Armed: someone else saved a label you have not seen. Try saving.',
+      };
+    });
+  }
+
+  dismissNews() {
+    this.setDraft((f) => ({ saved: f.saved.map((x) => ({ ...x, fresh: false })), news: [], newsExpanded: false }));
+  }
+
+  /**
+   * One strip, never a stack. A single event still reads as itself; several collapse into a
+   * count, with the detail behind "Show" — the added labels are already visible as chips, so
+   * the list mostly earns its place for removals, which leave nothing behind to look at.
+   * Changes that invalidate something in my own draft are pulled out and always shown.
+   */
+  newsStrip() {
+    const f = this.state.draft;
+    const ev = f.news;
+    if (!ev.length) return { any: false };
+    const people = [...new Set(ev.map((e) => e.by))];
+    const one = ev[0];
+    const summary = ev.length === 1
+      ? one.by + ' ' + one.verb + ' “' + one.label + '” just now.'
+      : people.length === 1
+        ? people[0] + ' made ' + ev.length + ' changes to this post just now.'
+        : people.length + ' people made ' + ev.length + ' changes to this post just now.';
+    const hits = ev.filter((e) => e.hit).map((e) => ({
+      key: 'h' + e.id,
+      text: 'You were ' + (e.verb === 'removed' ? 'removing' : 'adding') + ' “' + e.label
+        + '” too — ' + e.by + ' got there first, so your change no longer applies.',
+    }));
+    return {
+      any: true,
+      summary,
+      hits,
+      items: ev.map((e) => ({ key: 'i' + e.id, text: e.by + ' ' + e.verb + ' “' + e.label + '”' })),
+      expandable: ev.length > 1,
+      expanded: f.newsExpanded && ev.length > 1,
+      moreLabel: f.newsExpanded ? 'Hide' : 'Show',
+      onToggle: () => this.setDraft((cur) => ({ newsExpanded: !cur.newsExpanded })),
+      onDismiss: () => this.dismissNews(),
+      // a collision is the only part that earns an alarming tone
+      bg: hits.length ? 'var(--color-error-light)' : 'var(--color-warning-light)',
+      fg: hits.length ? 'var(--color-error-dark)' : 'var(--color-warning-dark)',
+      icon: hits.length ? 'WarningFilled' : 'InfoFilled',
+    };
+  }
+
+  reset() {
+    this.nextTemp = -1;
+    this.setState({ draft: this.seedVariant(), reconcile: false, liveCursor: 0, toast: 'Prototype reset.' });
+  }
+
+  // ---------------- combobox ----------------
+
+  /**
+   * Grouped by category, the same way the old B candidate's list was. A category header is
+   * inert: it groups the labels beneath it and nothing more — you add labels one at a time.
+   * After the grouped matches, a "Create …" row offers to stage a brand-new label (and, via
+   * "Category / Label", a brand-new category with it) when nothing in the catalogue matches.
+   */
+  v1Rows() {
+    const f = this.state.draft;
+    const occ = this.occupied();
+    const pool = f.catalog.filter((c) => !occ.includes(c.id));
+    const { matches, catQuery, labelQuery, hasSlash } = this.matchCatalog(f.input, pool);
+    const groups = this.groupByCategory(matches);
+    const n = (str) => this.norm(str);
+
+    const rows = [];
+    groups.forEach((g) => {
+      rows.push({
+        key: 'h' + g.name, isHeader: true, isItem: false, isCreate: false, isEmpty: false,
+        text: g.name, isCategoryHeader: g.isCategory, inert: !g.isCategory,
+        count: this.groupCount(g),
+      });
+      g.items.forEach((item) => rows.push({
+        key: 'i' + item.id, isHeader: false, isItem: true, isCreate: false, isEmpty: false,
+        text: item.label,
+        hasNote: f.pendingRemoves.includes(item.id),
+        note: 'undoes your removal',
+        onPick: (e) => { if (e && e.preventDefault) e.preventDefault(); this.pick(item); },
+      }));
+    });
+
+    const q = f.input.trim();
+    if (q) {
+      if (hasSlash && labelQuery) {
+        const catExact = f.catalog.find((c) => c.category && n(c.category) === n(catQuery));
+        const exact = matches.some((m) => n(m.label) === n(labelQuery) && n(m.category || '') === n(catExact ? catExact.category : catQuery));
+        if (!exact) {
+          if (catExact) {
+            rows.push({ key: 'create', isHeader: false, isItem: false, isCreate: true, isEmpty: false,
+              text: 'Create "' + labelQuery + '" in ' + catExact.category,
+              onPick: (e) => { if (e && e.preventDefault) e.preventDefault(); this.createLabel(catExact.category, labelQuery); } });
+          } else if (catQuery) {
+            rows.push({ key: 'create', isHeader: false, isItem: false, isCreate: true, isEmpty: false,
+              text: 'Create category "' + catQuery + '" with "' + labelQuery + '"',
+              onPick: (e) => { if (e && e.preventDefault) e.preventDefault(); this.createLabel(catQuery, labelQuery); } });
+          }
+        }
+      } else if (!hasSlash) {
+        const exactAnywhere = f.catalog.some((c) => n(c.label) === n(q));
+        if (!exactAnywhere) {
+          rows.push({ key: 'create', isHeader: false, isItem: false, isCreate: true, isEmpty: false,
+            text: 'Create "' + q + '" (unassigned)',
+            onPick: (e) => { if (e && e.preventDefault) e.preventDefault(); this.createLabel(null, q); } });
+        }
+      }
+    }
+
+    if (!rows.length) rows.push({ key: 'empty', isHeader: false, isItem: false, isCreate: false, isEmpty: true,
+      text: this.emptyText(f.input), hasNote: false, note: '' });
+    return rows;
+  }
+
+  /** Rows the keyboard can land on: every label, plus a "Create …" row when one is offered. */
+  v1Selectable(rows) { return rows.filter((r) => r.isItem || r.isCreate); }
+
+  v1Move(delta) {
+    const rows = this.v1Selectable(this.v1Rows());
+    if (!rows.length) return;
+    this.setDraft((f) => {
+      // from "nothing highlighted", ArrowDown lands on the first row and ArrowUp on the last
+      const base = f.activeRow >= 0 ? f.activeRow : delta > 0 ? -1 : 0;
+      return { activeRow: (base + delta + rows.length) % rows.length, open: true };
+    });
+  }
+
+  v1KeyDown(e) {
+    const f = this.state.draft;
+    // ⌘/Ctrl+Enter is the save shortcut — never let it also pick the highlighted row
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.key === 'ArrowDown') { e.preventDefault(); this.v1Move(1); return; }
+    if (e.key === 'ArrowUp') { e.preventDefault(); this.v1Move(-1); return; }
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const rows = this.v1Selectable(this.v1Rows());
+      const row = rows[this.activeIndex(f.activeRow, !!f.input.trim(), rows.length)];
+      if (row) row.onPick(e);
+      return;
+    }
+    if (e.key === 'Backspace' && !f.input) {
+      // reach the chips without a mouse: land on the last chip's remove/undo control
+      const acts = document.querySelectorAll('.v1chips .chipact');
+      if (acts.length) { e.preventDefault(); acts[acts.length - 1].focus(); }
+    }
+  }
+
+  // ---------------- lifecycle ----------------
+
+  componentDidMount() {
+    this.__onKey = (e) => {
+      const t = e.target;
+      const tag = t && t.tagName;
+      const inField = tag === 'INPUT' || tag === 'TEXTAREA' || (t && t.isContentEditable);
+      const s = this.state;
+      const f = s.draft;
+
+      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); this.save(); return; }
+
+      if (e.key === 'Escape') {
+        if (s.helpOpen) { this.setState({ helpOpen: false }); return; }
+        if (s.infoOpen) { this.setState({ infoOpen: false }); return; }
+        if (s.reconcile) { this.setState({ reconcile: false }); return; }
+        if (f.confirmRemoveId != null) { this.setDraft({ confirmRemoveId: null }); return; }
+        if (f.open) { this.setDraft({ open: false }); return; }
+        if (f.chipInfoId != null) this.setDraft({ chipInfoId: null });
+        return;
+      }
+
+      if (inField || e.metaKey || e.ctrlKey || e.altKey) return;
+
+      if (e.key === '?') { e.preventDefault(); this.setState({ helpOpen: !s.helpOpen }); return; }
+      if (e.key === '/') {
+        e.preventDefault();
+        const el = document.getElementById('v1input');
+        if (el) el.focus();
+        return;
+      }
+    };
+    window.addEventListener('keydown', this.__onKey);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.__onKey);
+    if (this.__toastTimer) clearTimeout(this.__toastTimer);
+  }
+
+  componentDidUpdate() {
+    const s = this.state;
+    const f = s.draft;
+
+    const active = document.querySelector('[data-dcrow-active="true"]');
+    if (active && active.scrollIntoView) active.scrollIntoView({ block: 'nearest' });
+
+    // a chip near the right edge would push its confirmation popover off screen — nudge it back
+    const pop = document.querySelector('.confirmpop');
+    if (pop) {
+      pop.style.left = '0px';
+      const over = pop.getBoundingClientRect().right - (window.innerWidth - 12);
+      if (over > 0) pop.style.left = -over + 'px';
+    }
+
+    // the confirmation must be reachable without a mouse
+    if (f.confirmRemoveId != null) {
+      if (!this.__confirmFocused) {
+        const el = document.querySelector('.ccyes');
+        if (el) { el.focus(); this.__confirmFocused = true; }
+      }
+    } else {
+      this.__confirmFocused = false;
+    }
+
+    if (s.toast && !this.__toastTimer) {
+      this.__toastTimer = setTimeout(() => { this.__toastTimer = null; this.setState({ toast: '' }); }, 3400);
+    }
+  }
+
+  // ---------------- render ----------------
+
+  /** The card IS the editor, so the chips carry the draft (pending adds, pending removals) and
+   *  their controls. Live changes by other people are already saved, so they always show. */
+  chipList() {
+    const f = this.state.draft;
+    const out = [];
+    f.saved.forEach((sv) => out.push({
+      key: 's' + sv.id, id: sv.id, origin: 'saved',
+      category: sv.category, label: sv.label, by: sv.by, at: sv.at,
+      own: this.isOwn(sv), fresh: !!sv.fresh,
+      removing: f.pendingRemoves.includes(sv.id),
+    }));
+    f.pendingAdds.forEach((a) => out.push({
+      key: 'a' + a.tempId, id: a.tempId, origin: 'add',
+      category: a.category, label: a.label, by: 'You', at: null,
+      own: true, fresh: false, removing: false,
+    }));
+    return out;
+  }
+
+  buildChips() {
+    const f = this.state.draft;
+    return this.chipList().map((c) => {
+      const text = this.display(c);
+      const name = this.splitName(c);
+      const confirming = f.confirmRemoveId === c.id && c.origin === 'saved';
+
+      let borderStyle = 'solid', borderColor = confirming ? 'var(--color-error-main)' : 'var(--divider)', textColor = 'var(--text-primary)';
+      let textDecoration = 'none', showTag = false, tagText = '', tagColor = 'var(--text-secondary)';
+      if (c.origin === 'add') {
+        borderStyle = 'dashed'; borderColor = 'var(--color-primary-main)';
+        showTag = true; tagText = 'Adding'; tagColor = 'var(--color-primary-main)';
+      } else if (c.removing) {
+        borderStyle = 'dashed'; borderColor = 'var(--color-error-main)';
+        textColor = 'var(--text-secondary)'; textDecoration = 'line-through';
+        showTag = true; tagText = 'Removing'; tagColor = 'var(--color-error-main)';
+      } else if (c.fresh) {
+        showTag = true; tagText = 'Just now'; tagColor = 'var(--color-warning-dark)';
+      }
+
+      let infoText;
+      if (c.origin === 'add') infoText = 'Added by you — not saved yet.';
+      else if (c.removing) infoText = 'Removing — not saved yet. Originally added by ' + c.by + ', ' + this.formatWhen(c.at) + '.';
+      else infoText = 'Added by ' + c.by + ', ' + this.formatWhen(c.at) + '.';
+
+      return {
+        key: c.key,
+        text,
+        ...name,
+        ariaLabel: text + ' — ' + infoText,
+        borderStyle, borderColor, textColor, textDecoration,
+        showTag, tagText, tagColor,
+        fresh: c.fresh && !c.removing,
+        showAuthor: c.origin === 'saved' && !c.own,
+        authorInitial: this.initials(c.by),
+        authorColor: c.fresh ? 'var(--color-warning-main)' : 'var(--bluegrey-400)',
+        authorTitle: 'Added by ' + c.by,
+        infoOpen: f.chipInfoId === c.key && !confirming,
+        infoText,
+        onEnter: () => this.setDraft({ chipInfoId: c.key }),
+        onLeave: () => this.setDraft((cur) => (cur.chipInfoId === c.key ? { chipInfoId: null } : {})),
+        onActivate: () => this.setDraft({ chipInfoId: c.key }),
+
+        confirming,
+        confirmText: 'Remove “' + c.label + '”?',
+        // only saved chips carry an author + date; a pending add has neither, and this prop is
+        // built for every chip, not just the one being confirmed
+        confirmSub: c.at ? 'Added by ' + c.by + ', ' + this.formatWhen(c.at) + '. It stays in the workspace and on other posts.' : '',
+        onConfirm: () => this.drop(c, true),
+        onCancelConfirm: () => this.setDraft({ confirmRemoveId: null }),
+
+        showRemove: !c.removing,
+        removeDisabled: confirming,
+        removeAria: c.own || c.origin === 'add' ? 'Remove ' + text : 'Remove ' + text + ', added by ' + c.by,
+        onRemove: () => this.drop(c, false),
+        showUndo: !confirming && c.removing,
+        onUndo: () => this.undoDrop(c.id),
+      };
+    });
+  }
+
+  reviewItems() {
+    const f = this.state.draft;
+    const items = [];
+    f.pendingAdds.forEach((a) => items.push({ key: 'a' + a.tempId, ...this.splitName(a), kind: 'Add to post' }));
+    f.pendingRemoves.forEach((id) => {
+      const sv = f.saved.find((x) => x.id === id);
+      if (sv) items.push({ key: 'r' + id, ...this.splitName(sv), kind: 'Remove (added by ' + sv.by + ')' });
+    });
+    return items;
+  }
+
+  renderVals() {
+    const s = this.state;
+    const f = s.draft;
+    const count = this.dirty();
+
+    const chips = this.buildChips();
+    const strip = this.newsStrip();
+
+    const helpRows = [
+      { key: 'k1', keys: '/', what: 'Jump to the label field' },
+      { key: 'k2', keys: '↓ ↑', what: 'Move through the suggestions' },
+      { key: 'k3', keys: 'Enter', what: 'Add or create the highlighted label' },
+      { key: 'k4', keys: 'Backspace', what: 'From the empty field, jump to the last chip' },
+      { key: 'k5', keys: 'Tab', what: 'Step through chips and their remove buttons' },
+      { key: 'k6', keys: '⌘/Ctrl + Enter', what: 'Save the pending changes' },
+      { key: 'k7', keys: 'Esc', what: 'Close the suggestions, or cancel a removal' },
+    ];
+
+    return {
+      sim: {
+        onAdd: () => this.simulateAdd(),
+        onRemove: () => this.simulateRemove(),
+        onStale: () => this.simulateStale(),
+        staleArmed: !!f.stale,
+        staleText: f.stale ? 'Stale save armed ✓' : 'Stale save',
+        onHelp: () => this.setState({ helpOpen: true }),
+        onReset: () => this.reset(),
+      },
+
+      chips,
+      noChips: chips.length === 0,
+
+      news: { ...strip, cardOpen: strip.any },
+
+      pendingLabel: count + (count === 1 ? ' pending change' : ' pending changes') + ' — not saved yet',
+      showSaveBar: count > 0,
+      saving: f.saving,
+      saveLabel: f.saving ? 'Saving…' : 'Save changes',
+      onSave: () => this.save(),
+      onDiscard: () => this.discard(),
+
+      v1: {
+        input: f.input,
+        open: f.open,
+        borderColor: f.open ? 'var(--color-primary-main)' : 'var(--divider)',
+        rows: (() => {
+          const all = this.v1Rows();
+          const sel = this.v1Selectable(all);
+          const at = this.activeIndex(f.activeRow, !!f.input.trim(), sel.length);
+          return all.map((r) => ({ ...r, active: at >= 0 && sel.indexOf(r) === at }));
+        })(),
+        onInput: (e) => this.setDraft({ input: e.target.value, open: true, activeRow: -1 }),
+        onFocus: () => this.setDraft({ open: true }),
+        // the delay lets a mousedown on a row land before the menu unmounts
+        onBlur: () => setTimeout(() => this.setDraft({ open: false }), 150),
+        onKeyDown: (e) => this.v1KeyDown(e),
+      },
+
+      addInfo: {
+        open: s.infoOpen,
+        onEnter: () => this.setState({ infoOpen: true }),
+        onLeave: () => this.setState((cur) => (cur.infoOpen ? { infoOpen: false } : {})),
+        onToggle: () => this.setState((cur) => ({ infoOpen: !cur.infoOpen })),
+      },
+
+      rec: {
+        open: !!s.reconcile,
+        theirs: s.reconcile && f.stale
+          ? [{ key: 't1', ...this.splitName(f.stale), kind: 'Added by ' + f.stale.by }]
+          : [],
+        mine: s.reconcile ? this.reviewItems() : [],
+        onCancel: () => this.setState({ reconcile: false }),
+        onKeepBoth: () => this.commit(true),
+        onDiscardMine: () => this.discardMine(),
+      },
+
+      help: {
+        open: s.helpOpen,
+        rows: helpRows,
+        onClose: () => this.setState({ helpOpen: false }),
+      },
+
+      toast: {
+        open: !!s.toast,
+        message: s.toast,
+        onClose: () => this.setState({ toast: '' }),
+      },
+    };
+  }
+}
+</script>
+</body>
+</html>
