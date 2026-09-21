@@ -79,8 +79,9 @@ body{background:var(--background-default);font-family:var(--font-body);padding-t
 .lbl-chip{display:inline-flex;align-items:center;height:28px;padding:0 4px 0 8px;border-radius:14px;
   border-width:1px;background:var(--background-paper);box-sizing:border-box}
 .lbl-chip[data-fresh="true"]{box-shadow:0 0 0 3px var(--color-warning-light)}
-.who{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;flex-shrink:0;
-  font-size:9px;font-weight:700;line-height:1;letter-spacing:.02em;margin-right:6px;color:#fff;background:var(--bluegrey-400)}
+.who{display:flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;
+  flex-shrink:0;margin-right:6px;color:#fff;overflow:hidden}
+.who-txt{font-size:9px;font-weight:700;line-height:1;letter-spacing:.02em}
 .chipicon{display:inline-flex;flex-shrink:0;margin-right:5px;color:var(--action-active)}
 /* the category half of a label's name is context, so it carries less weight than the name */
 .chip-cat{color:var(--text-secondary);margin-right:4px}
@@ -340,7 +341,7 @@ button:focus-visible{outline:2px solid var(--color-primary-main);outline-offset:
                 <sc-if value="{{chip.infoOpen}}" hint-placeholder-val="{{false}}">
                   <div class="lbl-hoverpop lbl-hoverpop-chip">
                     <sc-if value="{{chip.showAuthor}}" hint-placeholder-val="{{false}}">
-                      <span class="who" style="background:{{chip.authorColor}}" title="{{chip.authorTitle}}">{{chip.authorInitial}}</span>
+                      <span class="who" style="background:{{chip.authorColor}}" title="{{chip.authorTitle}}"><span class="who-txt">{{chip.authorInitial}}</span></span>
                     </sc-if>
                     <span class="lbl-hoverpop-txt">
                       <span class="lbl-hoverpop-who">{{chip.infoWho}}</span>
