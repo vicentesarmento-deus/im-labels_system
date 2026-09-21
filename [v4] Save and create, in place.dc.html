@@ -87,6 +87,8 @@ body{background:var(--background-default);font-family:var(--font-body);padding-t
 .lbl-hoverpop{position:absolute;top:100%;left:0;margin-top:6px;min-width:200px;max-width:300px;
   padding:10px 14px;background:var(--background-paper);border-radius:var(--radius);
   box-shadow:var(--shadow-8);font-size:12px;line-height:1.5;color:var(--text-primary);z-index:50}
+.lbl-hoverpop-chip{display:flex;align-items:flex-start}
+.lbl-hoverpop-txt{flex:1}
 .lbl-x{all:unset;cursor:pointer;display:flex;padding:4px;margin-left:2px;opacity:.6;border-radius:50%}
 .lbl-x:hover{opacity:1;background:var(--action-hover)}
 /* kept in the DOM while its confirmation is open, so the chip keeps its width and the row
@@ -299,9 +301,6 @@ button:focus-visible{outline:2px solid var(--color-primary-main);outline-offset:
               <span class="chipwrap" onMouseEnter="{{chip.onEnter}}" onMouseLeave="{{chip.onLeave}}">
 
                 <span class="lbl-chip" data-fresh="{{chip.fresh}}" style="border-style:{{chip.borderStyle}};border-color:{{chip.borderColor}}">
-                  <sc-if value="{{chip.showAuthor}}" hint-placeholder-val="{{false}}">
-                    <span class="who" style="background:{{chip.authorColor}}" title="{{chip.authorTitle}}">{{chip.authorInitial}}</span>
-                  </sc-if>
                   <button class="lbl-chipname" onClick="{{chip.onActivate}}" onFocus="{{chip.onEnter}}" onBlur="{{chip.onLeave}}"
                     aria-label="{{chip.ariaLabel}}" style="color:{{chip.textColor}};text-decoration:{{chip.textDecoration}}"><sc-if value="{{chip.hasCat}}" hint-placeholder-val="{{false}}"><span class="chip-cat">{{chip.catPrefix}}</span></sc-if><span>{{chip.nameText}}</span></button>
                   <sc-if value="{{chip.showTag}}" hint-placeholder-val="{{false}}">
@@ -331,7 +330,12 @@ button:focus-visible{outline:2px solid var(--color-primary-main);outline-offset:
                 </sc-if>
 
                 <sc-if value="{{chip.infoOpen}}" hint-placeholder-val="{{false}}">
-                  <div class="lbl-hoverpop">{{chip.infoText}}</div>
+                  <div class="lbl-hoverpop lbl-hoverpop-chip">
+                    <sc-if value="{{chip.showAuthor}}" hint-placeholder-val="{{false}}">
+                      <span class="who" style="background:{{chip.authorColor}}" title="{{chip.authorTitle}}">{{chip.authorInitial}}</span>
+                    </sc-if>
+                    <span class="lbl-hoverpop-txt">{{chip.infoText}}</span>
+                  </div>
                 </sc-if>
               </span>
             </sc-for>
