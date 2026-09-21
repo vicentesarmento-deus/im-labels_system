@@ -411,19 +411,19 @@ button:focus-visible{outline:2px solid var(--color-primary-main);outline-offset:
             </sc-if>
           </div>
 
-          <!-- save bar -->
-          <sc-if value="{{showSaveBar}}" hint-placeholder-val="{{false}}">
-            <div class="savebar">
-              <span class="savebar-txt">
+          <!-- save bar: always visible, buttons disabled until there's something to save -->
+          <div class="savebar">
+            <span class="savebar-txt">
+              <sc-if value="{{hasPending}}" hint-placeholder-val="{{false}}">
                 <span style="color:var(--color-warning-main);display:inline-flex"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="AccessTimeFilled" size="14" hint-size="14px,14px"></x-import></span>
-                {{pendingLabel}}
-              </span>
-              <span style="display:flex;gap:8px;flex-shrink:0">
-                <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="text" size="small" onClick="{{onDiscard}}" hint-size="auto,32px">Discard</x-import>
-                <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="contained" size="small" color="primary" onClick="{{onSave}}" disabled="{{saving}}" hint-size="auto,32px">{{saveLabel}}</x-import>
-              </span>
-            </div>
-          </sc-if>
+              </sc-if>
+              {{pendingLabel}}
+            </span>
+            <span style="display:flex;gap:8px;flex-shrink:0">
+              <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="text" size="small" onClick="{{onDiscard}}" disabled="{{!hasPending}}" hint-size="auto,32px">Discard</x-import>
+              <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="contained" size="small" color="primary" onClick="{{onSave}}" disabled="{{saveDisabled}}" hint-size="auto,32px">{{saveLabel}}</x-import>
+            </span>
+          </div>
 
         </div>
       </div>
@@ -1205,10 +1205,13 @@ class Component extends DCLogic {
 
       news: { ...strip, cardOpen: strip.any },
 
-      pendingLabel: count + (count === 1 ? ' pending change' : ' pending changes') + ' — not saved yet',
-      showSaveBar: count > 0,
+      pendingLabel: count > 0
+        ? count + (count === 1 ? ' pending change' : ' pending changes') + ' — not saved yet'
+        : 'No pending changes',
+      hasPending: count > 0,
       saving: f.saving,
       saveLabel: f.saving ? 'Saving…' : 'Save changes',
+      saveDisabled: count === 0 || f.saving,
       onSave: () => this.save(),
       onDiscard: () => this.discard(),
 
