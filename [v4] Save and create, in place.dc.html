@@ -80,7 +80,7 @@ body{background:var(--background-default);font-family:var(--font-body);padding-t
   border-width:1px;background:var(--background-paper);box-sizing:border-box}
 .lbl-chip[data-fresh="true"]{box-shadow:0 0 0 3px var(--color-warning-light)}
 .who{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;flex-shrink:0;
-  font-size:9px;font-weight:700;letter-spacing:.02em;margin-right:6px;color:#fff;background:var(--bluegrey-400)}
+  font-size:9px;font-weight:700;line-height:1;letter-spacing:.02em;margin-right:6px;color:#fff;background:var(--bluegrey-400)}
 .chipicon{display:inline-flex;flex-shrink:0;margin-right:5px;color:var(--action-active)}
 /* the category half of a label's name is context, so it carries less weight than the name */
 .chip-cat{color:var(--text-secondary);margin-right:4px}
@@ -91,7 +91,9 @@ body{background:var(--background-default);font-family:var(--font-body);padding-t
   padding:10px 14px;background:var(--background-paper);border-radius:var(--radius);
   box-shadow:var(--shadow-8);font-size:12px;line-height:1.5;color:var(--text-primary);z-index:50}
 .lbl-hoverpop-chip{display:flex;align-items:flex-start}
-.lbl-hoverpop-txt{flex:1}
+.lbl-hoverpop-txt{flex:1;display:flex;flex-direction:column;gap:2px}
+.lbl-hoverpop-who{font-weight:600}
+.lbl-hoverpop-when{color:var(--text-secondary)}
 .lbl-x{all:unset;cursor:pointer;display:flex;padding:4px;margin-left:2px;opacity:.6;border-radius:50%}
 .lbl-x:hover{opacity:1;background:var(--action-hover)}
 /* kept in the DOM while its confirmation is open, so the chip keeps its width and the row
@@ -340,7 +342,10 @@ button:focus-visible{outline:2px solid var(--color-primary-main);outline-offset:
                     <sc-if value="{{chip.showAuthor}}" hint-placeholder-val="{{false}}">
                       <span class="who" style="background:{{chip.authorColor}}" title="{{chip.authorTitle}}">{{chip.authorInitial}}</span>
                     </sc-if>
-                    <span class="lbl-hoverpop-txt">{{chip.infoText}}</span>
+                    <span class="lbl-hoverpop-txt">
+                      <span class="lbl-hoverpop-who">{{chip.infoWho}}</span>
+                      <span class="lbl-hoverpop-when">{{chip.infoWhen}}</span>
+                    </span>
                   </div>
                 </sc-if>
               </span>
@@ -1102,10 +1107,15 @@ class Component extends DCLogic {
         showTag = true; tagText = 'Just now'; tagColor = 'var(--color-warning-dark)';
       }
 
-      let infoText;
-      if (c.origin === 'add') infoText = 'Added by you — not saved yet.';
-      else if (c.removing) infoText = 'Removing — not saved yet. Originally added by ' + c.by + ', ' + this.formatWhen(c.at) + '.';
-      else infoText = 'Added by ' + c.by + ', ' + this.formatWhen(c.at) + '.';
+      let infoText, infoWho, infoWhen;
+      if (c.origin === 'add') {
+        infoWho = 'Added by you'; infoWhen = 'not saved yet.';
+      } else if (c.removing) {
+        infoWho = 'Removing — not saved yet.'; infoWhen = 'Originally added by ' + c.by + ', ' + this.formatWhen(c.at) + '.';
+      } else {
+        infoWho = 'Added by ' + c.by; infoWhen = this.formatWhen(c.at) + '.';
+      }
+      infoText = infoWho + ' ' + infoWhen;
 
       return {
         key: c.key,
@@ -1120,7 +1130,7 @@ class Component extends DCLogic {
         authorColor: c.fresh ? 'var(--color-warning-main)' : 'var(--bluegrey-400)',
         authorTitle: 'Added by ' + c.by,
         infoOpen: f.chipInfoId === c.key && !confirming,
-        infoText,
+        infoText, infoWho, infoWhen,
         onEnter: () => this.setDraft({ chipInfoId: c.key }),
         onLeave: () => this.setDraft((cur) => (cur.chipInfoId === c.key ? { chipInfoId: null } : {})),
         onActivate: () => this.setDraft({ chipInfoId: c.key }),
