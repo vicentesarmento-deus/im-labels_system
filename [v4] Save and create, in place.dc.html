@@ -42,6 +42,10 @@ body{background:var(--background-default);font-family:var(--font-body);padding-t
 .gnav-sep{width:1px;height:22px;background:rgba(255,255,255,.14)}
 .gnav a{color:rgba(255,255,255,.45);font-size:11px;text-decoration:none;white-space:nowrap}
 .gnav a:hover{color:#fff}
+.gnav-restore{all:unset;position:fixed;top:8px;right:8px;z-index:101;cursor:pointer;padding:5px 10px;
+  border-radius:4px;font-size:11px;color:rgba(255,255,255,.72);background:#15171b;
+  border:1px solid rgba(255,255,255,.16);white-space:nowrap}
+.gnav-restore:hover{background:#22252b;color:#fff}
 
 /* ---- static top bar mimicking the real product chrome, DS tokens only ---- */
 .topbar{position:fixed;top:48px;left:0;right:0;height:48px;z-index:90;display:flex;align-items:center;gap:10px;
@@ -64,7 +68,6 @@ body{background:var(--background-default);font-family:var(--font-body);padding-t
 .card-body{padding:0 16px 16px}
 .sub{font-size:13px;font-weight:700;color:var(--text-primary);margin:6px 0 4px}
 .muted{font-size:13px;color:var(--text-secondary);line-height:1.5;margin:0 0 12px}
-.hl{background:var(--color-success-light)}
 .seg{display:flex}
 .seg span{flex:1;border:1px solid var(--divider);padding:8px;font-size:11px;text-align:center;color:var(--text-secondary)}
 .seg span + span{border-left:0}
@@ -202,22 +205,28 @@ button:focus-visible{outline:2px solid var(--color-primary-main);outline-offset:
 </style>
 </helmet>
 
-<div class="gnav">
-  <span class="gnav-title">[v4] Labels &mdash; save &amp; create, in place</span>
-  <span class="gnav-sub">Add, remove or create labels on the page &mdash; then save</span>
-  <div class="gnav-spacer"></div>
-  <div class="gnav-sim">
-    <span class="gnav-simlbl">Simulate</span>
-    <button class="gnav-simbtn" onClick="{{sim.onAdd}}">Maria adds</button>
-    <button class="gnav-simbtn" onClick="{{sim.onRemove}}">Maria removes</button>
-    <button class="gnav-simbtn" data-armed="{{sim.staleArmed}}" onClick="{{sim.onStale}}">{{sim.staleText}}</button>
-    <span class="gnav-sep"></span>
-    <button class="gnav-simbtn" onClick="{{sim.onHelp}}">? Shortcuts</button>
-    <button class="gnav-simbtn" onClick="{{sim.onReset}}">Reset</button>
-    <span class="gnav-sep"></span>
-    <a href="%5Bv3%5D%20Save%20flow%20-%20in%20place%20vs%20modal.dc.html">[v3] Save flow &rsaquo;</a>
+<sc-if value="{{!sim.chromeHidden}}" hint-placeholder-val="{{true}}">
+  <div class="gnav">
+    <span class="gnav-title">[v4] Labels &mdash; save &amp; create, in place</span>
+    <span class="gnav-sub">Add, remove or create labels on the page &mdash; then save</span>
+    <div class="gnav-spacer"></div>
+    <div class="gnav-sim">
+      <span class="gnav-simlbl">Simulate</span>
+      <button class="gnav-simbtn" onClick="{{sim.onAdd}}">Maria adds</button>
+      <button class="gnav-simbtn" onClick="{{sim.onRemove}}">Maria removes</button>
+      <button class="gnav-simbtn" data-armed="{{sim.staleArmed}}" onClick="{{sim.onStale}}">{{sim.staleText}}</button>
+      <span class="gnav-sep"></span>
+      <button class="gnav-simbtn" onClick="{{sim.onHelp}}">? Shortcuts</button>
+      <button class="gnav-simbtn" onClick="{{sim.onReset}}">Reset</button>
+      <button class="gnav-simbtn" onClick="{{sim.onHideChrome}}">Hide</button>
+      <span class="gnav-sep"></span>
+      <a href="%5Bv3%5D%20Save%20flow%20-%20in%20place%20vs%20modal.dc.html">[v3] Save flow &rsaquo;</a>
+    </div>
   </div>
-</div>
+</sc-if>
+<sc-if value="{{sim.chromeHidden}}" hint-placeholder-val="{{false}}">
+  <button class="gnav-restore" onClick="{{sim.onShowChrome}}">Show bar</button>
+</sc-if>
 
 <div class="topbar">
   <span class="crumb">Evaluations &rsaquo; Demo &rsaquo; <b>3 of 174</b></span>
@@ -238,12 +247,9 @@ button:focus-visible{outline:2px solid var(--color-primary-main);outline-offset:
       </div>
       <div style="padding:16px">
         <div class="postplaceholder">
-          <span style="display:inline-flex;flex-direction:column;align-items:center;gap:8px;color:var(--text-disabled)">
-            <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="PhotoFilled" size="40" hint-size="40px,40px"></x-import>
-            <span style="font-size:12px">Post media</span>
-          </span>
+          <img src="https://upload.wikimedia.org/wikipedia/commons/e/e2/Real_emblem.png" alt="Real Madrid" style="max-width:100%;max-height:100%;object-fit:contain">
         </div>
-        <p class="muted" style="margin-top:16px;margin-bottom:0"><span class="hl">hala madrid</span><br />#realmadridrayo</p>
+        <p class="muted" style="margin-top:16px;margin-bottom:0">hala madrid<br />#realmadridrayo</p>
       </div>
     </x-import>
   </div>
@@ -255,7 +261,7 @@ button:focus-visible{outline:2px solid var(--color-primary-main);outline-offset:
       </div>
       <div class="card-body">
         <div class="sub">Description</div>
-        <p class="muted"><span class="hl">hala madrid</span><br />#realmadridrayo</p>
+        <p class="muted">hala madrid<br />#realmadridrayo</p>
         <div class="sub">Hashtags</div>
         <p class="muted" style="margin-bottom:0">#realmadridrayo</p>
       </div>
@@ -483,6 +489,7 @@ class Component extends DCLogic {
 
   state = {
     helpOpen: false,
+    chromeHidden: false, // hides the facilitator gnav bar, e.g. for a screenshot
     infoOpen: false,   // the "how creation works" popover next to the combobox
     reconcile: false,  // true while the draft is blocked on a stale save
     toast: '',
@@ -1008,6 +1015,7 @@ class Component extends DCLogic {
       if (inField || e.metaKey || e.ctrlKey || e.altKey) return;
 
       if (e.key === '?') { e.preventDefault(); this.setState({ helpOpen: !s.helpOpen }); return; }
+      if (e.key === 'h' || e.key === 'H') { e.preventDefault(); this.setState({ chromeHidden: !s.chromeHidden }); return; }
       if (e.key === '/') {
         e.preventDefault();
         const el = document.getElementById('v1input');
@@ -1162,6 +1170,7 @@ class Component extends DCLogic {
       { key: 'k5', keys: 'Tab', what: 'Step through chips and their remove buttons' },
       { key: 'k6', keys: '⌘/Ctrl + Enter', what: 'Save the pending changes' },
       { key: 'k7', keys: 'Esc', what: 'Close the suggestions, or cancel a removal' },
+      { key: 'k8', keys: 'H', what: 'Hide or show the facilitator bar' },
     ];
 
     return {
@@ -1173,6 +1182,9 @@ class Component extends DCLogic {
         staleText: f.stale ? 'Stale save armed ✓' : 'Stale save',
         onHelp: () => this.setState({ helpOpen: true }),
         onReset: () => this.reset(),
+        chromeHidden: s.chromeHidden,
+        onHideChrome: () => this.setState({ chromeHidden: true }),
+        onShowChrome: () => this.setState({ chromeHidden: false }),
       },
 
       chips,
