@@ -65,7 +65,11 @@
   --field-border-focus: var(--color-primary-main);
 
   --menu-w: calc(var(--space-12) * 2);
-  --dlg-list-max: calc(var(--space-12) * 3);
+  /* the DS Dialog has no max-height, so the body caps itself: viewport minus title, actions, a
+     margin above and below, and the facilitator bar, which sits above the dialog's overlay —
+     title and buttons stay on screen, only the body scrolls */
+  --dlg-body-max: calc(100vh - (var(--space-12) * 2) - var(--space-2) - var(--gnav-h));
+  --dlg-list-max: min(calc(var(--space-12) * 3), 30vh);
 }
 
 *,*::before,*::after{box-sizing:border-box}
@@ -199,7 +203,8 @@ button{font:inherit}
 .empty__text{font-size:var(--fs-body2);color:var(--text-primary);max-width:60ch}
 
 /* ---- dialogs (one renderer; each dialog is a list of sections) ---- */
-.dlg{display:flex;flex-direction:column;gap:var(--space-2);padding-bottom:var(--space-1);color:var(--text-primary)}
+.dlg{display:flex;flex-direction:column;gap:var(--space-2);padding-bottom:var(--space-1);color:var(--text-primary);
+  max-height:var(--dlg-body-max);overflow-y:auto;overscroll-behavior:contain}
 .dlg__text{margin:0;font-size:var(--fs-body2);line-height:var(--lh-body);color:var(--text-secondary)}
 .dlg__text--strong{color:var(--text-primary)}
 .dlg__field{padding-top:var(--space-1)}
