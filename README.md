@@ -114,9 +114,17 @@ Rules it encodes:
 - **Every change says what it touches before it happens**, and every change can
   be undone from the snackbar that follows it (or with `Z`). Changes are
   immediate for everyone — there is no save bar here, unlike on a post.
-- **Creating is one field.** "Add labels" takes a pasted list, one per line, with
-  v4's `Category / Label` syntax; a live preview says what will be created and
-  what is skipped. Unlike on a post, a category can be created empty here.
+- **Creating is one field, and it accepts what it says it accepts.** "Add labels"
+  follows Keyword Groups' dialog — type, add, see the list build up — but the
+  separators its help text names actually work: a typed comma or Enter adds the
+  entry, a pasted list splits on commas, new lines or tabs, and Backspace in the
+  empty field brings the last entry back to edit. (Keyword Groups says "separated
+  by comma" and then blocks the comma key.) Whatever is still in the field when
+  you save is saved too. v4's `Category / Label` syntax works, and the list says
+  per entry what will be created and what is skipped. Unlike on a post, a
+  category can be created empty here.
+- **On a category or a label, the breadcrumb is the title** — "Labels › Brand ›
+  Real Madrid" — as in Keyword Groups.
 
 Export writes the whole catalogue as Excel (.xlsx), Word (.docx) or JSON. The
 files are built in the page, with no library loaded — .xlsx and .docx are

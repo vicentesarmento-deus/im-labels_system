@@ -106,13 +106,14 @@ button{font:inherit}
   padding:var(--space-2) var(--page-pad-x) 0;display:grid;grid-template-columns:minmax(0,1fr) auto;
   column-gap:var(--space-3);align-items:start}
 .head__lead{min-width:0;padding-bottom:var(--space-2)}
-.head__crumbs{display:flex;align-items:center;gap:var(--space-1);font-size:var(--fs-caption);color:var(--text-secondary);
-  margin-bottom:var(--space-0-5)}
-.head__crumb-sep{color:var(--text-disabled)}
+.head__crumbs{display:flex;align-items:center;gap:var(--space-0-5);min-width:0;flex-shrink:0;font-size:var(--fs-body2)}
+.head__crumb{color:var(--text-secondary);text-decoration:none;white-space:nowrap}
+.head__crumb:hover{color:var(--text-primary);text-decoration:underline}
+.head__crumb-sep{display:inline-flex;color:var(--action-active);margin-right:var(--space-0-5)}
 .head__title-row{display:flex;align-items:center;gap:var(--space-0-5);min-height:var(--space-5)}
 .head__title{font:var(--fw-regular) var(--fs-h5)/var(--lh-heading) var(--font-title);margin:0;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.head__prefix{color:var(--text-secondary);margin-right:var(--space-1)}
+.head__title--crumb{font:var(--fw-medium) var(--fs-body2)/var(--lh-body) var(--font-body)}
 .head__meta{display:flex;align-items:center;flex-wrap:wrap;gap:var(--space-2);margin-top:var(--space-0-5);
   font-size:var(--fs-body2);color:var(--text-primary)}
 .head__meta-sub{color:var(--text-secondary)}
@@ -227,6 +228,19 @@ button{font:inherit}
 .choice__text{display:flex;flex-direction:column;padding-top:var(--space-1)}
 .choice__sub{font-size:var(--fs-caption);color:var(--text-secondary)}
 .dlg__indent{padding-left:var(--space-4)}
+.dlg-item__remove{all:unset;cursor:pointer;display:inline-flex;color:var(--action-active);border-radius:50%}
+.dlg-item__remove:hover,.dlg-item__remove:focus-visible{color:var(--text-primary);background:var(--action-hover)}
+
+.stager{display:flex;flex-direction:column;gap:var(--space-0-5);padding-top:var(--space-1)}
+.stager__field{position:relative;display:flex;align-items:center;gap:var(--space-0-5);height:calc(var(--space-6) - var(--space-0-5));
+  padding:0 var(--space-0-5) 0 var(--space-1-5);border:1px solid var(--field-border);border-radius:var(--radius)}
+.stager__field:focus-within{border-color:var(--field-border-focus);box-shadow:inset 0 0 0 1px var(--field-border-focus)}
+.stager__label{position:absolute;top:calc(var(--space-1) * -1);left:var(--space-1);padding:0 var(--space-0-5);
+  background:var(--background-paper);font-size:var(--fs-caption);line-height:1;color:var(--text-secondary)}
+.stager__field:focus-within .stager__label{color:var(--color-primary-main)}
+.stager__input{all:unset;flex:1;min-width:0;font-size:var(--fs-body1);color:var(--text-primary)}
+.stager__input::placeholder{color:var(--text-disabled)}
+.stager__help{font-size:var(--fs-caption);color:var(--text-secondary);padding-left:var(--space-1-5)}
 </style>
 </helmet>
 
@@ -266,26 +280,25 @@ button{font:inherit}
     <!-- ================= PAGE HEAD ================= -->
     <header class="head">
       <div class="head__lead">
-        <sc-if value="{{head.hasCrumbs}}" hint-placeholder-val="{{false}}">
-          <nav class="head__crumbs" aria-label="Breadcrumb">
-            <sc-for list="{{head.crumbs}}" as="c" hint-placeholder-count="1">
-              <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Link" href="{{c.href}}" hint-size="auto,auto">{{c.text}}</x-import>
-              <span class="head__crumb-sep">/</span>
-            </sc-for>
-            <span>{{head.here}}</span>
-          </nav>
-        </sc-if>
-
+        <!-- on a detail page the breadcrumb is the title, as in Keyword Groups: "Labels › Brand" -->
         <div class="head__title-row">
+          <sc-if value="{{head.hasCrumbs}}" hint-placeholder-val="{{false}}">
+            <nav class="head__crumbs" aria-label="Breadcrumb">
+              <sc-for list="{{head.crumbs}}" as="c" hint-placeholder-count="1">
+                <a class="head__crumb" href="{{c.href}}">{{c.text}}</a>
+                <span class="head__crumb-sep" aria-hidden="true"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ChevronRightFilled" size="18" hint-size="18px,18px"></x-import></span>
+              </sc-for>
+            </nav>
+          </sc-if>
           <sc-if value="{{head.renaming}}" hint-placeholder-val="{{false}}">
             <span class="rename">
-              <input id="rename-input" class="rename__input rename__input--head" aria-label="{{rename.aria}}"
+              <input id="rename-input" class="rename__input {{head.renameMod}}" aria-label="{{rename.aria}}"
                 value="{{rename.value}}" onChange="{{rename.onInput}}" onKeyDown="{{rename.onKeyDown}}" onBlur="{{rename.onBlur}}" />
               <span class="rename__help {{rename.helpMod}}">{{rename.help}}</span>
             </span>
           </sc-if>
           <sc-if value="{{!head.renaming}}" hint-placeholder-val="{{true}}">
-            <h1 class="head__title"><sc-if value="{{head.prefix}}" hint-placeholder-val="{{false}}"><span class="head__prefix">{{head.prefix}}</span></sc-if>{{head.title}}</h1>
+            <h1 class="head__title {{head.titleMod}}" aria-current="{{head.ariaCurrent}}">{{head.title}}</h1>
             <sc-if value="{{head.canRename}}" hint-placeholder-val="{{false}}">
               <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Tooltip" title="{{head.renameTip}}" hint-size="auto,auto">
                 <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.IconButton" size="small" onClick="{{head.onRename}}" aria-label="{{head.renameTip}}" hint-size="32px,32px">
@@ -517,6 +530,19 @@ button{font:inherit}
               <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.TextField" label="{{sec.label}}" value="{{sec.value}}" onChange="{{sec.onChange}}" placeholder="{{sec.placeholder}}" helper-text="{{sec.helper}}" multiline="{{true}}" rows="{{sec.rows}}" size="small" full-width="{{true}}" hint-size="auto,120px"></x-import>
             </div>
           </sc-if>
+          <sc-if value="{{sec.is.stager}}" hint-placeholder-val="{{false}}">
+            <div class="stager">
+              <label class="stager__field">
+                <span class="stager__label">{{sec.label}}</span>
+                <input id="stager-input" class="stager__input" type="text" value="{{sec.value}}" placeholder="{{sec.placeholder}}"
+                  onChange="{{sec.onChange}}" onPaste="{{sec.onPaste}}" onKeyDown="{{sec.onKeyDown}}" aria-describedby="stager-help" />
+                <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.IconButton" size="small" color="primary" disabled="{{sec.addDisabled}}" onClick="{{sec.onAdd}}" aria-label="Add to the list" hint-size="32px,32px">
+                  <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="AddFilled" size="20" hint-size="20px,20px"></x-import>
+                </x-import>
+              </label>
+              <span id="stager-help" class="stager__help">{{sec.helper}}</span>
+            </div>
+          </sc-if>
           <sc-if value="{{sec.is.select}}" hint-placeholder-val="{{false}}">
             <div class="dlg__field {{sec.mod}}">
               <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Select" label="{{sec.label}}" value="{{sec.value}}" options="{{sec.options}}" onChange="{{sec.onChange}}" size="small" full-width="{{true}}" hint-size="auto,40px"></x-import>
@@ -550,6 +576,9 @@ button{font:inherit}
                     <span class="dlg-item__name"><sc-if value="{{it.prefix}}" hint-placeholder-val="{{false}}"><span class="dlg-item__prefix">{{it.prefix}}</span></sc-if>{{it.name}}</span>
                     <sc-if value="{{it.meta}}" hint-placeholder-val="{{false}}"><span class="dlg-item__meta">{{it.meta}}</span></sc-if>
                     <span class="dlg-item__status {{it.statusMod}}">{{it.status}}</span>
+                    <sc-if value="{{it.removable}}" hint-placeholder-val="{{false}}">
+                      <button class="dlg-item__remove" onClick="{{it.onRemove}}" aria-label="{{it.removeAria}}"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="CloseFilled" size="16" hint-size="16px,16px"></x-import></button>
+                    </sc-if>
                   </div>
                 </sc-for>
               </div>
@@ -839,6 +868,14 @@ class Component extends DCLogic {
     if (r.view === 'label' && !this.label(r.id)) { this.go({ view: 'categories' }); return; }
     if (r.view === 'category' && r.id != null && !this.category(r.id)) { this.go({ view: 'categories' }); return; }
 
+    const dlgKey = s.dialog ? s.dialog.type : null;
+    if (dlgKey !== this.__dlgOpened) {
+      this.__dlgOpened = dlgKey;
+      const first = document.querySelector(dlgKey === 'addCategory' ? '.dlg input' : '#stager-input');
+      if (first && (dlgKey === 'addLabels' || dlgKey === 'addCategory')) first.focus();
+    }
+    if (this.__focusStager) { this.__focusStager = false; const el = document.getElementById('stager-input'); if (el) el.focus(); }
+
     const renameKey = s.rename ? s.rename.kind + s.rename.id + s.rename.where : null;
     if (renameKey && this.__renameFocused !== renameKey) {
       const el = document.getElementById('rename-input');
@@ -1127,7 +1164,7 @@ class Component extends DCLogic {
 
   openDialog(type, init) { this.setState({ dialog: { type, ...(init || {}) }, menu: null }); }
   closeDialog() { this.setState({ dialog: null }); }
-  setDialog(patch) { this.setState((s) => ({ dialog: s.dialog ? { ...s.dialog, ...patch } : null })); }
+  setDialog(patch) { this.setState((s) => ({ dialog: s.dialog ? { ...s.dialog, ...(typeof patch === 'function' ? patch(s.dialog) : patch) } : null })); }
 
   sec(kind, o) { return { key: kind, kind, is: { [kind]: true }, ...o }; }
   text(t, mod) { return this.sec('text', { text: t, mod: mod || '' }); }
@@ -1153,11 +1190,69 @@ class Component extends DCLogic {
     return { items, more };
   }
 
-  /* ---------- add labels: one per line, "Category / Label" puts it in a category ---------- */
-  planCreate(text, ctxCat) {
+  /* ---------- the "stager": type, then comma or Enter to add; a pasted list splits itself ----------
+     Keyword Groups' own dialog says "separated by comma" and then refuses the comma key. Here every
+     separator the help text names works — typed or pasted — and whatever is still in the field when
+     you save is saved too, instead of being silently dropped. */
+
+  splitEntries(text) { return text.split(/[,\n\r\t]+/).map((x) => this.clean(x)); }
+
+  /** Handlers for a stager whose staged list lives at dialog[listKey] and whose field at dialog[inputKey]. */
+  stager(d, listKey, inputKey, o) {
+    const staged = d[listKey] || [], input = d[inputKey] || '';
+    const stage = (parts, rest) => this.setDialog((cur) => ({ [listKey]: [...(cur[listKey] || []), ...parts.filter(Boolean)], [inputKey]: rest }));
+    return this.sec('stager', {
+      label: o.label, value: input, placeholder: o.placeholder, helper: o.helper,
+      addDisabled: !this.clean(input),
+      onChange: (e) => {
+        const v = e.target.value;
+        if (/[,\n\r\t]/.test(v)) { const parts = this.splitEntries(v); const rest = parts.pop(); stage(parts, rest); }
+        else this.setDialog({ [inputKey]: v });
+      },
+      onPaste: (e) => {
+        const text = (e.clipboardData || window.clipboardData).getData('text');
+        if (!/[,\n\r\t]/.test(text)) return; // a single name pastes normally
+        e.preventDefault();
+        const el = e.target;
+        const whole = el.value.slice(0, el.selectionStart) + text + el.value.slice(el.selectionEnd);
+        const parts = this.splitEntries(whole);
+        const endsWithSep = /[,\n\r\t]\s*$/.test(text) && el.selectionEnd === el.value.length;
+        const rest = endsWithSep ? '' : parts.pop();
+        stage(parts, rest);
+      },
+      onKeyDown: (e) => {
+        if (e.key === 'Enter' && !(e.metaKey || e.ctrlKey)) { e.preventDefault(); if (this.clean(input)) stage([this.clean(input)], ''); }
+        else if (e.key === 'Backspace' && !input && staged.length) {
+          // the last one comes back into the field to be edited, rather than vanishing
+          e.preventDefault();
+          this.setDialog({ [listKey]: staged.slice(0, -1), [inputKey]: staged[staged.length - 1] });
+        }
+      },
+      onAdd: () => { if (this.clean(input)) stage([this.clean(input)], ''); this.__focusStager = true; },
+    });
+  }
+
+  /** Staged entries plus whatever is still being typed, each with its origin so only staged ones can be removed. */
+  stagedEntries(d, listKey, inputKey) {
+    const out = (d[listKey] || []).map((text, i) => ({ text, index: i }));
+    const typing = this.clean(d[inputKey]);
+    if (typing) out.push({ text: typing, index: -1 });
+    return out;
+  }
+
+  withRemove(rows, entries, listKey) {
+    return rows.map((r, i) => {
+      const e = entries[i];
+      return { ...r, meta: e.index < 0 ? 'still in the field — saved too' : '', removable: e.index >= 0, removeAria: 'Remove ' + e.text,
+        onRemove: () => this.setDialog((cur) => ({ [listKey]: (cur[listKey] || []).filter((_, j) => j !== e.index) })) };
+    });
+  }
+
+  /* ---------- add labels: "Category / Label" puts one in a category ---------- */
+  planCreate(entries, ctxCat) {
     const data = this.state.data;
     const rows = [], newCats = [], seen = new Set();
-    text.split('\n').map((s) => s.trim()).filter(Boolean).forEach((line, i) => {
+    entries.forEach((line, i) => {
       let catName = null, name = line, catId = ctxCat, catNew = false;
       if (line.includes('/')) {
         const at = line.indexOf('/');
@@ -1192,15 +1287,17 @@ class Component extends DCLogic {
 
   dlgAddLabels(d) {
     const ctx = d.catId;
-    const plan = this.planCreate(d.text || '', ctx);
+    const entries = this.stagedEntries(d, 'staged', 'input');
+    const plan = this.planCreate(entries.map((e) => e.text), ctx);
     const n = plan.rows.filter((r) => r.create).length;
-    const where = ctx == null ? 'without a category' : 'into ' + this.catName(ctx);
+    const where = ctx == null ? 'without a category' : 'in ' + this.catName(ctx);
     const sections = [
-      this.text('One label per line. They go ' + where + '. To put one in a category, type Category / Label — a category that doesn\'t exist yet is created with it.'),
-      this.sec('area', { label: 'Labels', value: d.text || '', rows: 6, placeholder: ctx == null ? 'Brand / Heineken\nProduct / Sparkling water\nGiveaway' : 'Heineken\nCarlsberg\nSuper Bock',
-        helper: 'Paste a list to add many at once.', onChange: (e) => this.setDialog({ text: e.target.value }) }),
+      this.stager(d, 'staged', 'input', {
+        label: 'Add labels', placeholder: ctx == null ? 'e.g. Giveaway, Brand / Heineken' : 'e.g. Heineken, Carlsberg',
+        helper: 'Separate labels with commas or new lines — pasting a list works too. They go ' + where + '; type Category / Label to put one in a category, even a new one.',
+      }),
     ];
-    if (plan.rows.length) sections.push(this.sec('items', { heading: 'Preview', items: plan.rows }));
+    if (plan.rows.length) sections.push(this.sec('items', { heading: 'To add', items: this.withRemove(plan.rows, entries, 'staged') }));
     return {
       title: ctx == null ? 'Add labels' : 'Add labels to ' + this.catName(ctx), width: 'sm', sections,
       confirmText: n ? 'Add ' + this.plural(n, 'label') + (plan.newCats.length ? ' + ' + this.plural(plan.newCats.length, 'category', 'categories') : '') : 'Add labels',
@@ -1211,22 +1308,23 @@ class Component extends DCLogic {
   dlgAddCategory(d) {
     const name = this.clean(d.name);
     const taken = name && this.categoryNamed(name);
-    const lines = (d.labels || '').split('\n').map((s) => this.clean(s)).filter(Boolean);
+    const entries = this.stagedEntries(d, 'staged', 'input');
     const seen = new Set();
-    const items = lines.map((n, i) => {
+    const rows = entries.map((e, i) => {
+      const n = e.text;
       const dup = seen.has(this.norm(n)); seen.add(this.norm(n));
       return { key: 'l' + i, name: n, prefix: name ? name + ' /' : '', status: dup ? 'Repeated — skipped' : 'New label', statusMod: dup ? 'dlg-item__status--skip' : 'dlg-item__status--ok', create: !dup };
     });
     const sections = [
       this.field('Name', 'name', { error: !!taken, helper: taken ? 'There is already a category called ' + this.q(taken.name) + '.' : '' }),
-      this.sec('area', { label: 'Labels (optional)', value: d.labels || '', rows: 4, placeholder: 'One per line', helper: 'You can also add labels later, or move existing ones in.',
-        onChange: (e) => this.setDialog({ labels: e.target.value }) }),
+      this.stager(d, 'staged', 'input', { label: 'Labels (optional)', placeholder: 'e.g. Positive, Negative, Neutral',
+        helper: 'Separate labels with commas or new lines. You can also add labels later, or move existing ones in.' }),
     ];
-    if (items.length) sections.push(this.sec('items', { heading: 'Preview', items }));
+    if (rows.length) sections.push(this.sec('items', { heading: 'To add', items: this.withRemove(rows, entries, 'staged') }));
     return {
       title: 'Add category', width: 'sm', sections,
       confirmText: 'Add category', confirmDisabled: !name || !!taken,
-      onConfirm: () => this.opCreateCategory(name, items.filter((i) => i.create).map((i) => i.name)),
+      onConfirm: () => this.opCreateCategory(name, rows.filter((i) => i.create).map((i) => i.name)),
     };
   }
 
@@ -1837,7 +1935,7 @@ class Component extends DCLogic {
       const sel = s.sel.map((id) => this.category(id)).filter(Boolean);
       out.head = {
         ...exportHead, title: 'Labels', total: rows.length, showTotal: rows.length > 0, meta: '',
-        buttons: [{ key: 'add', text: 'Add category', variant: 'contained', color: 'primary', onClick: () => this.openDialog('addCategory', { name: '', labels: '' }) }],
+        buttons: [{ key: 'add', text: 'Add category', variant: 'contained', color: 'primary', onClick: () => this.openDialog('addCategory', { name: '', staged: [], input: '' }) }],
         tools: this.toolsFor('category', sel),
       };
       out.tabs = tabs;
@@ -1859,7 +1957,7 @@ class Component extends DCLogic {
             menuItems: c.pinned ? [] : [
               { key: 'open', text: 'Open', onClick: open, disabled: false },
               { key: 'rename', text: 'Rename', onClick: () => this.startRename('category', c.id, 'row'), disabled: false },
-              { key: 'add', text: 'Add labels…', onClick: () => this.openDialog('addLabels', { catId: c.id, text: '' }), disabled: false },
+              { key: 'add', text: 'Add labels…', onClick: () => this.openDialog('addLabels', { catId: c.id, staged: [], input: '' }), disabled: false },
               { key: 'del', text: 'Delete', onClick: () => this.openDialog('deleteCategories', { ids: [c.id] }), disabled: false },
             ],
             cells: [
@@ -1889,7 +1987,7 @@ class Component extends DCLogic {
       defs.push({ key: 'posts', text: 'Posts', firstDir: 'desc' }, { key: 'created', text: 'Created', firstDir: 'desc' }, { key: 'by', text: 'Created by' }, { key: 'edited', text: 'Last edited', firstDir: 'desc' });
       const unused = { show: unusedTotal > 0 || s.unusedOnly, text: 'Unused only · ' + unusedTotal, variant: s.unusedOnly ? 'filled' : 'outlined', color: s.unusedOnly ? 'primary' : 'default',
         onClick: () => this.setState((cur) => ({ unusedOnly: !cur.unusedOnly, page: 0, sel: [] })) };
-      const addBtn = { key: 'add', text: 'Add labels', variant: 'contained', color: 'primary', onClick: () => this.openDialog('addLabels', { catId: scope === 'all' ? null : scope, text: '' }) };
+      const addBtn = { key: 'add', text: 'Add labels', variant: 'contained', color: 'primary', onClick: () => this.openDialog('addLabels', { catId: scope === 'all' ? null : scope, staged: [], input: '' }) };
 
       if (r.view === 'labels') {
         out.head = { ...exportHead, title: 'Labels', total: rows.length, showTotal: rows.length > 0, meta: '', unused, buttons: [addBtn], tools: this.toolsFor('label', sel) };
@@ -1933,7 +2031,7 @@ class Component extends DCLogic {
       const renaming = !!(s.rename && s.rename.kind === 'label' && s.rename.id === l.id && s.rename.where === 'head');
       const catCrumb = { key: 'cat', text: l.categoryId == null ? 'No category' : this.catName(l.categoryId), href: this.hashFor({ view: 'category', id: l.categoryId }) };
       out.head = {
-        showExport: false, title: l.name, prefix: l.categoryId == null ? '' : this.catName(l.categoryId) + ' /',
+        showExport: false, title: l.name, prefix: '',
         total: rows.length, showTotal: rows.length > 0,
         hasCrumbs: true, crumbs: [{ key: 'root', text: 'Labels', href: '#/categories' }, catCrumb], here: l.name,
         meta: 'Created by ' + l.createdBy + ', ' + this.fmtDate(l.createdAt) + ' · on ' + this.plural(n, 'post'),
@@ -1977,9 +2075,9 @@ class Component extends DCLogic {
   emptyFor(kind, catId) {
     const E = {
       search: { icon: 'SearchFilled', title: 'No Results Found', text: 'Try adjusting your search to find what you\'re looking for.' },
-      noCats: { icon: 'FolderFilled', title: 'No categories yet', text: 'Categories group labels so everyone reads them in context.', actionText: 'Add category', onAction: () => this.openDialog('addCategory', { name: '', labels: '' }) },
-      noLabels: { icon: 'FolderFilled', title: 'No labels yet', text: 'Add labels here, or create them straight from a post.', actionText: 'Add labels', onAction: () => this.openDialog('addLabels', { catId: null, text: '' }) },
-      emptyCat: { icon: 'FolderFilled', title: 'No labels in this category', text: 'Add labels to it, or move existing ones in from another category.', actionText: 'Add labels', onAction: () => this.openDialog('addLabels', { catId, text: '' }) },
+      noCats: { icon: 'FolderFilled', title: 'No categories yet', text: 'Categories group labels so everyone reads them in context.', actionText: 'Add category', onAction: () => this.openDialog('addCategory', { name: '', staged: [], input: '' }) },
+      noLabels: { icon: 'FolderFilled', title: 'No labels yet', text: 'Add labels here, or create them straight from a post.', actionText: 'Add labels', onAction: () => this.openDialog('addLabels', { catId: null, staged: [], input: '' }) },
+      emptyCat: { icon: 'FolderFilled', title: 'No labels in this category', text: 'Add labels to it, or move existing ones in from another category.', actionText: 'Add labels', onAction: () => this.openDialog('addLabels', { catId, staged: [], input: '' }) },
       noUnused: { icon: 'CheckCircleOutlined', title: 'Every label here is on a post', text: 'Turn off “Unused only” to see them all.' },
       noPosts: { icon: 'PhotoOutlined', title: 'Not on any post yet', text: 'Labels are added to posts from the evaluation page.' },
     };
@@ -2050,7 +2148,10 @@ class Component extends DCLogic {
         onHide: () => this.setState({ chromeHidden: true }), onShow: () => this.setState({ chromeHidden: false }),
         onReset: () => { this.setState({ ...this.initialState(), route: { view: 'categories' } }); this.go({ view: 'categories' }); },
       },
-      head: { hasCrumbs: false, crumbs: [], here: '', prefix: '', renaming: false, canRename: false, canDelete: false, unused: { show: false }, showExport: false, buttons: [], tools: [], ...v.head },
+      head: (() => {
+        const h = { hasCrumbs: false, crumbs: [], here: '', prefix: '', renaming: false, canRename: false, canDelete: false, unused: { show: false }, showExport: false, buttons: [], tools: [], ...v.head };
+        return { ...h, titleMod: h.hasCrumbs ? 'head__title--crumb' : '', renameMod: h.hasCrumbs ? '' : 'rename__input--head', ariaCurrent: h.hasCrumbs ? 'page' : null };
+      })(),
       tabs: v.tabs,
       exp: {
         open: s.menu === 'export',
