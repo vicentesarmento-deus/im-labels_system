@@ -90,7 +90,7 @@ Four views, each with its own URL so the browser's Back button works:
 | View | What it shows |
 | --- | --- |
 | **Categories** (`#/categories`) | The Keyword Groups list, for categories: labels and posts per category, created and last edited. Labels without a category sit in a pinned "No category" row after the last page — it is not a category, so it can't be selected, renamed or deleted. |
-| **All labels** (`#/labels`) | Every label in one flat, sortable table, with its category. For clean-up across categories: search, sort by posts, "Unused only", rename and move in bulk. |
+| **All labels** (`#/labels`) | Every label in one flat, sortable table, with its category. For clean-up across categories: search, sort by posts, "0 posts only", rename and move in bulk. |
 | **A category** (`#/category/1`) | Its labels, with the category's own rename and delete. |
 | **A label** (`#/label/1`) | Every post that carries it, who added it and when. The Real Madrid post opens in v4. |
 

@@ -432,9 +432,6 @@ button{font:inherit}
                     </sc-if>
                     <sc-if value="{{row.hint}}" hint-placeholder-val="{{false}}"><span class="grid__hint">{{row.hint}}</span></sc-if>
                   </span>
-                  <sc-if value="{{row.unused}}" hint-placeholder-val="{{false}}">
-                    <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Chip" size="small" variant="outlined" label="Unused" hint-size="auto,24px"></x-import>
-                  </sc-if>
                 </span>
               </sc-if>
             </span>
@@ -567,7 +564,7 @@ button{font:inherit}
           <sc-if value="{{sec.is.items}}" hint-placeholder-val="{{false}}">
             <div>
               <div class="dlg__heading">{{sec.heading}}</div>
-              <div class="dlg__list">
+              <div class="dlg__list {{sec.listMod}}">
                 <sc-for list="{{sec.items}}" as="it" hint-placeholder-count="3">
                   <div class="dlg-item">
                     <sc-if value="{{it.hasCheck}}" hint-placeholder-val="{{false}}">
@@ -641,7 +638,7 @@ class Component extends DCLogic {
      - move, collide, then merge:      "nike" created on a post with no category, and Brand / Nike
      - duplicate with its own meaning: Brand / Nike -> Competitor
      - merge categories:               Campaign + Campaigns, both holding "Summer 2026" and "Champions League"
-     - unused labels, an empty category (Events), and uncategorised leftovers ("test", "tmp label").
+     - labels on no post, an empty category (Events), and uncategorised leftovers ("test", "tmp label").
      The Real Madrid post carries the same three labels as the v4 prototype. */
 
   seed() {
@@ -875,6 +872,16 @@ class Component extends DCLogic {
       if (first && (dlgKey === 'addLabels' || dlgKey === 'addCategory')) first.focus();
     }
     if (this.__focusStager) { this.__focusStager = false; const el = document.getElementById('stager-input'); if (el) el.focus(); }
+
+    // "To add" follows its newest entry: scroll to the end when an entry is added or the typed one
+    // changes, but never when one is removed — whoever removes is looking at that spot
+    const follow = document.querySelector('.dlg__list--follow');
+    if (s.dialog && follow) {
+      const count = (s.dialog.staged || []).length, typed = s.dialog.input || '';
+      const prev = this.__follow;
+      if (!prev || count > prev.count || (count === prev.count && typed !== prev.typed)) follow.scrollTop = follow.scrollHeight;
+      this.__follow = { count, typed };
+    } else this.__follow = null;
 
     const renameKey = s.rename ? s.rename.kind + s.rename.id + s.rename.where : null;
     if (renameKey && this.__renameFocused !== renameKey) {
@@ -1166,7 +1173,7 @@ class Component extends DCLogic {
   closeDialog() { this.setState({ dialog: null }); }
   setDialog(patch) { this.setState((s) => ({ dialog: s.dialog ? { ...s.dialog, ...(typeof patch === 'function' ? patch(s.dialog) : patch) } : null })); }
 
-  sec(kind, o) { return { key: kind, kind, is: { [kind]: true }, ...o }; }
+  sec(kind, o) { return { key: kind, kind, is: { [kind]: true }, listMod: '', ...o }; }
   text(t, mod) { return this.sec('text', { text: t, mod: mod || '' }); }
   note(t, severity) { return this.sec('note', { text: t, severity: severity || 'info' }); }
   field(label, key, o) {
@@ -1300,7 +1307,7 @@ class Component extends DCLogic {
         helper: 'Separate labels with commas or new lines — pasting a list works too. They go ' + where + '; type Category / Label to put one in a category, even a new one.',
       }),
     ];
-    if (plan.rows.length) sections.push(this.sec('items', { heading: 'To add', items: this.withRemove(plan.rows, entries, 'staged', 'input') }));
+    if (plan.rows.length) sections.push(this.sec('items', { heading: 'To add', listMod: 'dlg__list--follow', items: this.withRemove(plan.rows, entries, 'staged', 'input') }));
     return {
       title: ctx == null ? 'Add labels' : 'Add labels to ' + this.catName(ctx), width: 'sm', sections,
       confirmText: n ? 'Add ' + this.plural(n, 'label') + (plan.newCats.length ? ' + ' + this.plural(plan.newCats.length, 'category', 'categories') : '') : 'Add labels',
@@ -1323,7 +1330,7 @@ class Component extends DCLogic {
       this.stager(d, 'staged', 'input', { label: 'Labels (optional)', placeholder: 'e.g. Positive, Negative, Neutral',
         helper: 'Separate labels with commas or new lines. You can also add labels later, or move existing ones in.' }),
     ];
-    if (rows.length) sections.push(this.sec('items', { heading: 'To add', items: this.withRemove(rows, entries, 'staged', 'input') }));
+    if (rows.length) sections.push(this.sec('items', { heading: 'To add', listMod: 'dlg__list--follow', items: this.withRemove(rows, entries, 'staged', 'input') }));
     return {
       title: 'Add category', width: 'sm', sections,
       confirmText: 'Add category', confirmDisabled: !name || !!taken,
@@ -1909,7 +1916,7 @@ class Component extends DCLogic {
     cells.push({ key: 'by', text: l.createdBy, mod: '' });
     cells.push({ key: 'edited', text: this.fmtDate(l.editedAt), mod: '' });
     return {
-      ...base, renaming, name: l.name, prefix: '', hint: '', unused: n === 0, nameMod: '', hasThumb: false,
+      ...base, renaming, name: l.name, prefix: '', hint: '', nameMod: '', hasThumb: false,
       mod: (base.checked ? 'grid__row--selected ' : '') + (renaming ? 'grid__row--renaming' : ''),
       checkAria: 'Select ' + l.name, menuAria: 'Actions for ' + l.name, menuItems: this.labelMenu(l),
       cells: cells.map((c) => ({ ...c, pill: false })),
@@ -1952,7 +1959,7 @@ class Component extends DCLogic {
           const renaming = !!(s.rename && s.rename.kind === 'category' && s.rename.id === c.id && s.rename.where === 'row');
           const hint = c.hits.length ? 'Matching labels: ' + c.hits.slice(0, 3).map((l) => l.name).join(', ') + (c.hits.length > 3 ? ' +' + (c.hits.length - 3) + ' more' : '') : c.pinned ? 'Labels created without a category' : '';
           return {
-            ...base, renaming, name: c.name, prefix: '', hint, unused: false, hasThumb: false,
+            ...base, renaming, name: c.name, prefix: '', hint, hasThumb: false,
             nameMod: c.pinned ? 'grid__name--muted' : '',
             hasMenu: !c.pinned,
             mod: (base.checked ? 'grid__row--selected ' : '') + (c.pinned ? 'grid__row--pinned ' : '') + (renaming ? 'grid__row--renaming' : ''),
@@ -1988,7 +1995,7 @@ class Component extends DCLogic {
       const defs = [{ key: 'name', text: 'Label' }];
       if (showCat) defs.push({ key: 'cat', text: 'Category' });
       defs.push({ key: 'posts', text: 'Posts', firstDir: 'desc' }, { key: 'created', text: 'Created', firstDir: 'desc' }, { key: 'by', text: 'Created by' }, { key: 'edited', text: 'Last edited', firstDir: 'desc' });
-      const unused = { show: unusedTotal > 0 || s.unusedOnly, text: 'Unused only · ' + unusedTotal, variant: s.unusedOnly ? 'filled' : 'outlined', color: s.unusedOnly ? 'primary' : 'default',
+      const unused = { show: unusedTotal > 0 || s.unusedOnly, text: '0 posts only · ' + unusedTotal, variant: s.unusedOnly ? 'filled' : 'outlined', color: s.unusedOnly ? 'primary' : 'default',
         onClick: () => this.setState((cur) => ({ unusedOnly: !cur.unusedOnly, page: 0, sel: [] })) };
       const addBtn = { key: 'add', text: 'Add labels', variant: 'contained', color: 'primary', onClick: () => this.openDialog('addLabels', { catId: scope === 'all' ? null : scope, staged: [], input: '' }) };
 
@@ -2058,7 +2065,7 @@ class Component extends DCLogic {
             key: 'p' + p.id, selectable: false, checked: false, renaming: false, hasMenu: false, menuOpen: false, menuItems: [],
             onRowClick: (e) => { if (!e.target.closest('button, a')) open(); }, onOpen: open, openable: p.inV4,
             mod: p.inV4 ? '' : 'grid__row--static',
-            name: p.handle, prefix: '', hint: p.caption + (p.inV4 ? ' — open it in the v4 prototype' : ''), unused: false, nameMod: '',
+            name: p.handle, prefix: '', hint: p.caption + (p.inV4 ? ' — open it in the v4 prototype' : ''), nameMod: '',
             hasThumb: true, thumbImg: p.img ? "url('" + p.img + "')" : 'none', thumbText: p.img ? '' : p.handle[0].toUpperCase(), thumbBg: col.bg, thumbFg: col.fg,
             cells: [
               { key: 'platform', text: p.platform, mod: '', pill: true, pillBg: col.bg, pillFg: col.fg },
@@ -2081,7 +2088,7 @@ class Component extends DCLogic {
       noCats: { icon: 'FolderFilled', title: 'No categories yet', text: 'Categories group labels so everyone reads them in context.', actionText: 'Add category', onAction: () => this.openDialog('addCategory', { name: '', staged: [], input: '' }) },
       noLabels: { icon: 'FolderFilled', title: 'No labels yet', text: 'Add labels here, or create them straight from a post.', actionText: 'Add labels', onAction: () => this.openDialog('addLabels', { catId: null, staged: [], input: '' }) },
       emptyCat: { icon: 'FolderFilled', title: 'No labels in this category', text: 'Add labels to it, or move existing ones in from another category.', actionText: 'Add labels', onAction: () => this.openDialog('addLabels', { catId, staged: [], input: '' }) },
-      noUnused: { icon: 'CheckCircleOutlined', title: 'Every label here is on a post', text: 'Turn off “Unused only” to see them all.' },
+      noUnused: { icon: 'CheckCircleOutlined', title: 'Every label here is on a post', text: 'Turn off “0 posts only” to see them all.' },
       noPosts: { icon: 'PhotoOutlined', title: 'Not on any post yet', text: 'Labels are added to posts from the post page. Open a post from Evaluations, Violations or an Influencer page.' },
     };
     return { show: true, actionText: '', onAction: null, ...E[kind] };
