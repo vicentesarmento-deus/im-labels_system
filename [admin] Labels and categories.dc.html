@@ -1240,11 +1240,14 @@ class Component extends DCLogic {
     return out;
   }
 
-  withRemove(rows, entries, listKey) {
+  withRemove(rows, entries, listKey, inputKey) {
     return rows.map((r, i) => {
       const e = entries[i];
-      return { ...r, meta: e.index < 0 ? 'still in the field — saved too' : '', removable: e.index >= 0, removeAria: 'Remove ' + e.text,
-        onRemove: () => this.setDialog((cur) => ({ [listKey]: (cur[listKey] || []).filter((_, j) => j !== e.index) })) };
+      // the entry still being typed is a row like any other; its X clears the field
+      const onRemove = e.index < 0
+        ? () => { this.setDialog({ [inputKey]: '' }); this.__focusStager = true; }
+        : () => this.setDialog((cur) => ({ [listKey]: (cur[listKey] || []).filter((_, j) => j !== e.index) }));
+      return { ...r, meta: '', removable: true, removeAria: 'Remove ' + e.text, onRemove };
     });
   }
 
@@ -1297,7 +1300,7 @@ class Component extends DCLogic {
         helper: 'Separate labels with commas or new lines — pasting a list works too. They go ' + where + '; type Category / Label to put one in a category, even a new one.',
       }),
     ];
-    if (plan.rows.length) sections.push(this.sec('items', { heading: 'To add', items: this.withRemove(plan.rows, entries, 'staged') }));
+    if (plan.rows.length) sections.push(this.sec('items', { heading: 'To add', items: this.withRemove(plan.rows, entries, 'staged', 'input') }));
     return {
       title: ctx == null ? 'Add labels' : 'Add labels to ' + this.catName(ctx), width: 'sm', sections,
       confirmText: n ? 'Add ' + this.plural(n, 'label') + (plan.newCats.length ? ' + ' + this.plural(plan.newCats.length, 'category', 'categories') : '') : 'Add labels',
@@ -1320,7 +1323,7 @@ class Component extends DCLogic {
       this.stager(d, 'staged', 'input', { label: 'Labels (optional)', placeholder: 'e.g. Positive, Negative, Neutral',
         helper: 'Separate labels with commas or new lines. You can also add labels later, or move existing ones in.' }),
     ];
-    if (rows.length) sections.push(this.sec('items', { heading: 'To add', items: this.withRemove(rows, entries, 'staged') }));
+    if (rows.length) sections.push(this.sec('items', { heading: 'To add', items: this.withRemove(rows, entries, 'staged', 'input') }));
     return {
       title: 'Add category', width: 'sm', sections,
       confirmText: 'Add category', confirmDisabled: !name || !!taken,
@@ -2079,7 +2082,7 @@ class Component extends DCLogic {
       noLabels: { icon: 'FolderFilled', title: 'No labels yet', text: 'Add labels here, or create them straight from a post.', actionText: 'Add labels', onAction: () => this.openDialog('addLabels', { catId: null, staged: [], input: '' }) },
       emptyCat: { icon: 'FolderFilled', title: 'No labels in this category', text: 'Add labels to it, or move existing ones in from another category.', actionText: 'Add labels', onAction: () => this.openDialog('addLabels', { catId, staged: [], input: '' }) },
       noUnused: { icon: 'CheckCircleOutlined', title: 'Every label here is on a post', text: 'Turn off “Unused only” to see them all.' },
-      noPosts: { icon: 'PhotoOutlined', title: 'Not on any post yet', text: 'Labels are added to posts from the evaluation page.' },
+      noPosts: { icon: 'PhotoOutlined', title: 'Not on any post yet', text: 'Labels are added to posts from the post page. Open a post from Evaluations, Violations or an Influencer page.' },
     };
     return { show: true, actionText: '', onAction: null, ...E[kind] };
   }
