@@ -29,7 +29,7 @@
   .stand{margin:0 0 var(--space-1);color:var(--text-secondary);font-size:var(--fs-subtitle1);line-height:1.45}
   .stand b{font-weight:var(--fw-medium);color:var(--text-primary)}
 
-  .registers{display:grid;grid-template-rows:repeat(3,minmax(0,1fr))}
+  .registers{display:grid;grid-template-rows:repeat(5,minmax(0,1fr))}
   .reg{display:grid;grid-template-columns:200px minmax(0,1fr) 64px;align-items:center;
     padding:var(--space-3) var(--space-8);border-bottom:1px solid var(--divider);
     text-decoration:none;color:inherit;transition:background 120ms linear}
@@ -70,10 +70,17 @@
 <body>
   <header class="masthead">
     <h1>Labels in a post <span class="paren">(exploring interactions)</span></h1>
-    <p class="stand">Four prototypes of the labels section on an evaluation post, made to answer one question: is it better to resolve label changes in place on the page, or inside a modal? <b>Each is a working page, not a mockup.</b></p>
+    <p class="stand">Four prototypes of the labels section on an evaluation post, made to answer one question: is it better to resolve label changes in place on the page, or inside a modal? Plus the admin where the label catalogue itself is managed. <b>Each is a working page, not a mockup.</b></p>
   </header>
 
   <nav class="registers">
+    <a class="reg" href="%5Badmin%5D%20Labels%20and%20categories.dc.html">
+      <span class="num">adm</span>
+      <span><span class="name">Labels and categories, the admin</span>
+        <span class="what">Where the catalogue is managed, laid out like Keyword Groups: search, create in bulk, rename, move, duplicate, merge, delete and export &mdash; with every change showing which posts it touches before it happens.</span>
+        <span class="flag">New</span></span>
+      <span class="arrow">&rarr;</span>
+    </a>
     <a class="reg" href="%5Bv4%5D%20Save%20and%20create%2C%20in%20place.dc.html">
       <span class="num">v4</span>
       <span><span class="name">Save and create, in place</span>

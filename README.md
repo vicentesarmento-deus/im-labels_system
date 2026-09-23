@@ -11,6 +11,9 @@ They exist to answer one question:
 Handling a second person editing the same post is one of the tests that
 separates the two candidates. It is not the goal in itself.
 
+A fifth page, **the admin**, sits beside them: where the label catalogue itself
+is managed. It answers a different question — see [The admin](#the-admin).
+
 Each prototype is a working page, not a picture of one — open it and use it as
 you would the real product. The dark bar across the top of v2, v3 and v4 is
 facilitator scaffolding for interviews, not product UI.
@@ -21,6 +24,7 @@ Open `index.html` for the cover, or go straight to one:
 
 | | | |
 | --- | --- | --- |
+| **admin** | [`[admin] Labels and categories.dc.html`](<[admin] Labels and categories.dc.html>) | **New.** Managing the catalogue — categories and their labels — laid out like the product's Keyword Groups screen. Not part of the in-place vs modal question; see [The admin](#the-admin). |
 | **v4** | [`[v4] Save and create, in place.dc.html`](<[v4] Save and create, in place.dc.html>) | **Current — used in interviews.** v3's winning candidate — everything resolved in place on the page — on its own, with the ability to create new labels (and, via "Category / New label", new categories) restored to the same combobox that already adds existing ones. |
 | **v3** | [`[v3] Save flow - in place vs modal.dc.html`](<[v3] Save flow - in place vs modal.dc.html>) | The two candidates side by side. **A** resolves every action in place on the page, so the card itself is the editor; **B** resolves everything inside an "Edit labels" modal. Both share the same rules underneath — an explicit save step, visible authorship and timestamp on each label, and a switch to simulate someone else editing the same post — so a preference comes from the interaction model, not from a feature one has and the other lacks. |
 | **v2** | [`[v2] Input variants a-h.dc.html`](<[v2] Input variants a-h.dc.html>) | The exploration that narrowed the field: eight ways (a–h) of adding and managing labels, from fully inline to fully modal. v3 takes the two ends of that range and makes them comparable. |
@@ -73,6 +77,54 @@ bare/empty-category creation: a category only ever comes into being as a side
 effect of creating a label under it. The first rule is unchanged — a category
 is still context, not something you apply as a whole.
 
+## The admin
+
+`[admin] Labels and categories.dc.html` is the other side of v4. v4 lets anyone
+create a label, or a category, straight from a post; the admin is where the
+catalogue that produces gets looked after. It mirrors the product's Keyword
+Groups screen — keyword group → **category**, keyword → **label** — and uses the
+same design system.
+
+Four views, each with its own URL so the browser's Back button works:
+
+| View | What it shows |
+| --- | --- |
+| **Categories** (`#/categories`) | The Keyword Groups list, for categories: labels and posts per category, created and last edited. Labels without a category sit in a pinned "No category" row after the last page — it is not a category, so it can't be selected, renamed or deleted. |
+| **All labels** (`#/labels`) | Every label in one flat, sortable table, with its category. For clean-up across categories: search, sort by posts, "Unused only", rename and move in bulk. |
+| **A category** (`#/category/1`) | Its labels, with the category's own rename and delete. |
+| **A label** (`#/label/1`) | Every post that carries it, who added it and when. The Real Madrid post opens in v4. |
+
+Rules it encodes:
+
+- **Different categories mean different things.** Coca-Cola the drink is not
+  Coca-Cola the brand, so labels in different categories are never merged. Merge
+  is only offered when every selected label is in the same category. Two
+  spellings across categories are fixed by renaming them to one spelling, each
+  keeping its own category and posts.
+- **A collision inside one category is a merge.** Renaming or moving a label onto
+  a name that already exists in that category offers a merge instead of creating
+  a duplicate — which is how a "nike" created on a post without a category ends
+  up as Brand / Nike.
+- **Duplicating makes an independent copy.** It starts with no posts; linking it
+  to the same posts as the original is an opt-in checkbox.
+- **Deleting asks what happens next.** A category: keep its labels without a
+  category, move them to another one, or delete them too. A label: remove it from
+  its posts, or replace it with another label from the same category. Both show
+  the affected posts first.
+- **Every change says what it touches before it happens**, and every change can
+  be undone from the snackbar that follows it (or with `Z`). Changes are
+  immediate for everyone — there is no save bar here, unlike on a post.
+- **Creating is one field.** "Add labels" takes a pasted list, one per line, with
+  v4's `Category / Label` syntax; a live preview says what will be created and
+  what is skipped. Unlike on a post, a category can be created empty here.
+
+Export writes the whole catalogue as Excel (.xlsx), Word (.docx) or JSON. The
+files are built in the page, with no library loaded — .xlsx and .docx are
+written as zip archives by hand — so the export works offline.
+
+`window.__labelsAdmin` exposes the page's component so an automated check can
+read its data and assert the invariants above.
+
 ## Where it lives
 
 Published at **<https://vicentesarmento-deus.github.io/im-labels_system/>**.
@@ -97,7 +149,7 @@ python3 -m http.server 4175
 Then open <http://localhost:4175/>. A matching launch configuration lives in
 `.claude/launch.json`.
 
-**An internet connection is required.** v1–v4 load React and Babel from unpkg at
+**An internet connection is required.** v1–v4 and the admin load React and Babel from unpkg at
 runtime, and the design system pulls the Epilogue title font from Google Fonts.
 Offline, the prototypes will not boot and headings fall back to Rubik.
 
@@ -106,6 +158,7 @@ Offline, the prototypes will not boot and headings fall back to Rubik.
 ```
 index.html                  The cover
 [v1|v2|v3|v4] ….dc.html     The prototypes
+[admin] ….dc.html           The label catalogue admin
 support.js                  Runtime for the .dc.html pages
 _ds/monitoring-design-…/    The Monitoring Design System — tokens, fonts, components
 uploads/                    Reference material: screenshots of the real staging page
