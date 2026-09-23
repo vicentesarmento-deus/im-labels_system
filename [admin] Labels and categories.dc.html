@@ -130,6 +130,10 @@ button{font:inherit}
 .anchor{position:relative;display:inline-flex}
 .anchor__menu{position:absolute;right:0;top:100%;width:var(--menu-w);height:0}
 .anchor__menu--left{left:0;right:auto}
+/* opens upwards (rows per page sits at the bottom of the page). The DS Menu pins itself with inline
+   top:100%, so its own box is re-anchored to the bottom here. */
+.anchor__menu--up{top:auto;bottom:100%}
+.anchor__menu--up [style*="position: absolute"]{top:auto !important;bottom:0;margin-top:0 !important;margin-bottom:var(--space-0-5)}
 
 .search{display:flex;align-items:center;height:var(--field-h);width:var(--field-w);margin-left:var(--space-1);
   border:1px solid var(--field-border);border-radius:var(--radius);padding:0 var(--space-1) 0 var(--space-1-5);
@@ -489,7 +493,7 @@ button{font:inherit}
           <span>Rows per page:</span>
           <span class="anchor">
             <button class="foot__rpp" onClick="{{foot.onRppToggle}}" aria-haspopup="menu" aria-label="Rows per page">{{foot.rpp}}<x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ArrowDropDownFilled" size="18" hint-size="18px,18px"></x-import></button>
-            <span class="anchor__menu anchor__menu--left">
+            <span class="anchor__menu anchor__menu--left anchor__menu--up">
               <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Menu" open="{{foot.rppOpen}}" onClose="{{foot.onRppClose}}" hint-size="0,0">
                 <sc-for list="{{foot.rppItems}}" as="it" hint-placeholder-count="3">
                   <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.MenuItem" selected="{{it.selected}}" onClick="{{it.onClick}}" hint-size="auto,32px">{{it.text}}</x-import>
