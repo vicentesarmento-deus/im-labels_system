@@ -156,6 +156,16 @@ round of feedback applied. The first admin is kept as it was, for comparison.
 - The same thumbnail and "IG: Story, date" line appear in the lists of posts
   inside the delete and merge dialogs.
 
+The sample posts' thumbnails are stock photos from [Unsplash](https://unsplash.com),
+used under the [Unsplash License](https://unsplash.com/license), in
+`assets/posts/`, chosen to match each post's caption and to avoid prominent
+brand marks. Photographers: Igor Batista, Anna Sullivan (matchday); H&CO, Sou
+Jest (drop); Harrison Qi, Mykyta Kravčenko (city); Jess Bailey, Anastasiia
+Chepinska (giveaway); Fachry Zella Devandra (boots); Alex Simpson, Abigail
+Keenan (night); Steve Pancrate, runda choo (training); Alex Saks, Doug Bagg
+(gym); Haupes, Kat Sylvester (ad); Shihab Chowdhury, Clay Banks (weekend);
+Szabo Viktor, Marissa Lewis (backstage); mr lee, Avtar Singh (kit).
+
 ## Where it lives
 
 Published at **<https://vicentesarmento-deus.github.io/im-labels_system/>**.
@@ -191,6 +201,7 @@ index.html                  The cover
 [v1|v2|v3|v4] ….dc.html     The prototypes
 [admin] ….dc.html           The label catalogue admin, v1
 [admin v2] ….dc.html        The admin after the first round of feedback
+assets/posts/               Stock thumbnails for admin v2's sample posts
 support.js                  Runtime for the .dc.html pages
 _ds/monitoring-design-…/    The Monitoring Design System — tokens, fonts, components
 uploads/                    Reference material: screenshots of the real staging page

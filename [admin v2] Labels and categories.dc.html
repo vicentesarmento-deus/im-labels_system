@@ -860,9 +860,22 @@ class Component extends DCLogic {
     return (data || this.state.data).categories.find((c) => this.norm(c.name) === n && !(exceptIds || []).includes(c.id));
   }
 
-  /** Stock photos in assets/posts/, by caption. Empty until they are added; posts then fall back to the handle's initial. */
+  /** Stock photos in assets/posts/ (Unsplash; credits in the README), by caption. A caption with none falls back to the handle's initial. */
   postShots() {
-    return {};
+    return {
+      'matchday ready': ['matchday-1', 'matchday-2'],
+      'new drop, link in bio': ['drop-1', 'drop-2'],
+      'summer in the city': ['city-1', 'city-2'],
+      'giveaway time — tag a friend': ['giveaway-1', 'giveaway-2'],
+      'unboxing the new boots': ['boots-1'],
+      'what a night at the Bernabéu': ['night-1', 'night-2'],
+      'training day': ['training-1', 'training-2'],
+      'my go-to after the gym': ['gym-1', 'gym-2'],
+      'ad | partnership with the brand': ['ad-1', 'ad-2'],
+      'weekend vibes': ['weekend-1', 'weekend-2'],
+      'behind the scenes': ['backstage-1', 'backstage-2'],
+      'the kit of the season': ['kit-1', 'kit-2'],
+    };
   }
 
   platformColors(p) {
