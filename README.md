@@ -24,7 +24,8 @@ Open `index.html` for the cover, or go straight to one:
 
 | | | |
 | --- | --- | --- |
-| **admin** | [`[admin] Labels and categories.dc.html`](<[admin] Labels and categories.dc.html>) | **New.** Managing the catalogue — categories and their labels — laid out like the product's Keyword Groups screen. Not part of the in-place vs modal question; see [The admin](#the-admin). |
+| **admin v2** | [`[admin v2] Labels and categories.dc.html`](<[admin v2] Labels and categories.dc.html>) | **New.** The admin after the first round of feedback; see [Admin v2 — what changed](#admin-v2--what-changed). |
+| **admin v1** | [`[admin] Labels and categories.dc.html`](<[admin] Labels and categories.dc.html>) | Managing the catalogue — categories and their labels — laid out like the product's Keyword Groups screen. Not part of the in-place vs modal question; see [The admin](#the-admin). |
 | **v4** | [`[v4] Save and create, in place.dc.html`](<[v4] Save and create, in place.dc.html>) | **Current — used in interviews.** v3's winning candidate — everything resolved in place on the page — on its own, with the ability to create new labels (and, via "Category / New label", new categories) restored to the same combobox that already adds existing ones. |
 | **v3** | [`[v3] Save flow - in place vs modal.dc.html`](<[v3] Save flow - in place vs modal.dc.html>) | The two candidates side by side. **A** resolves every action in place on the page, so the card itself is the editor; **B** resolves everything inside an "Edit labels" modal. Both share the same rules underneath — an explicit save step, visible authorship and timestamp on each label, and a switch to simulate someone else editing the same post — so a preference comes from the interaction model, not from a feature one has and the other lacks. |
 | **v2** | [`[v2] Input variants a-h.dc.html`](<[v2] Input variants a-h.dc.html>) | The exploration that narrowed the field: eight ways (a–h) of adding and managing labels, from fully inline to fully modal. v3 takes the two ends of that range and makes them comparable. |
@@ -133,6 +134,28 @@ written as zip archives by hand — so the export works offline.
 `window.__labelsAdmin` exposes the page's component so an automated check can
 read its data and assert the invariants above.
 
+### Admin v2 — what changed
+
+`[admin v2] Labels and categories.dc.html` is a copy of the admin with the first
+round of feedback applied. The first admin is kept as it was, for comparison.
+
+- **Categories are deleted one at a time.** With two or more selected, Delete is
+  disabled ("Delete one category at a time"); Merge still works on several. A
+  little friction is intended: deleting a category is the heaviest change here.
+- **A post is known by its picture, not by a name.** Most posts have no title —
+  only YouTube videos do — so every list of posts leads with a thumbnail. The
+  caption is no longer shown, nor searched.
+- **Lists of posts follow the product's Violations page**, at least in their first
+  columns: Preview · Creator · Posting time · Platform, then the label's own
+  Label added by · Added. The order may still change.
+- **Platform reads as the product writes it** — "IG: Story", "YT: Short" — and
+  keeps its platform colour. Each sample post now has a format, as on the post
+  page ("Instagram Post").
+- **A creator's avatar is neutral.** A creator posts on several platforms, so the
+  avatar never takes a platform's colour.
+- The same thumbnail and "IG: Story, date" line appear in the lists of posts
+  inside the delete and merge dialogs.
+
 ## Where it lives
 
 Published at **<https://vicentesarmento-deus.github.io/im-labels_system/>**.
@@ -157,7 +180,7 @@ python3 -m http.server 4175
 Then open <http://localhost:4175/>. A matching launch configuration lives in
 `.claude/launch.json`.
 
-**An internet connection is required.** v1–v4 and the admin load React and Babel from unpkg at
+**An internet connection is required.** v1–v4 and both admins load React and Babel from unpkg at
 runtime, and the design system pulls the Epilogue title font from Google Fonts.
 Offline, the prototypes will not boot and headings fall back to Rubik.
 
@@ -166,7 +189,8 @@ Offline, the prototypes will not boot and headings fall back to Rubik.
 ```
 index.html                  The cover
 [v1|v2|v3|v4] ….dc.html     The prototypes
-[admin] ….dc.html           The label catalogue admin
+[admin] ….dc.html           The label catalogue admin, v1
+[admin v2] ….dc.html        The admin after the first round of feedback
 support.js                  Runtime for the .dc.html pages
 _ds/monitoring-design-…/    The Monitoring Design System — tokens, fonts, components
 uploads/                    Reference material: screenshots of the real staging page
