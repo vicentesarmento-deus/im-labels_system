@@ -1384,26 +1384,38 @@ class Component extends DCLogic {
     };
   }
 
+  /* ---------- add labels or a category, from the catalogue's home. The category is optional:
+     a label can start out loose and be sorted later, as it can when created on a post ---------- */
   dlgAddCategory(d) {
-    const name = this.clean(d.name);
-    const taken = name && this.categoryNamed(name);
+    const catName = this.clean(d.name);
+    const existing = catName ? this.categoryNamed(catName) : null;
+    const isNew = !!catName && !existing;
     const entries = this.stagedEntries(d, 'staged', 'input');
-    const seen = new Set();
-    const rows = entries.map((e, i) => {
-      const n = e.text;
-      const dup = seen.has(this.norm(n)); seen.add(this.norm(n));
-      return { key: 'l' + i, name: n, prefix: name ? name + ' /' : '', status: dup ? 'Repeated — skipped' : 'New label', statusMod: dup ? 'dlg-item__status--skip' : 'dlg-item__status--ok', create: !dup };
-    });
+    // a new category's labels go through the same planner as "Category / Label", so namesakes and repeats read the same
+    const lines = entries.map((e) => (isNew && !e.text.includes('/') ? catName + ' / ' + e.text : e.text));
+    const plan = this.planCreate(lines, existing ? existing.id : null);
+    if (isNew && !plan.newCats.some((n) => this.norm(n) === this.norm(catName))) plan.newCats.unshift(catName);
+    const n = plan.rows.filter((r) => r.create).length;
+    const nCats = plan.newCats.length;
+    const catHelper = !catName ? 'Leave it empty to add loose labels, without a category, and sort them later.'
+      : existing ? 'Adds to the existing category ' + this.q(existing.name) + '.'
+      : 'Creates the category ' + this.q(catName) + '.';
     const sections = [
-      this.field('Name', 'name', { error: !!taken, helper: taken ? 'There is already a category called ' + this.q(taken.name) + '.' : '' }),
-      this.stager(d, 'staged', 'input', { label: 'Labels (optional)', placeholder: 'e.g. Positive, Negative, Neutral',
-        helper: 'Separate labels with commas or new lines. You can also add labels later, or move existing ones in.' }),
+      this.field('Category (optional)', 'name', { helper: catHelper }),
+      this.stager(d, 'staged', 'input', {
+        label: catName ? 'Labels (optional)' : 'Labels', placeholder: 'e.g. Giveaway, Unboxing',
+        helper: 'Separate labels with commas or new lines — pasting a list works too.',
+      }),
     ];
-    if (rows.length) sections.push(this.sec('items', { heading: 'To add', listMod: 'dlg__list--follow', items: this.withRemove(rows, entries, 'staged', 'input') }));
+    if (plan.rows.length) sections.push(this.sec('items', { heading: 'To add', listMod: 'dlg__list--follow', items: this.withRemove(plan.rows, entries, 'staged', 'input') }));
+    const confirmText = !n && !nCats ? 'Add'
+      : !nCats ? 'Add ' + this.plural(n, 'label')
+      : !n ? 'Add category'
+      : 'Add ' + (nCats === 1 ? 'category' : this.plural(nCats, 'category', 'categories')) + ' + ' + this.plural(n, 'label');
     return {
-      title: 'Add category', width: 'sm', sections,
-      confirmText: 'Add category', confirmDisabled: !name || !!taken,
-      onConfirm: () => this.opCreateCategory(name, rows.filter((i) => i.create).map((i) => i.name)),
+      title: 'Add labels or a category', width: 'sm', sections,
+      confirmText, confirmDisabled: n === 0 && nCats === 0,
+      onConfirm: () => (n ? this.opCreate(plan) : this.opCreateCategory(catName, [])),
     };
   }
 
@@ -2017,7 +2029,7 @@ class Component extends DCLogic {
       const sel = s.sel.map((id) => this.category(id)).filter(Boolean);
       out.head = {
         ...exportHead, title: 'Labels', total: rows.length, showTotal: rows.length > 0, meta: '',
-        buttons: [{ key: 'add', text: 'Add category', variant: 'contained', color: 'primary', onClick: () => this.openDialog('addCategory', { name: '', staged: [], input: '' }) }],
+        buttons: [{ key: 'add', text: 'Add label or category', variant: 'contained', color: 'primary', onClick: () => this.openDialog('addCategory', { name: '', staged: [], input: '' }) }],
         tools: this.toolsFor('category', sel),
       };
       out.tabs = tabs;
@@ -2160,7 +2172,7 @@ class Component extends DCLogic {
   emptyFor(kind, catId) {
     const E = {
       search: { icon: 'SearchFilled', title: 'No Results Found', text: 'Try adjusting your search to find what you\'re looking for.' },
-      noCats: { icon: 'FolderFilled', title: 'No categories yet', text: 'Categories group labels so everyone reads them in context.', actionText: 'Add category', onAction: () => this.openDialog('addCategory', { name: '', staged: [], input: '' }) },
+      noCats: { icon: 'FolderFilled', title: 'No categories yet', text: 'Categories group labels so everyone reads them in context.', actionText: 'Add label or category', onAction: () => this.openDialog('addCategory', { name: '', staged: [], input: '' }) },
       noLabels: { icon: 'FolderFilled', title: 'No labels yet', text: 'Add labels here, or create them straight from a post.', actionText: 'Add labels', onAction: () => this.openDialog('addLabels', { catId: null, staged: [], input: '' }) },
       emptyCat: { icon: 'FolderFilled', title: 'No labels in this category', text: 'Add labels to it, or move existing ones in from another category.', actionText: 'Add labels', onAction: () => this.openDialog('addLabels', { catId, staged: [], input: '' }) },
       noUnused: { icon: 'CheckCircleOutlined', title: 'Every label here is on a post', text: 'Turn off “0 posts only” to see them all.' },

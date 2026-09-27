@@ -139,6 +139,10 @@ read its data and assert the invariants above.
 `[admin v2] Labels and categories.dc.html` is a copy of the admin with the first
 round of feedback applied. The first admin is kept as it was, for comparison.
 
+- **A label can start out loose.** The home's button is "Add label or category":
+  one dialog where the category is optional. Left empty, the labels go in
+  without a category, to be sorted later; a new name creates the category, with
+  or without labels; an existing name adds the labels to it.
 - **Categories are deleted one at a time.** With two or more selected, Delete is
   disabled ("Delete one category at a time"); Merge still works on several. A
   little friction is intended: deleting a category is the heaviest change here.
