@@ -237,7 +237,8 @@ button.grid__preview{cursor:pointer}
 .dlg-item{display:flex;align-items:center;gap:var(--space-1);padding:var(--space-1) var(--space-1-5);
   border-bottom:1px solid var(--grid-rule);font-size:var(--fs-body2)}
 .dlg-item:last-child{border-bottom:0}
-.dlg-item__name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* the post's own line never gives way; the labels on the right shrink first */
+.dlg-item__name{flex:1 0 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .dlg-item__prefix{color:var(--text-secondary);margin-right:var(--space-0-5)}
 .dlg-item__meta{font-size:var(--fs-caption);color:var(--text-secondary);white-space:nowrap}
 .dlg-item__status{font-size:var(--fs-caption);text-align:right;max-width:55%}
@@ -249,7 +250,7 @@ button.grid__preview{cursor:pointer}
 .dlg-item__thumb{flex-shrink:0;width:var(--dlg-thumb-w);height:var(--dlg-thumb-h);border-radius:var(--radius);overflow:hidden;
   display:flex;align-items:center;justify-content:center;font-size:var(--fs-caption);font-weight:var(--fw-medium);
   background-size:cover;background-position:center}
-.dlg-item__tags{font-size:var(--fs-caption);color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:50%}
+.dlg-item__tags{flex:0 1 auto;min-width:0;font-size:var(--fs-caption);color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .choice{display:flex;align-items:flex-start;gap:var(--space-0-5);cursor:pointer;font-size:var(--fs-body2);margin-left:calc(var(--space-1) * -1)}
 .choice--disabled{cursor:default;opacity:.5}
 .choice__text{display:flex;flex-direction:column;padding-top:var(--space-1)}
@@ -628,7 +629,7 @@ button.grid__preview{cursor:pointer}
                   <div class="dlg-item">
                     <span class="dlg-item__thumb" style="background-color:{{p.thumbBg}};background-image:{{p.thumbImg}};color:{{p.thumbFg}}" aria-hidden="true">{{p.thumbText}}</span>
                     <span class="dlg-item__name">{{p.handle}}<span class="dlg-item__meta"> &middot; {{p.meta}}</span></span>
-                    <span class="dlg-item__tags">{{p.tags}}</span>
+                    <span class="dlg-item__tags" title="{{p.tags}}">{{p.tags}}</span>
                   </div>
                 </sc-for>
                 <sc-if value="{{sec.more}}" hint-placeholder-val="{{false}}"><div class="dlg__more">{{sec.more}}</div></sc-if>
