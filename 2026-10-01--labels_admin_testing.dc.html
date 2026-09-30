@@ -241,6 +241,12 @@ button.grid__preview{cursor:pointer}
   display:flex;align-items:center;justify-content:center;font-size:var(--fs-caption);font-weight:var(--fw-medium);
   background-size:cover;background-position:center}
 .dlg-item__tags{flex:0 1 auto;min-width:0;font-size:var(--fs-caption);color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pick{max-height:calc(var(--space-5) * 10);overflow-y:auto;border:1px solid var(--grid-rule);border-radius:var(--radius)}
+.pick__row{display:flex;align-items:center;gap:var(--space-0-5);padding-right:var(--space-1-5);cursor:pointer;font-size:var(--fs-body2);border-bottom:1px solid var(--grid-rule)}
+.pick__row:last-child{border-bottom:0}
+.pick__row:hover{background:var(--action-hover)}
+.pick__text{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pick__meta{font-size:var(--fs-caption);color:var(--text-secondary);white-space:nowrap}
 .choice{display:flex;align-items:flex-start;gap:var(--space-0-5);cursor:pointer;font-size:var(--fs-body2);margin-left:calc(var(--space-1) * -1)}
 .choice--disabled{cursor:default;opacity:.5}
 .choice__text{display:flex;flex-direction:column;padding-top:var(--space-1)}
@@ -583,8 +589,17 @@ button.grid__preview{cursor:pointer}
             </ul>
           </sc-if>
           <sc-if value="{{sec.is.select}}" hint-placeholder-val="{{false}}">
-            <div class="dlg__field {{sec.mod}}">
-              <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Select" label="{{sec.label}}" value="{{sec.value}}" options="{{sec.options}}" onChange="{{sec.onChange}}" size="small" full-width="{{true}}" hint-size="auto,40px"></x-import>
+            <div class="{{sec.mod}}">
+              <div class="dlg__heading">{{sec.label}}</div>
+              <div class="pick" role="radiogroup" aria-label="{{sec.label}}">
+                <sc-for list="{{sec.choices}}" as="opt" hint-placeholder-count="4">
+                  <label class="pick__row">
+                    <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Radio" size="small" checked="{{opt.checked}}" onChange="{{opt.onPick}}" name="{{sec.name}}" hint-size="38px,38px"></x-import>
+                    <span class="pick__text">{{opt.text}}</span>
+                    <span class="pick__meta">{{opt.meta}}</span>
+                  </label>
+                </sc-for>
+              </div>
             </div>
           </sc-if>
           <sc-if value="{{sec.is.radios}}" hint-placeholder-val="{{false}}">
@@ -1258,6 +1273,14 @@ class Component extends DCLogic {
   sec(kind, o) { return { key: kind, kind, is: { [kind]: true }, listMod: '', ...o }; }
   text(t, mod) { return this.sec('text', { text: t, mod: mod || '' }); }
   note(t, severity) { return this.sec('note', { text: t, severity: severity || 'info' }); }
+  /** A choice among a few options, all in view: radios in the flow of the dialog. A menu that floats open is
+      cut off by the dialog's own scroll, which left Move and Duplicate a slit a few pixels high. */
+  pick(label, value, options, onChange, mod) {
+    return this.sec('select', {
+      label, mod: mod || '', name: 'pick-' + this.norm(label).replace(/\s+/g, '-'),
+      choices: options.map((o) => ({ key: o.value, text: o.label, meta: o.meta || '', checked: o.value === value, onPick: () => onChange(o.value) })),
+    });
+  }
   field(label, key, o) {
     const d = this.state.dialog;
     return this.sec('field', { label, value: d[key] || '', onChange: (e) => this.setDialog({ [key]: e.target.value }), placeholder: '', helper: '', error: false, mod: '', ...(o || {}) });
@@ -1497,8 +1520,8 @@ class Component extends DCLogic {
 
   destOptions(includeNew, excludeIds) {
     const cats = this.state.data.categories.filter((c) => !(excludeIds || []).includes(c.id)).slice().sort((a, b) => a.name.localeCompare(b.name));
-    const opts = cats.map((c) => ({ value: 'c:' + c.id, label: c.name }));
-    opts.push({ value: 'none', label: 'No category' });
+    const opts = cats.map((c) => ({ value: 'c:' + c.id, label: c.name, meta: this.plural(this.labelsIn(c.id).length, 'label') }));
+    opts.push({ value: 'none', label: 'No category', meta: this.plural(this.labelsIn(null).length, 'label') });
     if (includeNew) opts.push({ value: 'new', label: 'New category…' });
     return opts;
   }
@@ -1544,8 +1567,7 @@ class Component extends DCLogic {
     const labels = d.ids.map((id) => this.label(id));
     const same = labels.every((l) => l.categoryId === labels[0].categoryId);
     const sections = [
-      this.sec('select', { label: 'Move to', value: d.dest || '', options: this.destOptions(true, same && labels[0].categoryId != null ? [labels[0].categoryId] : []),
-        onChange: (v) => this.setDialog({ dest: v }), mod: '' }),
+      this.pick('Move to', d.dest || '', this.destOptions(true, same && labels[0].categoryId != null ? [labels[0].categoryId] : []), (v) => this.setDialog({ dest: v })),
     ];
     if (d.dest === 'new') sections.push(this.field('New category name', 'newName', { error: plan.error === 'taken', helper: plan.error === 'taken' ? 'That category exists — pick it from the list instead.' : '' }));
     if (d.dest) {
@@ -1590,7 +1612,7 @@ class Component extends DCLogic {
     const nPosts = this.postsOfMany(copying.map((r) => r.id)).length;
     const sections = [
       this.text('A copy is a separate label with the same name. From then on the two are independent — renaming, moving or deleting one doesn\'t touch the other.'),
-      this.sec('select', { label: 'Duplicate into', value: d.dest || '', options: this.destOptions(false, []), onChange: (v) => this.setDialog({ dest: v }), mod: '' }),
+      this.pick('Duplicate into', d.dest || '', this.destOptions(false, []), (v) => this.setDialog({ dest: v })),
     ];
     if (d.dest) {
       sections.push(this.sec('items', { heading: 'Labels', items: plan.rows }));
@@ -1724,7 +1746,7 @@ class Component extends DCLogic {
         { key: 'move', text: 'Move them to another category', sub: others.length ? 'They stay on their posts under a different category.' : 'There is no other category to move them to.', checked: mode === 'move', onPick: () => this.setDialog({ mode: 'move' }), disabled: !others.length, mod: others.length ? '' : 'choice--disabled' },
         { key: 'delete', text: 'Delete the labels too', sub: nPosts ? 'Removes them from ' + this.plural(nPosts, 'post') + '.' : 'None of them is on a post.', checked: mode === 'delete', onPick: () => this.setDialog({ mode: 'delete' }), disabled: false, mod: '' },
       ] }));
-      if (mode === 'move') sections.push(this.sec('select', { label: 'Move to', value: d.dest || '', options: this.destOptions(false, ids).filter((o) => o.value !== 'none'), onChange: (v) => this.setDialog({ dest: v }), mod: 'dlg__indent' }));
+      if (mode === 'move') sections.push(this.pick('Move to', d.dest || '', this.destOptions(false, ids).filter((o) => o.value !== 'none'), (v) => this.setDialog({ dest: v }), 'dlg__indent'));
       if (mode === 'keep' || (mode === 'move' && d.dest)) {
         plan.destId = mode === 'move' ? Number(d.dest.slice(2)) : null;
         plan.destName = this.catName(plan.destId);
@@ -1773,8 +1795,8 @@ class Component extends DCLogic {
           sub: canReplace ? 'Pick a label from ' + this.catName(labels[0].categoryId) + '.' : !oneCat ? 'Only possible when the labels are in the same category.' : 'There is no other label in ' + this.catName(labels[0].categoryId) + '.',
           checked: mode === 'replace', onPick: () => this.setDialog({ mode: 'replace' }), disabled: !canReplace, mod: canReplace ? '' : 'choice--disabled' },
       ] }));
-      if (mode === 'replace') sections.push(this.sec('select', { label: 'Replace with', value: d.replacement || '', mod: 'dlg__indent',
-        options: candidates.map((l) => ({ value: String(l.id), label: l.name + ' (' + this.plural(this.postsOf(l.id).length, 'post') + ')' })), onChange: (v) => this.setDialog({ replacement: v }) }));
+      if (mode === 'replace') sections.push(this.pick('Replace with', d.replacement || '',
+        candidates.map((l) => ({ value: String(l.id), label: l.name, meta: this.plural(this.postsOf(l.id).length, 'post') })), (v) => this.setDialog({ replacement: v }), 'dlg__indent'));
     }
     return {
       title, width: 'sm', sections, confirmColor: 'error',
