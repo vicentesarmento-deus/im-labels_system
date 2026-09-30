@@ -36,7 +36,7 @@
   --outline-default: var(--action-disabled);
 
   --search-mark-bg: var(--im-green-50);   /* IM Malachite 50, behind the letters a search matched */
-  --rail-w: var(--space-6);
+  --rail-w: var(--space-8);
   --rail-bg: var(--color-primary-main);
   --rail-fg: var(--color-primary-contrast);
   --rail-item-active: var(--color-primary-dark);
@@ -91,10 +91,15 @@ button{font:inherit}
 .app{min-height:100vh}
 .rail{position:fixed;top:0;bottom:0;left:0;width:var(--rail-w);z-index:40;background:var(--rail-bg);
   color:var(--rail-fg);display:flex;flex-direction:column;align-items:center;padding:var(--space-1-5) 0;gap:var(--space-0-5)}
-.rail__mark{display:block;width:var(--space-4);height:auto;margin-bottom:var(--space-2);filter:brightness(0) invert(1)}
-.rail__item{position:relative;width:var(--rail-w);height:var(--space-5);display:flex;align-items:center;justify-content:center;opacity:.8}
-.rail__item:hover{opacity:1}
-.rail__icon{width:calc(var(--space-2) + var(--space-0-5));height:calc(var(--space-2) + var(--space-0-5));fill:currentColor}
+.rail__mark{display:block;width:var(--space-5);height:auto;margin-bottom:var(--space-2);filter:brightness(0) invert(1)}
+.rail__item{position:relative;width:var(--rail-w);height:var(--space-6);display:flex;align-items:center;justify-content:center}
+.rail__icon{width:var(--space-3);height:var(--space-3);fill:currentColor;opacity:.8}
+.rail__item:hover .rail__icon{opacity:1}
+/* the release-notes count and the connection dot sit on the icon's upper right corner, at full strength */
+.rail__badge{position:absolute;top:var(--space-0-5);left:calc(50% + var(--space-0-5));display:flex;align-items:center;justify-content:center;
+  width:calc(var(--space-2) + var(--space-0-5));height:calc(var(--space-2) + var(--space-0-5));border-radius:50%;
+  background:var(--im-green-500);color:var(--im-green-900);font-size:var(--fs-caption);font-weight:var(--fw-medium);line-height:1}
+.rail__dot{position:absolute;top:var(--space-1);left:calc(50% + var(--space-1));width:var(--space-1);height:var(--space-1);border-radius:50%;background:var(--color-error-main)}
 /* what the item is for, to the right of the rail, as in the product: an info mark, the name, a line under it. It never takes the pointer,
    so moving down the rail from item to item cannot catch one open. */
 .rail__tip{position:absolute;left:100%;top:50%;transform:translateY(-50%);margin-left:var(--space-1-5);z-index:1;
@@ -109,7 +114,11 @@ button{font:inherit}
 .rail__tip-title{font-size:var(--fs-body1);font-weight:var(--fw-medium);line-height:var(--lh-body)}
 .rail__tip-desc{font-size:var(--fs-body2);line-height:var(--lh-body)}
 .rail__item:hover .rail__tip{opacity:1;visibility:visible}
-.rail__item--active{background:var(--rail-item-active);opacity:1}
+/* the last item sits on the bottom edge, so its tooltip rises from there instead of being centred on it and running off the window */
+.rail__item--foot .rail__tip{top:auto;bottom:0;transform:none}
+.rail__item--foot .rail__tip::before{top:auto;bottom:var(--space-2);transform:none}
+.rail__item--active{background:var(--rail-item-active)}
+.rail__item--active .rail__icon{opacity:1}
 .rail__spacer{flex:1}
 .main{margin-left:var(--rail-w)}
 
@@ -351,8 +360,28 @@ button.grid__preview{cursor:pointer}
       </span>
     </span>
     <span class="rail__spacer"></span>
-    <span class="rail__item" title="Help"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="InfoOutlined" size="20" hint-size="20px,20px"></x-import></span>
-    <span class="rail__item" title="Account"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="AccountCircleFilled" size="20" hint-size="20px,20px"></x-import></span>
+    <span class="rail__item" aria-label="Release notes">
+      <svg class="rail__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 11v2h4v-2h-4zm-2 6.61c.96.71 2.21 1.65 3.2 2.39.4-.53.8-1.07 1.2-1.6-.99-.74-2.24-1.68-3.2-2.4-.4.54-.8 1.08-1.2 1.61zM20.4 5.6c-.4-.53-.8-1.07-1.2-1.6-.99.74-2.24 1.68-3.2 2.4.4.53.8 1.07 1.2 1.6.96-.72 2.21-1.65 3.2-2.4zM4 9c-1.1 0-2 .9-2 2v2c0 1.1.9 2 2 2h1v4h2v-4h1l5 3V6L8 9H4zm11.5 3c0-1.33-.58-2.53-1.5-3.35v6.69c.92-.81 1.5-2.01 1.5-3.34z"/></svg>
+      <span class="rail__badge" aria-hidden="true">1</span>
+      <span class="rail__tip" role="tooltip">
+        <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="InfoOutlined" size="20" hint-size="20px,20px"></x-import>
+        <span class="rail__tip-text"><span class="rail__tip-title">Release notes</span><span class="rail__tip-desc">Keep track of the latest release notes.</span></span>
+      </span>
+    </span>
+    <span class="rail__item" aria-label="Help">
+      <svg class="rail__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z"/></svg>
+    </span>
+    <span class="rail__item" aria-label="Connection">
+      <svg class="rail__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+      <span class="rail__dot" aria-hidden="true"></span>
+    </span>
+    <span class="rail__item rail__item--foot" aria-label="Account info">
+      <svg class="rail__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+      <span class="rail__tip" role="tooltip">
+        <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="InfoOutlined" size="20" hint-size="20px,20px"></x-import>
+        <span class="rail__tip-text"><span class="rail__tip-title">Account info</span><span class="rail__tip-desc">See your profile and account details.</span></span>
+      </span>
+    </span>
   </nav>
 
   <main class="main">

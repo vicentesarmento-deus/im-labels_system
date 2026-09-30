@@ -170,7 +170,9 @@ from the cover, and it is a fork — fixes made to admin v2 are not carried over
 
 It opens on a welcome screen, a waiting room with the Influencer Monitor mark and
 a "Show prototype" button; the participant clicks it only when asked. The same
-mark, in white, replaces the "IM" text on the navigation rail.
+mark, in white, replaces the "IM" text on the navigation rail, which is 64 px
+wide like the product's, with its icons and, for most items, a tooltip on hover
+saying what the item is for. The rail is a stand-in: clicking an item does nothing.
 
 The page opens on **Labels**, the first of two tabs, with **Categories** beside
 it (in admin v2 the order is the other way round and the tab is called "All
