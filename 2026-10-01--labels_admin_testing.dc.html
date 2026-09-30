@@ -77,6 +77,12 @@ html,body{margin:0}
 body{background:var(--page-bg);font:var(--fw-regular) var(--fs-body2)/var(--lh-body) var(--font-body);color:var(--text-primary)}
 button{font:inherit}
 
+/* ---- welcome: what a participant sees before the prototype ---- */
+.welcome{min-height:100vh;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;
+  gap:var(--space-4);padding:var(--space-8) var(--space-6);background:var(--page-bg)}
+.welcome__title{margin:0;max-width:16em;font:var(--fw-regular) var(--fs-h3)/var(--lh-heading) var(--font-title);color:var(--text-primary)}
+.app--pending{display:none}
+
 /* ---- app frame: rail + main, mirroring the product's Keyword Groups screen ---- */
 .app{min-height:100vh}
 .rail{position:fixed;top:0;bottom:0;left:0;width:var(--rail-w);z-index:40;background:var(--rail-bg);
@@ -247,7 +253,14 @@ button.grid__preview{cursor:pointer}
 </style>
 </helmet>
 
-<div class="app">
+<sc-if value="{{!welcome.started}}" hint-placeholder-val="{{true}}">
+  <main class="welcome">
+    <h1 class="welcome__title">Hello! Welcome to an Influencer Monitor session!</h1>
+    <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="contained" color="primary" onClick="{{welcome.onStart}}" hint-size="auto,42px">Show prototype</x-import>
+  </main>
+</sc-if>
+
+<div class="app {{welcome.appMod}}">
   <!-- static stand-in for the product's navigation rail; only "Labels" is live -->
   <nav class="rail" aria-label="Product">
     <span class="rail__mark">IM</span>
@@ -618,6 +631,7 @@ class Component extends DCLogic {
 
   initialState() {
     return {
+      started: false,       // the welcome screen is shown until the participant asks for the prototype
       data: this.seed(),
       history: [],          // [{ data, message }] — a snapshot taken before every change, for Undo
       toast: null,          // { id, message, undo }
@@ -2205,6 +2219,7 @@ class Component extends DCLogic {
       : null;
 
     return {
+      welcome: { started: s.started, appMod: s.started ? '' : 'app--pending', onStart: () => this.setState({ started: true }) },
       head: (() => {
         const h = { hasCrumbs: false, crumbs: [], here: '', prefix: '', renaming: false, canRename: false, canDelete: false, unused: { show: false }, showExport: false, buttons: [], tools: [], ...v.head };
         return { ...h, titleMod: h.hasCrumbs ? 'head__title--crumb' : '', renameMod: h.hasCrumbs ? '' : 'rename__input--head', ariaCurrent: h.hasCrumbs ? 'page' : null };
