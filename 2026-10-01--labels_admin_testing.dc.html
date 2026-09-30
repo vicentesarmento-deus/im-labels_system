@@ -125,6 +125,9 @@ button{font:inherit}
 .head--tabbed .head__tabs{grid-column:1;grid-row:2}
 .head--tabbed .head__toolbar{grid-column:2;grid-row:2;align-self:center;justify-self:end}
 
+/* a row menu's items: the icon in the ink colour of the other actions, then the text */
+.menu-item{display:flex;align-items:center;gap:var(--space-1-5)}
+.menu-item>:first-child{flex:none;color:var(--action-active)}
 .anchor{position:relative;display:inline-flex}
 .anchor__menu{position:absolute;right:0;top:100%;width:var(--menu-w);height:0}
 .anchor__menu--left{left:0;right:auto}
@@ -490,7 +493,7 @@ button.grid__preview{cursor:pointer}
                     <span class="anchor__menu">
                       <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Menu" open="{{row.menuOpen}}" onClose="{{row.onMenuClose}}" hint-size="0,0">
                         <sc-for list="{{row.menuItems}}" as="mi" hint-placeholder-count="4">
-                          <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.MenuItem" onClick="{{mi.onClick}}" disabled="{{mi.disabled}}" hint-size="auto,32px">{{mi.text}}</x-import>
+                          <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.MenuItem" onClick="{{mi.onClick}}" disabled="{{mi.disabled}}" hint-size="auto,32px"><span class="menu-item"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="{{mi.icon}}" size="20" hint-size="20px,20px"></x-import><span>{{mi.text}}</span></span></x-import>
                         </sc-for>
                       </x-import>
                     </span>
@@ -2102,11 +2105,11 @@ class Component extends DCLogic {
 
   labelMenu(l) {
     return [
-      { key: 'open', text: 'Open', onClick: () => this.go({ view: 'label', id: l.id }) },
-      { key: 'rename', text: 'Rename', onClick: () => this.startRename('label', l.id, 'row') },
-      { key: 'move', text: 'Move to…', onClick: () => this.openDialog('move', { ids: [l.id], dest: '' }) },
-      { key: 'dup', text: 'Duplicate to…', onClick: () => this.openDialog('duplicate', { ids: [l.id], dest: '', withPosts: false }) },
-      { key: 'del', text: 'Delete', onClick: () => this.openDialog('deleteLabels', { ids: [l.id] }) },
+      { key: 'open', icon: 'ArrowForwardFilled', text: 'Open', onClick: () => this.go({ view: 'label', id: l.id }) },
+      { key: 'rename', icon: 'EditFilled', text: 'Rename', onClick: () => this.startRename('label', l.id, 'row') },
+      { key: 'move', icon: 'SwapHorizOutlined', text: 'Move to…', onClick: () => this.openDialog('move', { ids: [l.id], dest: '' }) },
+      { key: 'dup', icon: 'ContentCopyFilled', text: 'Duplicate to…', onClick: () => this.openDialog('duplicate', { ids: [l.id], dest: '', withPosts: false }) },
+      { key: 'del', icon: 'DeleteFilled', text: 'Delete', onClick: () => this.openDialog('deleteLabels', { ids: [l.id] }) },
     ].map((m) => ({ ...m, disabled: false }));
   }
 
@@ -2190,10 +2193,10 @@ class Component extends DCLogic {
             mod: (base.checked ? 'grid__row--selected ' : '') + (c.pinned ? 'grid__row--pinned ' : '') + (renaming ? 'grid__row--renaming' : ''),
             checkAria: 'Select ' + c.name, menuAria: 'Actions for ' + c.name,
             menuItems: c.pinned ? [] : [
-              { key: 'open', text: 'Open', onClick: open, disabled: false },
-              { key: 'rename', text: 'Rename', onClick: () => this.startRename('category', c.id, 'row'), disabled: false },
-              { key: 'add', text: 'Add labels…', onClick: () => this.openDialog('addLabels', { catId: c.id, staged: [], input: '' }), disabled: false },
-              { key: 'del', text: 'Delete', onClick: () => this.openDialog('deleteCategories', { ids: [c.id] }), disabled: false },
+              { key: 'open', icon: 'ArrowForwardFilled', text: 'Open', onClick: open, disabled: false },
+              { key: 'rename', icon: 'EditFilled', text: 'Rename', onClick: () => this.startRename('category', c.id, 'row'), disabled: false },
+              { key: 'add', icon: 'AddFilled', text: 'Add labels…', onClick: () => this.openDialog('addLabels', { catId: c.id, staged: [], input: '' }), disabled: false },
+              { key: 'del', icon: 'DeleteFilled', text: 'Delete', onClick: () => this.openDialog('deleteCategories', { ids: [c.id] }), disabled: false },
             ],
             cells: [
               { key: 'labels', text: String(c.labels.length), mod: 'grid__cell--num' },
