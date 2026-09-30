@@ -162,7 +162,7 @@ round of feedback applied. The first admin is kept as it was, for comparison.
 
 ### A clean copy for sessions
 
-`2026-09-31--labels_admin_testing.dc.html` is admin v2 with everything a
+`2026-10-01--labels_admin_testing.dc.html` is admin v2 with everything a
 participant should not see taken out: the dark facilitator bar and the `H` key
 that toggled it, the link to v4 and the post row that opened it, and the version
 in the page title. The data and the behaviour are the same. It is not linked
@@ -217,7 +217,7 @@ index.html                  The cover
 [v1|v2|v3|v4] ….dc.html     The prototypes
 [admin] ….dc.html           The label catalogue admin, v1
 [admin v2] ….dc.html        The admin after the first round of feedback
-2026-09-31--labels_admin_testing.dc.html  Admin v2 without facilitator scaffolding or links out, for sessions
+2026-10-01--labels_admin_testing.dc.html  Admin v2 without facilitator scaffolding or links out, for sessions
 assets/posts/               Stock thumbnails for admin v2's sample posts
 support.js                  Runtime for the .dc.html pages
 _ds/monitoring-design-…/    The Monitoring Design System — tokens, fonts, components
