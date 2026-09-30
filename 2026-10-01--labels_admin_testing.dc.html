@@ -1299,7 +1299,7 @@ class Component extends DCLogic {
   suggestItems(options, at, pick) {
     const count = (c) => this.state.data.labels.filter((l) => l.categoryId === c.id).length;
     return options.map((c, i) => ({
-      key: 'c' + c.id, text: c.name, meta: this.plural(count(c), 'label'), active: i === at,
+      key: 'c' + c.id, text: c.name, meta: 'Category with ' + this.plural(count(c), 'label'), active: i === at,
       mod: i === at ? 'suggest__item--active' : '',
       onPick: (e) => { e.preventDefault(); pick(c); },
     }));
