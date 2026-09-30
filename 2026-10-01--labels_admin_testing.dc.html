@@ -117,6 +117,12 @@ button{font:inherit}
 .head__toolbar{display:flex;align-items:center;gap:var(--space-0-5)}
 .head__tabs{grid-column:1 / -1;margin-top:calc(var(--space-1) * -1)}
 .head__tablist{display:flex}
+/* the table's own actions (merge, delete…, search) share the tabs' line instead of hanging under the page buttons */
+.head--tabbed .head__tools{display:contents}
+.head--tabbed .head__lead{grid-column:1;grid-row:1}
+.head--tabbed .head__actions{grid-column:2;grid-row:1;justify-self:end}
+.head--tabbed .head__tabs{grid-column:1;grid-row:2}
+.head--tabbed .head__toolbar{grid-column:2;grid-row:2;align-self:center;justify-self:end}
 
 .anchor{position:relative;display:inline-flex}
 .anchor__menu{position:absolute;right:0;top:100%;width:var(--menu-w);height:0}
@@ -284,7 +290,7 @@ button.grid__preview{cursor:pointer}
 
   <main class="main">
     <!-- ================= PAGE HEAD ================= -->
-    <header class="head">
+    <header class="head {{tabs.headMod}}">
       <div class="head__lead">
         <!-- on a detail page the breadcrumb is the title, as in Keyword Groups: "Labels › Brand" -->
         <div class="head__title-row">
@@ -2172,7 +2178,6 @@ class Component extends DCLogic {
       const ids = sel.map((c) => c.id);
       return [
         tool('merge', '', n < 2 ? 'Select two or more categories to merge' : 'Merge ' + n + ' categories', n < 2, () => this.openDialog('mergeCategories', { ids, choice: '', other: '' })),
-        tool('rename', 'EditFilled', n !== 1 ? 'Select one category to rename' : 'Rename', n !== 1, () => this.startRename('category', ids[0], 'row')),
         // one at a time on purpose: deleting a category is heavy enough that a little friction helps
         tool('delete', 'DeleteFilled', n === 0 ? 'Select a category to delete' : n === 1 ? 'Delete ' + this.q(sel[0].name) : 'Delete one category at a time', n !== 1, () => this.openDialog('deleteCategories', { ids })),
       ];
@@ -2229,7 +2234,7 @@ class Component extends DCLogic {
         const h = { hasCrumbs: false, crumbs: [], here: '', prefix: '', renaming: false, canRename: false, canDelete: false, unused: { show: false }, showExport: false, buttons: [], tools: [], ...v.head };
         return { ...h, titleMod: h.hasCrumbs ? 'head__title--crumb' : '', renameMod: h.hasCrumbs ? '' : 'rename__input--head', ariaCurrent: h.hasCrumbs ? 'page' : null };
       })(),
-      tabs: v.tabs,
+      tabs: { ...v.tabs, headMod: v.tabs.show ? 'head--tabbed' : '' },
       exp: {
         open: s.menu === 'export',
         onToggle: () => this.toggleMenu('export'), onClose: () => this.closeMenu('export'),
