@@ -2069,7 +2069,7 @@ class Component extends DCLogic {
       const defs = [{ key: 'name', text: 'Label' }];
       if (showCat) defs.push({ key: 'cat', text: 'Category' });
       defs.push({ key: 'posts', text: 'Posts', firstDir: 'desc' }, { key: 'created', text: 'Created', firstDir: 'desc' }, { key: 'by', text: 'Created by' }, { key: 'edited', text: 'Last edited', firstDir: 'desc' });
-      const unused = { show: unusedTotal > 0 || s.unusedOnly, text: '0 posts only · ' + unusedTotal, variant: s.unusedOnly ? 'filled' : 'outlined', color: s.unusedOnly ? 'primary' : 'default',
+      const unused = { show: unusedTotal > 0 || s.unusedOnly, text: 'Show only 0 posts labels', variant: s.unusedOnly ? 'filled' : 'outlined', color: s.unusedOnly ? 'primary' : 'default',
         onClick: () => this.setState((cur) => ({ unusedOnly: !cur.unusedOnly, page: 0, sel: [] })) };
       const addBtn = { key: 'add', text: 'Add labels', variant: 'contained', color: 'primary', onClick: () => this.openDialog('addLabels', { catId: scope === 'all' ? null : scope, staged: [], input: '' }) };
 
@@ -2164,7 +2164,7 @@ class Component extends DCLogic {
       noCats: { icon: 'FolderFilled', title: 'No categories yet', text: 'Categories group labels so everyone reads them in context.', actionText: 'Add label or category', onAction: () => this.openDialog('addCategory', { name: '', staged: [], input: '' }) },
       noLabels: { icon: 'FolderFilled', title: 'No labels yet', text: 'Add labels here, or create them straight from a post.', actionText: 'Add labels', onAction: () => this.openDialog('addLabels', { catId: null, staged: [], input: '' }) },
       emptyCat: { icon: 'FolderFilled', title: 'No labels in this category', text: 'Add labels to it, or move existing ones in from another category.', actionText: 'Add labels', onAction: () => this.openDialog('addLabels', { catId, staged: [], input: '' }) },
-      noUnused: { icon: 'CheckCircleOutlined', title: 'Every label here is on a post', text: 'Turn off “0 posts only” to see them all.' },
+      noUnused: { icon: 'CheckCircleOutlined', title: 'Every label here is on a post', text: 'Turn off “Show only 0 posts labels” to see them all.' },
       noPosts: { icon: 'PhotoOutlined', title: 'Not on any post yet', text: 'Labels are added to posts from the post page. Open a post from Evaluations, Violations or an Influencer page.' },
     };
     return { show: true, actionText: '', onAction: null, ...E[kind] };
