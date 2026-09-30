@@ -822,6 +822,22 @@ class Component extends DCLogic {
   clean(s) { return (s || '').trim().replace(/\s+/g, ' '); }
   q(s) { return '‘' + s + '’'; }
   plural(n, one, many) { return n + ' ' + (n === 1 ? one : (many || one + 's')); }
+  joinAnd(list) { return list.length < 2 ? list.join('') : list.slice(0, -1).join(', ') + ' and ' + list[list.length - 1]; }
+
+  /** What the snackbar says after a creation: up to three labels by name, then a count; a category is named
+      when every new label went to the same one. */
+  createdMessage(plan) {
+    const made = plan.rows.filter((r) => r.create);
+    const names = made.map((r) => r.name);
+    const n = names.length;
+    const catOf = (r) => (r.catNew ? r.catName : r.catId != null ? this.catName(r.catId) : null);
+    const cats = made.map(catOf);
+    const shared = cats.length && cats[0] && cats.every((c) => c && this.norm(c) === this.norm(cats[0])) ? cats[0] : null;
+    const subject = n === 1 ? 'Label ' + names[0] + ' was' : n <= 3 ? 'Labels ' + this.joinAnd(names) + ' were' : n + ' labels were';
+    const where = shared ? ' to ' + (made.every((r) => r.catNew) ? 'the new category ' : '') + shared : '';
+    const created = !shared && plan.newCats.length ? ' ' + this.plural(plan.newCats.length, 'new category', 'new categories') + ' created.' : '';
+    return subject + ' added' + where + '.' + created;
+  }
   fmtDate(dt) { return dt ? dt.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '—'; }
   fmtDateTime(dt) { return dt ? this.fmtDate(dt) + ', ' + dt.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) : '—'; }
   /** "IG: Story" — how the product's post lists name a platform and format. */
@@ -1043,9 +1059,7 @@ class Component extends DCLogic {
   // ================= operations =================
 
   opCreate(plan) {
-    const nNew = plan.rows.filter((r) => r.create).length;
-    const nCats = plan.newCats.length;
-    const message = 'Added ' + this.plural(nNew, 'label') + (nCats ? ' and ' + this.plural(nCats, 'category', 'categories') : '');
+    const message = this.createdMessage(plan);
     this.commit(message, (D) => {
       const catIds = {};
       plan.newCats.forEach((name) => {
@@ -1062,7 +1076,7 @@ class Component extends DCLogic {
   }
 
   opCreateCategory(name, labelNames) {
-    const message = 'Added category ' + this.q(name) + (labelNames.length ? ' with ' + this.plural(labelNames.length, 'label') : '');
+    const message = 'Category ' + name + ' was created' + (labelNames.length ? ' with ' + this.plural(labelNames.length, 'label') : '') + '.';
     this.commit(message, (D) => {
       const id = this.newId(D);
       D.categories.push({ id, name, createdBy: 'You', createdAt: this.now(), editedAt: this.now() });
