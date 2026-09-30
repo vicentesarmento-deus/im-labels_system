@@ -128,6 +128,8 @@ button{font:inherit}
 /* a row menu's items: the icon in the ink colour of the other actions, then the text */
 .menu-item{display:flex;align-items:center;gap:var(--space-1-5)}
 .menu-item>:first-child{flex:none;color:var(--action-active)}
+/* the design system's tooltip sets 10 px on the element itself; two more, the caption size, reads better */
+[style*="components-tooltip-fill"]{font-size:var(--fs-caption) !important}
 .anchor{position:relative;display:inline-flex}
 .anchor__menu{position:absolute;right:0;top:100%;width:var(--menu-w);height:0}
 .anchor__menu--left{left:0;right:auto}
