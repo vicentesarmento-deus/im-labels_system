@@ -80,6 +80,7 @@ button{font:inherit}
 /* ---- welcome: what a participant sees before the prototype ---- */
 .welcome{min-height:100vh;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;
   gap:var(--space-4);padding:var(--space-8) var(--space-6);background:var(--page-bg)}
+.welcome__logo{display:block;height:var(--space-6);width:auto}
 .welcome__title{margin:0;max-width:16em;font:var(--fw-regular) var(--fs-h3)/var(--lh-heading) var(--font-title);color:var(--text-primary)}
 .app--pending{display:none}
 
@@ -87,7 +88,7 @@ button{font:inherit}
 .app{min-height:100vh}
 .rail{position:fixed;top:0;bottom:0;left:0;width:var(--rail-w);z-index:40;background:var(--rail-bg);
   color:var(--rail-fg);display:flex;flex-direction:column;align-items:center;padding:var(--space-1-5) 0;gap:var(--space-0-5)}
-.rail__mark{font:var(--fw-bold) var(--fs-subtitle1)/1 var(--font-title);letter-spacing:-0.5px;margin-bottom:var(--space-2)}
+.rail__mark{display:block;width:var(--space-4);height:auto;margin-bottom:var(--space-2);filter:brightness(0) invert(1)}
 .rail__item{width:var(--rail-w);height:var(--space-5);display:flex;align-items:center;justify-content:center;opacity:.8}
 .rail__item--active{background:var(--rail-item-active);opacity:1}
 .rail__spacer{flex:1}
@@ -255,6 +256,7 @@ button.grid__preview{cursor:pointer}
 
 <sc-if value="{{!welcome.started}}" hint-placeholder-val="{{true}}">
   <main class="welcome">
+    <img class="welcome__logo" src="assets/im-logo.svg" alt="Influencer Monitor">
     <h1 class="welcome__title">Hello! Welcome to an Influencer Monitor session!</h1>
     <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="contained" color="primary" onClick="{{welcome.onStart}}" hint-size="auto,42px">Show prototype</x-import>
   </main>
@@ -263,7 +265,7 @@ button.grid__preview{cursor:pointer}
 <div class="app {{welcome.appMod}}">
   <!-- static stand-in for the product's navigation rail; only "Labels" is live -->
   <nav class="rail" aria-label="Product">
-    <span class="rail__mark">IM</span>
+    <img class="rail__mark" src="assets/im-logo.svg" alt="Influencer Monitor">
     <span class="rail__item" title="Dashboard"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="SpaceDashboardFilled" size="20" hint-size="20px,20px"></x-import></span>
     <span class="rail__item" title="Reports"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="PivotTableChartFilled" size="20" hint-size="20px,20px"></x-import></span>
     <span class="rail__item" title="Alerts"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="InfoOutlined" size="20" hint-size="20px,20px"></x-import></span>

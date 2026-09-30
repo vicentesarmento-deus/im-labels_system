@@ -168,9 +168,14 @@ that toggled it, the link to v4 and the post row that opened it, and the version
 in the page title. The data and the behaviour are the same. It is not linked
 from the cover, and it is a fork — fixes made to admin v2 are not carried over.
 
+It opens on a welcome screen, a waiting room with the Influencer Monitor mark and
+a "Show prototype" button; the participant clicks it only when asked. The same
+mark, in white, replaces the "IM" text on the navigation rail.
+
 Changes live in memory only, so reloading the page puts the catalogue back as it
-was; that is the reset between participants. Share the address without a `#…`
-suffix, or a reload lands on that view instead of on Categories.
+was and shows the welcome screen again; that is the reset between participants.
+Share the address without a `#…` suffix, or a reload lands on that view instead
+of on Categories.
 
 The sample posts' thumbnails are stock photos from [Unsplash](https://unsplash.com),
 used under the [Unsplash License](https://unsplash.com/license), in
@@ -219,6 +224,7 @@ index.html                  The cover
 [admin v2] ….dc.html        The admin after the first round of feedback
 2026-10-01--labels_admin_testing.dc.html  Admin v2 without facilitator scaffolding or links out, for sessions
 assets/posts/               Stock thumbnails for admin v2's sample posts
+assets/im-logo.svg          The Influencer Monitor mark, used by the testing copy
 support.js                  Runtime for the .dc.html pages
 _ds/monitoring-design-…/    The Monitoring Design System — tokens, fonts, components
 uploads/                    Reference material: screenshots of the real staging page
