@@ -2185,12 +2185,9 @@ class Component extends DCLogic {
     const ids = sel.map((l) => l.id);
     const cats = new Set(sel.map((l) => l.categoryId));
     const sameCat = cats.size === 1;
-    const distinct = cats.size === n;
     const mergeTip = n < 2 ? 'Select two or more labels to merge' : !sameCat ? 'Only labels in the same category can be merged' : 'Merge ' + n + ' labels';
-    const renameTip = n === 0 ? 'Select labels to rename' : n === 1 ? 'Rename' : distinct ? 'Rename ' + n + ' labels to one spelling' : 'Two of these share a category — merge them instead';
     return [
       tool('merge', '', mergeTip, n < 2 || !sameCat, () => this.openDialog('mergeLabels', { ids, choice: '', other: '' })),
-      tool('rename', 'EditFilled', renameTip, n === 0 || (n > 1 && !distinct), () => (n === 1 ? this.startRename('label', ids[0], 'row') : this.openDialog('bulkRename', { ids, name: '' }))),
       tool('move', 'SwapHorizOutlined', n ? 'Move ' + this.plural(n, 'label') + ' to…' : 'Select labels to move', !n, () => this.openDialog('move', { ids, dest: '' })),
       tool('duplicate', 'ContentCopyFilled', n ? 'Duplicate ' + this.plural(n, 'label') + ' to…' : 'Select labels to duplicate', !n, () => this.openDialog('duplicate', { ids, dest: '', withPosts: false })),
       tool('delete', 'DeleteFilled', n ? 'Delete ' + this.plural(n, 'label') : 'Select labels to delete', !n, () => this.openDialog('deleteLabels', { ids })),
