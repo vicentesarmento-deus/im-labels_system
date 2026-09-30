@@ -81,6 +81,7 @@ button{font:inherit}
 .welcome{min-height:100vh;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;
   gap:var(--space-4);padding:var(--space-8) var(--space-6);background:var(--page-bg)}
 .welcome__logo{display:block;height:var(--space-6);width:auto}
+.welcome__text{margin:0;max-width:28em;font:var(--fw-regular) var(--fs-h6)/var(--lh-body) var(--font-body);color:var(--text-secondary)}
 .welcome__title{margin:0;max-width:16em;font:var(--fw-regular) var(--fs-h3)/var(--lh-heading) var(--font-title);color:var(--text-primary)}
 .app--pending{display:none}
 
@@ -258,6 +259,7 @@ button.grid__preview{cursor:pointer}
   <main class="welcome">
     <img class="welcome__logo" src="assets/im-logo.svg" alt="Influencer Monitor">
     <h1 class="welcome__title">Hello! Welcome to an Influencer Monitor session!</h1>
+    <p class="welcome__text">Thank you for joining us. There is nothing to do yet: please listen to the instructions first. When we ask you to, click “Show prototype”.</p>
     <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Button" variant="contained" color="primary" onClick="{{welcome.onStart}}" hint-size="auto,42px">Show prototype</x-import>
   </main>
 </sc-if>
