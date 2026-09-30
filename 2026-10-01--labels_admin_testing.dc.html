@@ -171,6 +171,7 @@ button{font:inherit}
 .grid__name--static:hover{text-decoration:none}
 .grid__name--muted{color:var(--text-secondary);font-style:italic}
 .grid__prefix{color:var(--text-secondary);margin-right:var(--space-0-5)}
+.grid__mark{font-weight:var(--fw-bold)}
 .grid__hint{font-size:var(--fs-caption);color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .grid__thumb{flex-shrink:0;width:var(--grid-thumb);height:var(--grid-thumb);border-radius:var(--radius);overflow:hidden;
   display:flex;align-items:center;justify-content:center;font-weight:var(--fw-medium);font-size:var(--fs-body2);
@@ -456,12 +457,12 @@ button.grid__preview{cursor:pointer}
                   </sc-if>
                   <span class="grid__title-text">
                     <sc-if value="{{row.openable}}" hint-placeholder-val="{{true}}">
-                      <button class="grid__name {{row.nameMod}}" onClick="{{row.onOpen}}"><sc-if value="{{row.prefix}}" hint-placeholder-val="{{false}}"><span class="grid__prefix">{{row.prefix}}</span></sc-if>{{row.name}}</button>
+                      <button class="grid__name {{row.nameMod}}" onClick="{{row.onOpen}}"><sc-if value="{{row.prefix}}" hint-placeholder-val="{{false}}"><span class="grid__prefix">{{row.prefix}}</span></sc-if><sc-for list="{{row.nameParts}}" as="pt" hint-placeholder-count="1"><span class="{{pt.mod}}">{{pt.t}}</span></sc-for></button>
                     </sc-if>
                     <sc-if value="{{!row.openable}}" hint-placeholder-val="{{false}}">
-                      <span class="grid__name grid__name--static {{row.nameMod}}">{{row.name}}</span>
+                      <span class="grid__name grid__name--static {{row.nameMod}}"><sc-for list="{{row.nameParts}}" as="pt" hint-placeholder-count="1"><span class="{{pt.mod}}">{{pt.t}}</span></sc-for></span>
                     </sc-if>
-                    <sc-if value="{{row.hint}}" hint-placeholder-val="{{false}}"><span class="grid__hint">{{row.hint}}</span></sc-if>
+                    <sc-if value="{{row.hint}}" hint-placeholder-val="{{false}}"><span class="grid__hint"><sc-for list="{{row.hintParts}}" as="pt" hint-placeholder-count="1"><span class="{{pt.mod}}">{{pt.t}}</span></sc-for></span></sc-if>
                   </span>
                 </span>
               </sc-if></sc-if>
@@ -471,7 +472,7 @@ button.grid__preview{cursor:pointer}
               <span class="grid__cell {{cell.mod}}" role="cell">
                 <sc-if value="{{cell.pill}}" hint-placeholder-val="{{false}}"><span class="grid__platform" style="background:{{cell.pillBg}};color:{{cell.pillFg}}">{{cell.text}}</span></sc-if>
                 <sc-if value="{{cell.avatar}}" hint-placeholder-val="{{false}}"><span class="grid__creator"><span class="grid__avatar" aria-hidden="true">{{cell.avatar}}</span><span class="grid__creator-name">{{cell.text}}</span></span></sc-if>
-                <sc-if value="{{!cell.pill}}" hint-placeholder-val="{{true}}"><sc-if value="{{!cell.avatar}}" hint-placeholder-val="{{true}}">{{cell.text}}</sc-if></sc-if>
+                <sc-if value="{{!cell.pill}}" hint-placeholder-val="{{true}}"><sc-if value="{{!cell.avatar}}" hint-placeholder-val="{{true}}"><sc-for list="{{cell.parts}}" as="pt" hint-placeholder-count="1"><span class="{{pt.mod}}">{{pt.t}}</span></sc-for></sc-if></sc-if>
               </span>
             </sc-for>
 
@@ -1365,6 +1366,32 @@ class Component extends DCLogic {
       mod: i === at ? 'suggest__item--active' : '',
       onPick: (e) => { e.preventDefault(); pick(c); },
     }));
+  }
+
+  /** What the search box looks for, split the way the search itself splits it: "Category / Label", or one text for both. */
+  searchNeedles() {
+    const q = this.clean(this.state.q || '');
+    if (!q) return { cat: '', lab: '' };
+    if (q.includes('/')) return { cat: this.clean(q.split('/')[0]), lab: this.clean(q.split('/').slice(1).join('/')) };
+    return { cat: q, lab: q };
+  }
+
+  /** The text in pieces, the ones that match the needle marked so they can be set in a heavier weight. */
+  parts(text, needle) {
+    const t = String(text == null ? '' : text);
+    const n = (needle || '').toLowerCase();
+    if (!n) return [{ t, mod: '' }];
+    const low = t.toLowerCase(), out = [];
+    let i = 0;
+    for (;;) {
+      const k = low.indexOf(n, i);
+      if (k < 0) break;
+      if (k > i) out.push({ t: t.slice(i, k), mod: '' });
+      out.push({ t: t.slice(k, k + n.length), mod: 'grid__mark' });
+      i = k + n.length;
+    }
+    if (i < t.length) out.push({ t: t.slice(i), mod: '' });
+    return out.length ? out : [{ t, mod: '' }];
   }
 
   splitEntries(text) { return text.split(/[,\n\r\t]+/).map((x) => this.clean(x)); }
@@ -2373,6 +2400,17 @@ class Component extends DCLogic {
       rename: renameVals,
       grid: {
         ...v.grid,
+        rows: v.grid.rows.map((row) => {
+          const nd = this.searchNeedles();
+          const cats = s.route.view === 'categories';
+          const searching = s.route.view !== 'label'; // the posts of a label have their own search, not marked here
+          return {
+            ...row,
+            nameParts: this.parts(row.name, searching ? (cats ? nd.cat : nd.lab) : ''),
+            hintParts: this.parts(row.hint, searching && cats ? nd.lab : ''),
+            cells: (row.cells || []).map((c) => ({ ...c, parts: this.parts(c.text, searching && c.key === 'cat' ? nd.cat : '') })),
+          };
+        }),
         allChecked: selectableIds.length > 0 && onPage === selectableIds.length,
         someChecked: onPage > 0 && onPage < selectableIds.length,
         noneSelectable: selectableIds.length === 0,
