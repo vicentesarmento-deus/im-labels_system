@@ -92,7 +92,23 @@ button{font:inherit}
 .rail{position:fixed;top:0;bottom:0;left:0;width:var(--rail-w);z-index:40;background:var(--rail-bg);
   color:var(--rail-fg);display:flex;flex-direction:column;align-items:center;padding:var(--space-1-5) 0;gap:var(--space-0-5)}
 .rail__mark{display:block;width:var(--space-4);height:auto;margin-bottom:var(--space-2);filter:brightness(0) invert(1)}
-.rail__item{width:var(--rail-w);height:var(--space-5);display:flex;align-items:center;justify-content:center;opacity:.8}
+.rail__item{position:relative;width:var(--rail-w);height:var(--space-5);display:flex;align-items:center;justify-content:center;opacity:.8}
+.rail__item:hover{opacity:1}
+.rail__icon{width:calc(var(--space-2) + var(--space-0-5));height:calc(var(--space-2) + var(--space-0-5));fill:currentColor}
+/* what the item is for, to the right of the rail, as in the product: an info mark, the name, a line under it. It never takes the pointer,
+   so moving down the rail from item to item cannot catch one open. */
+.rail__tip{position:absolute;left:100%;top:50%;transform:translateY(-50%);margin-left:var(--space-1-5);z-index:1;
+  display:flex;align-items:flex-start;gap:var(--space-1-5);width:max-content;max-width:calc(var(--space-12) * 3);
+  padding:var(--space-1-5) var(--space-2);border-radius:var(--radius);text-align:left;
+  background:var(--components-tooltip-fill,rgba(97,97,97,0.9));color:var(--background-paper);
+  opacity:0;visibility:hidden;pointer-events:none;transition:opacity .12s}
+.rail__tip::before{content:'';position:absolute;right:100%;top:50%;transform:translateY(-50%);border:var(--space-1) solid transparent;border-left-width:0;
+  border-right-color:var(--components-tooltip-fill,rgba(97,97,97,0.9))}
+.rail__tip>:first-child{flex:none;margin-top:var(--space-0-5)}
+.rail__tip-text{display:flex;flex-direction:column;gap:var(--space-0-5)}
+.rail__tip-title{font-size:var(--fs-body1);font-weight:var(--fw-medium);line-height:var(--lh-body)}
+.rail__tip-desc{font-size:var(--fs-body2);line-height:var(--lh-body)}
+.rail__item:hover .rail__tip{opacity:1;visibility:visible}
 .rail__item--active{background:var(--rail-item-active);opacity:1}
 .rail__spacer{flex:1}
 .main{margin-left:var(--rail-w)}
@@ -292,13 +308,47 @@ button.grid__preview{cursor:pointer}
   <!-- static stand-in for the product's navigation rail; only "Labels" is live -->
   <nav class="rail" aria-label="Product">
     <img class="rail__mark" src="assets/im-logo.svg" alt="Influencer Monitor">
-    <span class="rail__item" title="Dashboard"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="SpaceDashboardFilled" size="20" hint-size="20px,20px"></x-import></span>
-    <span class="rail__item" title="Reports"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="PivotTableChartFilled" size="20" hint-size="20px,20px"></x-import></span>
-    <span class="rail__item" title="Alerts"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="InfoOutlined" size="20" hint-size="20px,20px"></x-import></span>
-    <span class="rail__item" title="Evaluations"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="CollectionsFilled" size="20" hint-size="20px,20px"></x-import></span>
-    <span class="rail__item" title="Keyword Groups"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="ViewHeadlineFilled" size="20" hint-size="20px,20px"></x-import></span>
-    <span class="rail__item rail__item--active" title="Labels">
-      <svg class="merge-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16z"/></svg>
+    <span class="rail__item" aria-label="Workspace dashboard">
+      <svg class="rail__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 2v20c-5.07-.5-9-4.79-9-10s3.93-9.5 9-10zm2.03 0v8.99H22c-.47-4.74-4.24-8.52-8.97-8.99zm0 11.01V22c4.74-.47 8.5-4.25 8.97-8.99h-8.97z"/></svg>
+      <span class="rail__tip" role="tooltip">
+        <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="InfoOutlined" size="20" hint-size="20px,20px"></x-import>
+        <span class="rail__tip-text"><span class="rail__tip-title">Workspace dashboard</span><span class="rail__tip-desc">Get an overview of your workspace evaluations.</span></span>
+      </span>
+    </span>
+    <span class="rail__item" aria-label="Manage evaluations">
+      <svg class="rail__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 13v7H4V6h5.02c.05-.71.22-1.38.48-2H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-5l-2-2zm-1.5 5h-11l2.75-3.53 1.96 2.36 2.75-3.54zm2.8-9.11c.44-.7.7-1.51.7-2.39C20 4.01 17.99 2 15.5 2S11 4.01 11 6.5s2.01 4.5 4.49 4.5c.88 0 1.7-.26 2.39-.7L21 13.42 22.42 12 19.3 8.89zM15.5 9a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>
+      <span class="rail__tip" role="tooltip">
+        <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="InfoOutlined" size="20" hint-size="20px,20px"></x-import>
+        <span class="rail__tip-text"><span class="rail__tip-title">Manage evaluations</span><span class="rail__tip-desc">Create your own evaluation.</span></span>
+      </span>
+    </span>
+    <span class="rail__item" aria-label="Manage violations">
+      <svg class="rail__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 15h2v2h-2zm0-8h2v6h-2zm.99-5C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/></svg>
+      <span class="rail__tip" role="tooltip">
+        <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="InfoOutlined" size="20" hint-size="20px,20px"></x-import>
+        <span class="rail__tip-text"><span class="rail__tip-title">Manage violations</span><span class="rail__tip-desc">Manage and review creator violations.</span></span>
+      </span>
+    </span>
+    <span class="rail__item" aria-label="Manage creators">
+      <svg class="rail__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 0H4v2h16V0zM4 24h16v-2H4v2zM20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-8 2.75c1.24 0 2.25 1.01 2.25 2.25s-1.01 2.25-2.25 2.25S9.75 10.24 9.75 9 10.76 6.75 12 6.75zM17 17H7v-1.5c0-1.67 3.33-2.5 5-2.5s5 .83 5 2.5V17z"/></svg>
+      <span class="rail__tip" role="tooltip">
+        <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="InfoOutlined" size="20" hint-size="20px,20px"></x-import>
+        <span class="rail__tip-text"><span class="rail__tip-title">Manage creators</span><span class="rail__tip-desc">Add and edit creators. Create groups of creators.</span></span>
+      </span>
+    </span>
+    <span class="rail__item" aria-label="Manage keyword groups">
+      <svg class="rail__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 5v14H5V5h14m1.1-2H3.9c-.5 0-.9.4-.9.9v16.2c0 .4.4.9.9.9h16.2c.4 0 .9-.5.9-.9V3.9c0-.5-.5-.9-.9-.9zM11 7h6v2h-6V7zm0 4h6v2h-6v-2zm0 4h6v2h-6zM7 7h2v2H7zm0 4h2v2H7zm0 4h2v2H7z"/></svg>
+      <span class="rail__tip" role="tooltip">
+        <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="InfoOutlined" size="20" hint-size="20px,20px"></x-import>
+        <span class="rail__tip-text"><span class="rail__tip-title">Manage keyword groups</span><span class="rail__tip-desc">Create and edit keyword groups.</span></span>
+      </span>
+    </span>
+    <span class="rail__item rail__item--active" aria-label="Manage labels">
+      <svg class="rail__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16z"/></svg>
+      <span class="rail__tip" role="tooltip">
+        <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="InfoOutlined" size="20" hint-size="20px,20px"></x-import>
+        <span class="rail__tip-text"><span class="rail__tip-title">Manage labels</span><span class="rail__tip-desc">Create and edit labels and categories.</span></span>
+      </span>
     </span>
     <span class="rail__spacer"></span>
     <span class="rail__item" title="Help"><x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="InfoOutlined" size="20" hint-size="20px,20px"></x-import></span>
