@@ -142,6 +142,7 @@ button{font:inherit}
 .search__clear{all:unset;cursor:pointer;display:inline-flex;color:var(--action-active)}
 
 .merge-icon{width:calc(var(--space-2) + var(--space-0-5));height:calc(var(--space-2) + var(--space-0-5));fill:currentColor}
+.merge-icon--lg{width:var(--space-3);height:var(--space-3)}
 
 /* ---- sheet + grid (a table made of divs, see the note in the template) ---- */
 .sheet{margin:var(--space-2) var(--page-pad-x) var(--space-8);background:var(--sheet-bg);border-radius:var(--radius)}
@@ -368,12 +369,12 @@ button.grid__preview{cursor:pointer}
         <div class="head__toolbar">
           <sc-for list="{{head.tools}}" as="t" hint-placeholder-count="2">
             <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Tooltip" title="{{t.tip}}" hint-size="auto,auto">
-              <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.IconButton" size="small" disabled="{{t.disabled}}" onClick="{{t.onClick}}" aria-label="{{t.aria}}" hint-size="32px,32px">
+              <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.IconButton" size="medium" disabled="{{t.disabled}}" onClick="{{t.onClick}}" aria-label="{{t.aria}}" hint-size="40px,40px">
                 <sc-if value="{{t.isMerge}}" hint-placeholder-val="{{false}}">
-                  <svg class="merge-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 20.41L18.41 19 15 15.59 13.59 17 17 20.41zM7.5 8H11v5.59L5.59 19 7 20.41l6-6V8h3.5L12 3.5 7.5 8z"/></svg>
+                  <svg class="merge-icon merge-icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 20.41L18.41 19 15 15.59 13.59 17 17 20.41zM7.5 8H11v5.59L5.59 19 7 20.41l6-6V8h3.5L12 3.5 7.5 8z"/></svg>
                 </sc-if>
                 <sc-if value="{{!t.isMerge}}" hint-placeholder-val="{{true}}">
-                  <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="{{t.icon}}" size="20" hint-size="20px,20px"></x-import>
+                  <x-import component-from-global-scope="MonitoringDesignSystem_1b6ea8.Icon" name="{{t.icon}}" size="24" hint-size="24px,24px"></x-import>
                 </sc-if>
               </x-import>
             </x-import>
