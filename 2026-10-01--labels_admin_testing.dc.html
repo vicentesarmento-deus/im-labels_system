@@ -2119,10 +2119,13 @@ class Component extends DCLogic {
     const s = this.state;
     const checked = selectable && s.sel.includes(id);
     const menuId = 'row:' + key;
+    const toggle = () => this.setState((cur) => ({ sel: cur.sel.includes(id) ? cur.sel.filter((x) => x !== id) : [...cur.sel, id] }));
     return {
       key, selectable, checked,
-      onCheck: () => this.setState((cur) => ({ sel: cur.sel.includes(id) ? cur.sel.filter((x) => x !== id) : [...cur.sel, id] })),
-      onRowClick: (e) => { if (e.target.closest('.grid__cell--control, .grid__cell--menu, .rename, button, a')) return; openFn(); },
+      onCheck: toggle,
+      // a click on the row selects it; the name and the menu's "Open" are the two ways in. A row that cannot be
+      // selected ("No category") keeps opening on a click, since there is nothing else for the click to do.
+      onRowClick: (e) => { if (e.target.closest('.grid__cell--control, .grid__cell--menu, .rename, button, a')) return; if (selectable) toggle(); else openFn(); },
       onOpen: openFn, openable: true,
       hasMenu: true, menuOpen: s.menu === menuId, menuMod: s.menu === menuId ? 'grid__menu-btn--open' : '',
       onMenu: () => this.toggleMenu(menuId), onMenuClose: () => this.closeMenu(menuId),
