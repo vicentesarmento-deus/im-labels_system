@@ -2129,14 +2129,18 @@ class Component extends DCLogic {
       const sort = s.sort || { key: 'created', dir: 'desc' };
       const getters = { name: (c) => c.name, labels: (c) => c.labels.length, posts: (c) => this.catPosts(c.id).length, created: (c) => (c.createdAt ? c.createdAt.getTime() : 0), edited: (c) => (c.editedAt ? c.editedAt.getTime() : 0) };
       const found = this.categoryRows();
-      const pinned = found.filter((c) => c.pinned);
-      // "No category" is not a category: it sits outside the count and the paging, after the last page
-      const rows = this.sortBy(found.filter((c) => !c.pinned), sort, getters);
+      // "No category" is not a category: it sits outside the count and the paging, after the last page,
+      // and it is left out when only the categories without labels are asked for
+      const pinned = s.unusedOnly ? [] : found.filter((c) => c.pinned);
+      const emptyTotal = found.filter((c) => !c.pinned && !c.labels.length).length;
+      const rows = this.sortBy(found.filter((c) => !c.pinned && (!s.unusedOnly || !c.labels.length)), sort, getters);
       const pg = this.page(rows);
       if (pg.page === pg.pages - 1) pg.visible = pg.visible.concat(pinned);
       const sel = s.sel.map((id) => this.category(id)).filter(Boolean);
       out.head = {
         ...exportHead, title: 'Labels', total: rows.length, showTotal: rows.length > 0, meta: '',
+        unused: { show: emptyTotal > 0 || s.unusedOnly, text: 'Show only categories with 0 labels (' + emptyTotal + ')', variant: s.unusedOnly ? 'filled' : 'outlined', color: s.unusedOnly ? 'primary' : 'default',
+          onClick: () => this.setState((cur) => ({ unusedOnly: !cur.unusedOnly, page: 0, sel: [] })) },
         buttons: [{ key: 'add', text: 'Add label or category', variant: 'contained', color: 'primary', onClick: () => this.openDialog('addCategory', { name: '', staged: [], input: '' }) }],
         tools: this.toolsFor('category', sel),
       };
@@ -2173,7 +2177,7 @@ class Component extends DCLogic {
       };
       out.pg = pg;
       out.searchPlaceholder = 'Search categories and labels';
-      if (!rows.length && !pinned.length) out.empty = this.emptyFor(s.q ? 'search' : 'noCats');
+      if (!rows.length && !pinned.length) out.empty = this.emptyFor(s.unusedOnly ? 'noEmptyCats' : s.q ? 'search' : 'noCats');
     } else if (r.view === 'labels' || r.view === 'category') {
       const scope = r.view === 'labels' ? 'all' : r.id;
       const showCat = r.view === 'labels';
@@ -2282,6 +2286,7 @@ class Component extends DCLogic {
       noCats: { icon: 'FolderFilled', title: 'No categories yet', text: 'Categories group labels so everyone reads them in context.', actionText: 'Add label or category', onAction: () => this.openDialog('addCategory', { name: '', staged: [], input: '' }) },
       noLabels: { icon: 'FolderFilled', title: 'No labels yet', text: 'Add labels here, or create them straight from a post.', actionText: 'Add labels', onAction: () => this.openDialog('addLabels', { catId: null, staged: [], input: '' }) },
       emptyCat: { icon: 'FolderFilled', title: 'No labels in this category', text: 'Add labels to it, or move existing ones in from another category.', actionText: 'Add labels', onAction: () => this.openDialog('addLabels', { catId, staged: [], input: '' }) },
+      noEmptyCats: { icon: 'CheckCircleOutlined', title: 'Every category has labels', text: 'Turn off “Show only categories with 0 labels” to see them all.' },
       noUnused: { icon: 'CheckCircleOutlined', title: 'Every label here is on a post', text: 'Turn off “Show only 0 posts labels” to see them all.' },
       noPosts: { icon: 'PhotoOutlined', title: 'Not on any post yet', text: 'Labels are added to posts from the post page. Open a post from Evaluations, Violations or an Influencer page.' },
     };
