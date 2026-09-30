@@ -35,6 +35,7 @@
 :root{
   --outline-default: var(--action-disabled);
 
+  --search-mark-bg: var(--im-green-50);   /* IM Malachite 50, behind the letters a search matched */
   --rail-w: var(--space-6);
   --rail-bg: var(--color-primary-main);
   --rail-fg: var(--color-primary-contrast);
@@ -171,7 +172,7 @@ button{font:inherit}
 .grid__name--static:hover{text-decoration:none}
 .grid__name--muted{color:var(--text-secondary);font-style:italic}
 .grid__prefix{color:var(--text-secondary);margin-right:var(--space-0-5)}
-.grid__mark{font-weight:var(--fw-bold)}
+.grid__mark{font-weight:var(--fw-bold);background:var(--search-mark-bg)}
 .grid__hint{font-size:var(--fs-caption);color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .grid__thumb{flex-shrink:0;width:var(--grid-thumb);height:var(--grid-thumb);border-radius:var(--radius);overflow:hidden;
   display:flex;align-items:center;justify-content:center;font-weight:var(--fw-medium);font-size:var(--fs-body2);
