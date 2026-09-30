@@ -172,10 +172,16 @@ It opens on a welcome screen, a waiting room with the Influencer Monitor mark an
 a "Show prototype" button; the participant clicks it only when asked. The same
 mark, in white, replaces the "IM" text on the navigation rail.
 
+The page opens on **Labels**, the first of two tabs, with **Categories** beside
+it (in admin v2 the order is the other way round and the tab is called "All
+labels"). The table's own actions share the tabs' line, and no group offers a
+bulk rename: a category or a label is renamed one at a time, from its row menu or
+its own page.
+
 Changes live in memory only, so reloading the page puts the catalogue back as it
 was and shows the welcome screen again; that is the reset between participants.
 Share the address without a `#…` suffix, or a reload lands on that view instead
-of on Categories.
+of on Labels.
 
 The sample posts' thumbnails are stock photos from [Unsplash](https://unsplash.com),
 used under the [Unsplash License](https://unsplash.com/license), in

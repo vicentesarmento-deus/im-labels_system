@@ -884,15 +884,15 @@ class Component extends DCLogic {
     let m;
     if ((m = h.match(/^#\/category\/(none|\d+)$/))) return { view: 'category', id: m[1] === 'none' ? null : Number(m[1]) };
     if ((m = h.match(/^#\/label\/(\d+)$/))) return { view: 'label', id: Number(m[1]) };
-    if (h === '#/labels') return { view: 'labels' };
-    return { view: 'categories' };
+    if (h === '#/categories') return { view: 'categories' };
+    return { view: 'labels' };
   }
 
   hashFor(route) {
     if (route.view === 'category') return '#/category/' + (route.id == null ? 'none' : route.id);
     if (route.view === 'label') return '#/label/' + route.id;
-    if (route.view === 'labels') return '#/labels';
-    return '#/categories';
+    if (route.view === 'categories') return '#/categories';
+    return '#/labels';
   }
 
   go(route) {
@@ -924,7 +924,7 @@ class Component extends DCLogic {
     const s = this.state;
     // A route whose subject no longer exists (merged away, deleted, or undone) falls back to its parent.
     const r = s.route;
-    if (r.view === 'label' && !this.label(r.id)) { this.go({ view: 'categories' }); return; }
+    if (r.view === 'label' && !this.label(r.id)) { this.go({ view: 'labels' }); return; }
     if (r.view === 'category' && r.id != null && !this.category(r.id)) { this.go({ view: 'categories' }); return; }
 
     const dlgKey = s.dialog ? s.dialog.type : null;
@@ -2002,8 +2002,8 @@ class Component extends DCLogic {
     const out = { head: {}, grid: {}, empty: { show: false }, tabs: { show: false }, searchPlaceholder: 'Search' };
     const nCats = data.categories.length, nLabels = data.labels.length;
     const tabs = { show: true, items: [
+      { key: 'labels', text: 'Labels (' + nLabels + ')', active: r.view === 'labels', onClick: () => this.go({ view: 'labels' }) },
       { key: 'categories', text: 'Categories (' + nCats + ')', active: r.view === 'categories', onClick: () => this.go({ view: 'categories' }) },
-      { key: 'labels', text: 'All labels (' + nLabels + ')', active: r.view === 'labels', onClick: () => this.go({ view: 'labels' }) },
     ] };
     const exportHead = { showExport: true };
 
@@ -2083,7 +2083,7 @@ class Component extends DCLogic {
         const posts = this.catPosts(r.id).length;
         out.head = {
           showExport: false, title: cat ? cat.name : 'No category', total: rows.length, showTotal: rows.length > 0, unused,
-          hasCrumbs: true, crumbs: [{ key: 'root', text: 'Labels', href: '#/categories' }], here: cat ? cat.name : 'No category',
+          hasCrumbs: true, crumbs: [{ key: 'root', text: 'Labels', href: '#/labels' }], here: cat ? cat.name : 'No category',
           meta: cat ? 'Created by ' + cat.createdBy + ', ' + this.fmtDate(cat.createdAt) + ' · on ' + this.plural(posts, 'post')
             : 'Labels that don\'t belong to a category — usually created straight from a post. Move them into one to give them context.',
           renaming, canRename: !!cat, renameTip: 'Rename category', onRename: () => cat && this.startRename('category', cat.id, 'head'),
@@ -2117,7 +2117,7 @@ class Component extends DCLogic {
       out.head = {
         showExport: false, title: l.name, prefix: '',
         total: rows.length, showTotal: rows.length > 0,
-        hasCrumbs: true, crumbs: [{ key: 'root', text: 'Labels', href: '#/categories' }, catCrumb], here: l.name,
+        hasCrumbs: true, crumbs: [{ key: 'root', text: 'Labels', href: '#/labels' }, catCrumb], here: l.name,
         meta: 'Created by ' + l.createdBy + ', ' + this.fmtDate(l.createdAt) + ' · on ' + this.plural(n, 'post'),
         renaming, canRename: true, renameTip: 'Rename label', onRename: () => this.startRename('label', l.id, 'head'),
         canDelete: true, deleteTip: 'Delete label', onDelete: () => this.openDialog('deleteLabels', { ids: [l.id] }),
