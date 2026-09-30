@@ -160,6 +160,18 @@ round of feedback applied. The first admin is kept as it was, for comparison.
 - The same thumbnail and "IG: Story, date" line appear in the lists of posts
   inside the delete and merge dialogs.
 
+### A clean copy for sessions
+
+`2026-09-31--labels_admin_testing.dc.html` is admin v2 with everything a
+participant should not see taken out: the dark facilitator bar and the `H` key
+that toggled it, the link to v4 and the post row that opened it, and the version
+in the page title. The data and the behaviour are the same. It is not linked
+from the cover, and it is a fork — fixes made to admin v2 are not carried over.
+
+Changes live in memory only, so reloading the page puts the catalogue back as it
+was; that is the reset between participants. Share the address without a `#…`
+suffix, or a reload lands on that view instead of on Categories.
+
 The sample posts' thumbnails are stock photos from [Unsplash](https://unsplash.com),
 used under the [Unsplash License](https://unsplash.com/license), in
 `assets/posts/`, chosen to match each post's caption and to avoid prominent
@@ -205,6 +217,7 @@ index.html                  The cover
 [v1|v2|v3|v4] ….dc.html     The prototypes
 [admin] ….dc.html           The label catalogue admin, v1
 [admin v2] ….dc.html        The admin after the first round of feedback
+2026-09-31--labels_admin_testing.dc.html  Admin v2 without facilitator scaffolding or links out, for sessions
 assets/posts/               Stock thumbnails for admin v2's sample posts
 support.js                  Runtime for the .dc.html pages
 _ds/monitoring-design-…/    The Monitoring Design System — tokens, fonts, components
